@@ -1,6 +1,8 @@
 #ifndef COMPUTER_HH_
 #define COMPUTER_HH_
 
+#include <unordered_map>
+#include "Display.hh"
 #include "Input.hh"
 #include "Register.hh"
 #include "ControllerSequencer.hh"
@@ -12,19 +14,23 @@ class Computer
 public:
   Computer();
   void cycle();
+  void execute();
 
 private:
-  ControllerSequencer _controllerSequencer;
-  Arithmetic _arithmetic;
-  Input _input;
+  std::unordered_map<std::string, std::bitset<WORD_SIZE>> _instructionSet;
 
-  Register<1, WORD_SIZE> _programCounter;
-  Register<1, WORD_SIZE> _mar;
-  Register<RAM_SIZE, DWORD_SIZE> _ram;
-  Register<1, WORD_SIZE> _instructions;
-  Register<1, WORD_SIZE> _accumulator;
-  Register<1, WORD_SIZE> _b;
-  Register<1, WORD_SIZE> _output;
+  ControllerSequencer _controllerSequencer;
+  Input _input;
+  Display _display;
+
+  Register<1,        WORD_SIZE> _PC;
+  Register<1,        WORD_SIZE> _MAR;
+  Register<RAM_SIZE, DWORD_SIZE> _RAM;
+  Register<1,        DWORD_SIZE> _IR;
+
+  Register<1,        DWORD_SIZE> _accumulator;
+  Register<1,        DWORD_SIZE> _Breg;
+  Register<1,        DWORD_SIZE> _output;
 };
 
 #endif /* !COMPUTER_HH_ */

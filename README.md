@@ -27,3 +27,15 @@ These command lines should produce a binary in "./bin" folder.
 ### Usage
 
 For now, the software does not provide any configuration, come back later!
+
+### Instruction set
+
+Here are the common keywords defined for this architecture
+
+| keyword | binary | usage |
+| --- | ---- | ---- |
+| LDA | 0000 | Load addressed memory contents into accumulator |
+| ADD | 0001 | Add addressed memory contents to accumulator |
+| SUB | 0010 | Subtract addressed memory contents from accumulator |
+| OUT | 1110 | Load accumulator data into output register |
+| HLT | 1111 | Stop processing |

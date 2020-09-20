@@ -32,7 +32,54 @@ public:
         }
       }
     }
-    if (carry) result.flip(); //overflow, set to NULL
+    return (result);
+  }
+  
+  template <unsigned int WordSize>
+  static std::bitset<WordSize> substract(std::bitset<WordSize> a, std::bitset<WordSize> b)
+  {
+    std::bitset<WordSize> result;
+    bool carry = false;
+    for (size_t i = 0; i < WordSize; i++)
+    {
+      //NI
+    }
+    return (result);
+  }
+
+  template <unsigned int WordSize, unsigned int FinalSize>
+  static std::bitset<FinalSize> range(std::bitset<WordSize> a, unsigned int rangeStart, unsigned int rangeEnd)
+  {
+    std::bitset<FinalSize> result;
+    for (size_t i = rangeStart, j = 0; i < rangeEnd; i++, j++)
+    {
+      result[j] = a[i];
+    }
+    return (result);
+  }
+
+  template <unsigned int WordSize, unsigned int FinalSize>
+  static std::bitset<FinalSize> pad(std::bitset<WordSize> a)
+  {
+    std::bitset<FinalSize> result;
+    for (size_t i = 0; i <= WordSize; i++)
+    {
+      result[i] = a[i];
+    }
+    return (result);
+  }
+
+  template <unsigned int WordSize>
+  static std::bitset<WordSize> concat(std::bitset<WordSize> a, std::bitset<WordSize> b)
+  {
+    std::bitset<WordSize> result;
+    for (size_t i = 1; i <= 2; i++)
+    {
+      for (size_t j = 0; j < WordSize; j++)
+      {
+        result[i * j] = a[j];
+      }
+    }
     return (result);
   }
 

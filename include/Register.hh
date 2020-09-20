@@ -1,35 +1,32 @@
 #ifndef REGISTER_HH_
 #define REGISTER_HH_
 
+#include <unordered_map>
 #include <array>
 #include <bitset>
+#include "Arithmetic.hh"
 
 template <unsigned int RegSize, unsigned int WordSize>
 class Register
 {
 public:
-  void write(const std::bitset<WordSize> value, unsigned int index = 0)
+  void write(const std::bitset<WordSize> value, const std::bitset<WordSize> adress = std::bitset<WordSize>())
   {
-    _data[index] = value;
+    _data[adress] = value;
   }
 
-  // void add(const std::bitset<WordSize> value, unsigned int index = 0)
-  // {
-  //   _data[index] += value;
-  // }
-
-  const std::bitset<WordSize> read(unsigned int index = 0)
+  const std::bitset<WordSize> read(const std::bitset<WordSize> adress = std::bitset<WordSize>())
   {
-    return (_data[index]);
+    return (_data[adress, WordSize]);
   }
 
   void clear()
   {
-    std::fill(_data.begin(), _data.end(), std::bitset<WordSize>(0));
+    _data.clear();
   }
 
 private:
-  std::array<std::bitset<WordSize>, RegSize> _data;
+  std::unordered_map<std::bitset<WordSize>, std::bitset<WordSize>> _data;
 };
 
 #endif /* !REGISTER_HH_ */

@@ -6,4 +6,11 @@
 
 #define RAM_SIZE 16
 
+#define OP_LDA    0b0000
+#define OP_ADD    0b0001
+#define OP_SUB    0b0010
+#define OP_OUT    0b1110
+#define OP_HLT    0b1111
+
+
 #endif /* !CONFIG_H_ */
