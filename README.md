@@ -17,7 +17,7 @@ This software is released under MIT License, which is defined inside "LICENSE" f
 
 ### Building program
 
-First, fetcb git submodules:
+First, fetch git submodules:
 
     git submodule init --update
 
