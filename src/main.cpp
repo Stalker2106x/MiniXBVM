@@ -1,9 +1,11 @@
 #include <iostream>
+#include "UI.hh"
 #include "Computer.hh"
 #include "Clock.hh"
 
 int main(int argc, char **argv)
 {
+  UI ui(argc, argv);
   Computer cpu;
   Clock clock;
 

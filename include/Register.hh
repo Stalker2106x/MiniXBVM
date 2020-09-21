@@ -32,11 +32,11 @@ public:
 
 private:
   std::bitset<RegSize> _data;
-  
+
   /*********************
   ** OPERATORS OVERLOAD
   *********************/
-
+public:
   Register<RegSize> operator=(Register<RegSize>& rhs)
   {
     _data = rhs.read();
