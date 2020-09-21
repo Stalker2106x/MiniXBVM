@@ -5,14 +5,14 @@
 #include <stdexcept>
 
 ImFontAtlas* UI::FontAtlas = NULL;
-char *UI::asmProgram = new char[2048];
-char *UI::machineProgram = new char[2048];
-char *UI::infoModalText = NULL;
+std::string UI::asmProgram;
+std::string UI::machineProgram;
+std::string UI::infoModalText;
 
 void UI::init()
 {
-    std::fill(asmProgram, asmProgram + sizeof(asmProgram), 0);
-    std::fill(machineProgram, machineProgram + sizeof(machineProgram), 0);
+    asmProgram.reserve(1024);
+    machineProgram.reserve(1024);
 }
 
 void UI::draw()
@@ -75,18 +75,17 @@ void UI::draw()
             ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_FirstUseEver);
             ImGui::Begin("Programmer");
 
-            ImGui::InputTextMultiline("ASM Program", asmProgram, IM_ARRAYSIZE(asmProgram), ImVec2(0, ImGui::GetTextLineHeight() * 25));
-
-            ImGui::InputTextMultiline("Machine Program", machineProgram, IM_ARRAYSIZE(machineProgram), ImVec2(0, ImGui::GetTextLineHeight() * 25));
+            ImGui::InputTextMultiline("ASM Program", (char*)asmProgram.c_str(), asmProgram.capacity() + 1, ImVec2(0, ImGui::GetTextLineHeight() * 25));
+            ImGui::InputTextMultiline("Machine Program", (char*)machineProgram.c_str(), machineProgram.capacity() + 1, ImVec2(0, ImGui::GetTextLineHeight() * 25));
 
             if (ImGui::Button("Compile")) //Next
             {
-                machineProgram = strdup(Cc::compile<DWORD_SIZE>(asmProgram).c_str());
+                machineProgram = Cc::compile<DWORD_SIZE>(asmProgram).c_str();
             }
             ImGui::SameLine();
             if (ImGui::Button("Run")) //Next
             {
-                infoModalText = strdup("Run is not implemented.");
+                infoModalText = "Run is not implemented.";
                 ImGui::OpenPopup("InfoModal");
             }
             ImGui::End();
@@ -106,6 +105,6 @@ void UI::draw()
         //     ImGui::EndPopup();
         // }
 
-        // ImGui::End();
+        ImGui::End();
     }
 }

@@ -21,9 +21,9 @@ public:
     static void draw();
 
     static ImFontAtlas* FontAtlas;
-    static char *asmProgram;
-    static char *machineProgram;
-    static char *infoModalText;
+    static std::string asmProgram;
+    static std::string machineProgram;
+    static std::string infoModalText;
 };
 
 #endif /* !UI_HH_ */
