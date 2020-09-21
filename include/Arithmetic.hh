@@ -2,16 +2,17 @@
 #define ARITHMETIC_HH_
 
 #include <iostream>
+#include "config.h"
 
 class Arithmetic
 {
 public:
-  template <unsigned int WordSize>
-  static std::bitset<WordSize> add(std::bitset<WordSize> a, std::bitset<WordSize> b)
+  template <wordSizeType SetSize>
+  static std::bitset<SetSize> add(const std::bitset<SetSize> &a, const std::bitset<SetSize> &b)
   {
-    std::bitset<WordSize> result;
+    std::bitset<SetSize> result;
     bool carry = false;
-    for (size_t i = 0; i < WordSize; i++)
+    for (size_t i = 0; i < SetSize; i++)
     {
       if (a[i] & b[i]) // 1 & 1
       {
@@ -35,20 +36,20 @@ public:
     return (result);
   }
   
-  template <unsigned int WordSize>
-  static std::bitset<WordSize> substract(std::bitset<WordSize> a, std::bitset<WordSize> b)
+  template <wordSizeType SetSize>
+  static std::bitset<SetSize> substract(const std::bitset<SetSize> &a, const std::bitset<SetSize> &b)
   {
-    std::bitset<WordSize> result;
+    std::bitset<SetSize> result;
     bool carry = false;
-    for (size_t i = 0; i < WordSize; i++)
+    for (size_t i = 0; i < SetSize; i++)
     {
       //NI
     }
     return (result);
   }
 
-  template <unsigned int WordSize, unsigned int FinalSize>
-  static std::bitset<FinalSize> range(std::bitset<WordSize> a, unsigned int rangeStart, unsigned int rangeEnd)
+  template <wordSizeType SetSize, wordSizeType FinalSize>
+  static std::bitset<FinalSize> range(const std::bitset<SetSize> &a, unsigned int rangeStart, unsigned int rangeEnd)
   {
     std::bitset<FinalSize> result;
     for (size_t i = rangeStart, j = 0; i < rangeEnd; i++, j++)
@@ -58,24 +59,24 @@ public:
     return (result);
   }
 
-  template <unsigned int WordSize, unsigned int FinalSize>
-  static std::bitset<FinalSize> pad(std::bitset<WordSize> a)
+  template <wordSizeType SetSize, wordSizeType FinalSize>
+  static std::bitset<FinalSize> pad(const std::bitset<SetSize> &a)
   {
     std::bitset<FinalSize> result;
-    for (size_t i = 0; i <= WordSize; i++)
+    for (size_t i = 0; i <= SetSize; i++)
     {
       result[i] = a[i];
     }
     return (result);
   }
 
-  template <unsigned int WordSize>
-  static std::bitset<WordSize> concat(std::bitset<WordSize> a, std::bitset<WordSize> b)
+  template <wordSizeType SetSize>
+  static std::bitset<SetSize> concat(const std::bitset<SetSize> &a, const std::bitset<SetSize> &b)
   {
-    std::bitset<WordSize> result;
+    std::bitset<SetSize> result;
     for (size_t i = 1; i <= 2; i++)
     {
-      for (size_t j = 0; j < WordSize; j++)
+      for (size_t j = 0; j < SetSize; j++)
       {
         result[i * j] = a[j];
       }
@@ -84,5 +85,24 @@ public:
   }
 
 };
+
+template <wordSizeType SetSize>
+std::bitset<SetSize> operator+(std::bitset<SetSize> lhs, std::bitset<SetSize> rhs)
+{
+  return (Arithmetic::add(lhs, rhs));
+}
+
+template <wordSizeType SetSize>
+std::bitset<SetSize> operator-(std::bitset<SetSize> lhs, std::bitset<SetSize> rhs)
+{
+  return (Arithmetic::substract(lhs, rhs));
+}
+
+template <wordSizeType SetSize>
+std::bitset<SetSize> operator+=(std::bitset<SetSize> lhs, std::bitset<SetSize>& rhs)
+{
+  lhs = lhs + rhs;
+  return (lhs);
+}
 
 #endif /* !ARITHMETIC_HH_ */

@@ -6,16 +6,19 @@
 class Display
 {
 public:
-  template <unsigned int WordSize>
-  void render(std::string label, Register<1, WordSize> outputReg)
+  template <typename T>
+  Display &operator<<(T ent)
   {
-    std::cout << label << ":" << outputReg.read() << std::endl;
+    std::cout << ent;
+    return (*this);
   }
 
-  void print(std::string msg)
+  template <wordSizeType RegSize>
+  Display &operator<<(Register<RegSize> reg)
   {
-    std::cout << msg << std::endl;
+    return (*this << reg.read());
   }
 };
+
 
 #endif /* !DISPLAY_HH_ */

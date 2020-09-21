@@ -12,5 +12,9 @@
 #define OP_OUT    0b1110
 #define OP_HLT    0b1111
 
+typedef unsigned long long wordSizeType;
+
+typedef std::bitset<WORD_SIZE> word;
+typedef std::bitset<DWORD_SIZE> dword;
 
 #endif /* !CONFIG_H_ */
