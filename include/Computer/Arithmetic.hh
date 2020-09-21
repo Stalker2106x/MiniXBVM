@@ -35,7 +35,7 @@ public:
     }
     return (result);
   }
-  
+
   template <wordSizeType SetSize>
   static std::bitset<SetSize> substract(const std::bitset<SetSize> &a, const std::bitset<SetSize> &b)
   {
@@ -87,22 +87,41 @@ public:
 };
 
 template <wordSizeType SetSize>
-std::bitset<SetSize> operator+(std::bitset<SetSize> lhs, std::bitset<SetSize> rhs)
+std::bitset<SetSize> operator+(const std::bitset<SetSize> &lhs, const std::bitset<SetSize> &rhs)
 {
   return (Arithmetic::add(lhs, rhs));
 }
 
 template <wordSizeType SetSize>
-std::bitset<SetSize> operator-(std::bitset<SetSize> lhs, std::bitset<SetSize> rhs)
+std::bitset<SetSize> operator-(const std::bitset<SetSize> &lhs, const std::bitset<SetSize> &rhs)
 {
   return (Arithmetic::substract(lhs, rhs));
 }
 
 template <wordSizeType SetSize>
-std::bitset<SetSize> operator+=(std::bitset<SetSize> lhs, std::bitset<SetSize>& rhs)
+std::bitset<SetSize> operator+=(std::bitset<SetSize> lhs, const std::bitset<SetSize>& rhs)
 {
   lhs = lhs + rhs;
   return (lhs);
+}
+
+template <wordSizeType SetSize>
+std::bitset<SetSize> operator++(std::bitset<SetSize>& rhs)
+{
+  rhs = rhs + std::bitset<SetSize>(0b1);
+  return (rhs);
+}
+
+template <wordSizeType SetSize>
+bool operator<(const std::bitset<SetSize> &lhs, const std::bitset<SetSize>& rhs)
+{
+  return (lhs.to_ullong() < rhs.to_ullong());
+}
+
+template <wordSizeType SetSize>
+bool operator>(const std::bitset<SetSize> &lhs, const std::bitset<SetSize>& rhs)
+{
+  return (!(lhs < rhs));
 }
 
 #endif /* !ARITHMETIC_HH_ */

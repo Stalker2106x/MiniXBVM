@@ -12,7 +12,7 @@
 #define OP_OUT    0b1110
 #define OP_HLT    0b1111
 
-typedef unsigned long long wordSizeType;
+typedef size_t wordSizeType; //Has to match bitset type...
 
 typedef std::bitset<WORD_SIZE> word;
 typedef std::bitset<DWORD_SIZE> dword;

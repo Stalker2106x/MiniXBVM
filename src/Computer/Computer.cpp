@@ -9,6 +9,54 @@ Computer::Computer()
   _PC.write(word(0b0000));
 }
 
+std::string Computer::dumpRegister(RegisterType regType)
+{
+  switch (regType)
+  {
+    case ProgramCounter:
+      return (_PC.read().to_string());
+      break;
+    case MemoryAdressRegistry:
+      return (_MAR.read().to_string());
+      break;
+    case InstructionRegister:
+      return (_IR.read().to_string());
+      break;
+    case Accumulator:
+      return (_accumulator.read().to_string());
+      break;
+    case Bregister:
+      return (_Breg.read().to_string());
+      break;
+    case Output:
+      return (_output.read().to_string());
+      break;
+  }
+  return (std::string(""));
+}
+
+size_t Computer::getMemorySize(MemoryType memType)
+{
+  switch (memType)
+  {
+    case RAM:
+      return (_RAM.getSize());
+      break;
+  }
+  return (0);
+}
+
+std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType memType)
+{
+  switch (memType)
+  {
+    case RAM:
+      return (_RAM.dump());
+      break;
+  }
+  return (std::vector<std::pair<std::string, std::string>>());
+}
+
 void Computer::cycle()
 {
   _MAR = _PC;

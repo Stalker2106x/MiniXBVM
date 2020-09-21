@@ -10,10 +10,28 @@
 #include "Computer/Arithmetic.hh"
 #include "Computer/config.h"
 
+enum RegisterType {
+  ProgramCounter,
+  MemoryAdressRegistry,
+  InstructionRegister,
+  Accumulator,
+  Bregister,
+  Output
+};
+
+enum MemoryType {
+  RAM
+};
+
 class Computer
 {
 public:
   Computer();
+
+  std::string dumpRegister(RegisterType regType);
+  size_t getMemorySize(MemoryType memType);
+  std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType);
+
   void cycle();
   void execute();
 

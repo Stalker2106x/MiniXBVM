@@ -26,11 +26,11 @@ public:
     static void update(int deltaTime);
     static void draw();
 
-private:
-  static int oldTimeSinceStart;
-  static Computer cpu;
+  static Computer computer;
   static Clock clock;
 
+private:
+  static int oldTimeSinceStart;
 };
 
 #endif /* !APP_HH_ */
