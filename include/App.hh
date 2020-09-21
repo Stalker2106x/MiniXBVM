@@ -15,7 +15,7 @@
 #endif
 
 #include "UI.hh"
-#include "Computer.hh"
+#include "Computer/Computer.hh"
 #include "Clock.hh"
 
 class App

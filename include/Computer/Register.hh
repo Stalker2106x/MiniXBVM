@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <array>
 #include <bitset>
-#include "Arithmetic.hh"
+#include "Computer/Arithmetic.hh"
 
 template <wordSizeType RegSize>
 class Register

@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 #include <bitset>
-#include "Arithmetic.hh"
+#include "Computer/Arithmetic.hh"
 
 template <wordSizeType AddrSize, wordSizeType RegSize>
 class Memory

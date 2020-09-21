@@ -2,13 +2,13 @@
 #define COMPUTER_HH_
 
 #include <unordered_map>
-#include "Display.hh"
-#include "Input.hh"
-#include "Memory.hh"
-#include "Register.hh"
-#include "ControllerSequencer.hh"
-#include "Arithmetic.hh"
-#include "config.h"
+#include "Computer/Display.hh"
+#include "Computer/Input.hh"
+#include "Computer/Memory.hh"
+#include "Computer/Register.hh"
+#include "Computer/ControllerSequencer.hh"
+#include "Computer/Arithmetic.hh"
+#include "Computer/config.h"
 
 class Computer
 {

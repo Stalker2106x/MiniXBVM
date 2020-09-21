@@ -2,7 +2,7 @@
 #define ARITHMETIC_HH_
 
 #include <iostream>
-#include "config.h"
+#include "Computer/config.h"
 
 class Arithmetic
 {

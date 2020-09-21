@@ -1,7 +1,7 @@
 #ifndef DISPLAY_HH_
 #define DISPLAY_HH_
 
-#include "Register.hh"
+#include "Computer/Register.hh"
 
 class Display
 {

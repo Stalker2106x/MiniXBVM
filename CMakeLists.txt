@@ -6,6 +6,7 @@ project (Mini8BVM)
 file(GLOB
      source_files
      ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/Computer/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/examples/imgui_impl_glut.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/examples/imgui_impl_opengl2.cpp

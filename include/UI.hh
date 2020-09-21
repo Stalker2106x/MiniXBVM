@@ -5,6 +5,9 @@ class UI
 {
 public:
     static void draw();
+
+private:
+    static char program[];
 };
 
 #endif /* !UI_HH_ */

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Computer.hh"
+#include "Computer/Computer.hh"
 
 Computer::Computer()
 {
