@@ -17,10 +17,17 @@ This software is released under MIT License, which is defined inside "LICENSE" f
 
 ### Building program
 
-These command lines should produce a binary in "./bin" folder.
+First, you need to build the FreeGLut (OpenGL) dependency:
 
-    mkdir build
-    cd build
+    cd thirdparty/freeglut
+    mkdir build && cd build
+    cmake ..
+    make
+
+Move back to the root of the repository and start building the app.
+ 
+    cd ../../
+    mkdir build && cd build
     cmake ..
     make
 
