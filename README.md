@@ -17,7 +17,11 @@ This software is released under MIT License, which is defined inside "LICENSE" f
 
 ### Building program
 
-First, you need to build the FreeGLut (OpenGL) dependency:
+First, fetcb git submodules:
+
+    git submodule init --update
+
+then, you need to build the FreeGLut (OpenGL) dependency:
 
     cd thirdparty/freeglut
     mkdir build && cd build
