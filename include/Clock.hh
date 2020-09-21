@@ -5,9 +5,10 @@ class Clock
 {
 public:
   Clock();
-  void cycle();
+  bool cycle(int deltaTime);
 
 private:
+  unsigned int _timeAccumulated;
   unsigned int _frequency;
 };
 

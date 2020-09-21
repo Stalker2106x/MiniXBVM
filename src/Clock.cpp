@@ -6,7 +6,13 @@ Clock::Clock()
   _frequency = 1; //Hertz
 }
 
-void Clock::cycle()
+bool Clock::cycle(int deltaTime)
 {
-  std::this_thread::sleep_for(std::chrono::seconds(1/_frequency));
+  _timeAccumulated += deltaTime;
+  if (_timeAccumulated > 1000/_frequency)
+  {
+    _timeAccumulated = 0;
+    return (true);
+  }
+  return (false);
 }
