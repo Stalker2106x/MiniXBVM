@@ -6,8 +6,14 @@
 #include <imgui/examples/imgui_impl_glut.h>
 #include <imgui/examples/imgui_impl_opengl2.h>
 
-#define ICON_MIN_IONIC 0xf100
-#define ICON_MAX_IONIC 0xf4cd
+#define ICON_MIN_IONIC  0xf100
+#define ICON_MAX_IONIC  0xf4cd
+
+#define ICON_NEXT       u8"\uf217"
+#define ICON_PAUSE      u8"\uf341"
+#define ICON_PLAY       u8"\uf488"
+#define ICON_RESTART    u8"\uf38b"
+#define ICON_RESET      u8"\uf2c0"
 
 enum Font {
     Segment = 1,

@@ -43,7 +43,7 @@ void UI::draw()
         ImGui::Text("State: %s", (App::clock.getState() == Clock::State::Running ? "Running" : "Paused"));
         ImGui::Text("Control: ");
         ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        if (ImGui::Button((App::clock.getState() == Clock::State::Running ? u8"\uf341" : u8"\uf488"), ImVec2(40, 40))) // Pause / Play
+        if (ImGui::Button((App::clock.getState() == Clock::State::Running ? ICON_PAUSE : ICON_PLAY), ImVec2(30, 30))) // Pause / Play
         {
             App::clock.toggle();
         }
@@ -52,7 +52,8 @@ void UI::draw()
             ImGui::SetTooltip(App::clock.getState() == Clock::State::Running ? "Pause clock" : "Resume clock");
         ImGui::SameLine();
         ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        if (ImGui::Button(u8"\uf217", ImVec2(40, 40))) //Next
+        // Next Button
+        if (ImGui::Button(ICON_NEXT, ImVec2(30, 30))) //Next
         {
             App::clock.nextStep();
         }
@@ -64,7 +65,7 @@ void UI::draw()
     if (ImGui::CollapsingHeader("Computer", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        if (ImGui::Button(u8"\uf3a8", ImVec2(40, 40))) // Restart
+        if (ImGui::Button(ICON_RESTART, ImVec2(30, 30))) // Restart
         {
             App::computer.restart();
         }
@@ -73,7 +74,7 @@ void UI::draw()
             ImGui::SetTooltip("Restart Computer (Reset all registers)");
         ImGui::SameLine();
         ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        if (ImGui::Button(u8"\uf3a7", ImVec2(40, 40))) // Reset
+        if (ImGui::Button(ICON_RESET, ImVec2(30, 30))) // Reset
         {
             App::computer.reset();
         }
