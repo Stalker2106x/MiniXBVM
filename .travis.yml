@@ -76,6 +76,9 @@ matrix:
             - llvm-toolchain-trusty
             - llvm-toolchain-trusty-6.0
 
+before_install:
+  - sudo apt-get -y install libxi-dev
+
 before_script:
   - if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then export CXX=${COMPILER}; fi
   - if [[ "${BUILD}" != "Doc" ]]; then ${CXX} --version; fi
