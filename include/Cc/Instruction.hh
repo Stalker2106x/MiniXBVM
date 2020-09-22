@@ -1,18 +1,17 @@
 #ifndef INSTRUCTION_HH_
 #define INSTRUCTION_HH_
 
-#include <unordered_map>
 #include <string>
 #include <bitset>
+#include "Cc/InstructionDef.hh"
 #include "Computer/config.h"
 
-const std::unordered_map<std::string, std::bitset<WORD_SIZE>> instructionsSet = {
-    {"STR", std::bitset<WORD_SIZE>(0b0000)},
-    {"LDA", std::bitset<WORD_SIZE>(0b0001)},
-    {"ADD", std::bitset<WORD_SIZE>(0b0010)},
-    {"SUB", std::bitset<WORD_SIZE>(0b0011)},
-    {"OUT", std::bitset<WORD_SIZE>(0b1110)},
-    {"HLT", std::bitset<WORD_SIZE>(0b1111)}
+const std::unordered_map<std::string, InstructionDef> instructionsSet = {
+    {"LDA", InstructionDef("LDA", 0b0000, 1)},
+    {"ADD", InstructionDef("ADD", 0b0001, 1)},
+    {"SUB", InstructionDef("SUB", 0b0010, 1)},
+    {"OUT", InstructionDef("OUT", 0b1110)},
+    {"HLT", InstructionDef("HLT", 0b1111)},
 };
 
 template <wordSizeType CodeSize, wordSizeType OperandSize>
@@ -22,22 +21,39 @@ public:
     Instruction(std::string asmCode)
     {
         try {
+            if (asmCode.empty()) throw (std::runtime_error("instruction is null"));
+            if (asmCode.find_first_not_of("0123456789") == std::string::npos) //only digits, push whole buffer as data
+            {
+                _operands.push_back(std::bitset<OperandSize>(atoi(asmCode.c_str())));
+                return;
+            }
             size_t sep = asmCode.find_first_of(" ");
-            if (sep == std::string::npos) throw (std::runtime_error("no separator ' ' found"));
-            _name = asmCode.substr(0, sep);
-            try {
-                _code = instructionsSet.at(_name);
-            } catch (...) {
+            _name = (sep == std::string::npos ? asmCode : asmCode.substr(0, sep));
+            if (instructionsSet.find(_name) == instructionsSet.end())
+            {
                 throw (std::runtime_error("instruction "+_name+" is unknown or invalid"));
             }
-            for (size_t i = sep + 1; i < asmCode.length(); i += OperandSize)
+            InstructionDef instructionDefinition = instructionsSet.at(_name);
+            _code = instructionDefinition.code;
+            if (instructionDefinition.operandCount > 0)
             {
-                std::string operandStr = asmCode.substr(i, i + OperandSize);
-                if (operandStr.find_first_not_of("0123456789") != std::string::npos)
+                if (sep == std::string::npos)
                 {
-                    throw (std::runtime_error("operand should be of numeric type"));
+                    throw (std::runtime_error("no separator ' ' found"));
                 }
-                _operands.push_back(std::bitset<OperandSize>(atoi(operandStr.c_str())));
+                asmCode = asmCode.substr(sep+1, asmCode.length());
+                if (!asmCode.empty())
+                {
+                    if (asmCode.find_first_not_of("0123456789") != std::string::npos)
+                    {
+                        throw (std::runtime_error("operand should be of numeric type"));
+                    }
+                    _operands.push_back(std::bitset<OperandSize>(atoi(asmCode.c_str())));
+                }
+                if (_operands.size() < instructionDefinition.operandCount)
+                {
+                    throw (std::runtime_error("expected "+std::to_string(instructionDefinition.operandCount)+" operands, got " +std::to_string(_operands.size())));
+                }
             }
         } catch (std::runtime_error e) {
             throw (std::runtime_error("Syntax error: "+std::string(e.what())));
@@ -48,7 +64,9 @@ public:
     {
         std::string output;
 
-        output = _code.to_string();
+        wordSizeType toPad = _operands.size() * OperandSize;
+        if (toPad < DWORD_SIZE) output += std::string(toPad, '0');
+        output += _code.to_string();
         for (size_t i = 0; i < _operands.size(); i++)
         {
             output += _operands[i].to_string();
