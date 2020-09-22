@@ -1,5 +1,7 @@
 # Mini8BVM
 
+[![Build Status](https://travis-ci.org/Stalker2106x/Mini8BVM.svg?branch=master)](https://travis-ci.org/Stalker2106x/Mini8BVM)
+
 ![VM Overview](/docs/overview.png?raw=true)
 
 ## About
