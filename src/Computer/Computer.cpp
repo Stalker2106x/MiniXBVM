@@ -1,5 +1,7 @@
 #include <iostream>
+#include <algorithm>
 #include "Computer/Computer.hh"
+#include "Cc/InstructionDef.hh"
 
 Computer::Computer()
 {
@@ -54,45 +56,33 @@ std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType
   return (std::vector<std::pair<std::string, std::string>>());
 }
 
+std::string Computer::getOutput()
+{
+  unsigned long outputValue = _output.read().to_ulong();
+  int digits = 0;
+  if (outputValue < 0) digits = 1; // remove this line if '-' counts as a digit
+  while (outputValue) {
+      outputValue /= 10;
+      digits++;
+  }
+  return (std::string(5-digits, '0')+std::to_string(_output.read().to_ulong()));
+}
+
 void Computer::cycle()
 {
   _MAR = _PC;
   ++_PC;
   _IR.write(_RAM[_MAR.read()].read()); //Rea)d the current instruction and store it in instruction registr
 
-  _display << "PC" << _PC;
-  _display << "MAR" << _MAR;
-  _display << "IR" << _IR;
   execute();
-  _display << "OUT" << _output;
 }
 
 void Computer::execute()
 {
-  switch ((Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), 0, WORD_SIZE-1)).to_ulong())
+  word opCode = Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), 0, WORD_SIZE-1);
+  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
+  if (defIt != instructionsSet.end())
   {
-    case OP_LDA:
-      _MAR.write(Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE-1, DWORD_SIZE-1)); //Extract adress from IR
-      _accumulator.write(_RAM[_MAR.read()].read());
-      break;
-    case OP_ADD:
-      _MAR.write(Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE-1, DWORD_SIZE-1)); //Extract adress from IR
-      _Breg.write(_RAM[_MAR.read()].read());
-      _accumulator += _Breg;
-      break;
-    case OP_SUB:
-      _MAR.write(Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE-1, DWORD_SIZE-1)); //Extract adress from IR
-      _Breg.write(_RAM[_MAR.read()].read());
-      _accumulator -= _Breg;
-      break;
-    case OP_OUT:
-      _output.write(_accumulator.read()); //Extract acc to output
-      break;
-    case OP_HLT:
-      exit(0);
-      break;
-    default:
-      _display << "ERROR";
-      break;
+    defIt->executor(*this);
   }
 }

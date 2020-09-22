@@ -53,7 +53,7 @@ void UI::draw()
             ImGui::Text("Output: ");
             ImGui::SameLine();
             ImGui::PushFont(FontAtlas->Fonts[Segment]);
-            ImGui::Text("88");
+            ImGui::Text("00%s", App::computer.getOutput());
             ImGui::PopFont();
 
             //RAM

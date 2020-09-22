@@ -1,19 +1,12 @@
 #ifndef INSTRUCTION_HH_
 #define INSTRUCTION_HH_
 
+#include <memory>
 #include <string>
 #include <bitset>
+#include <algorithm>
 #include "Cc/InstructionDef.hh"
 #include "Computer/config.h"
-
-const std::unordered_map<std::string, InstructionDef> instructionsSet = {
-    {"LDA", InstructionDef("LDA", 0b0000, 1)},
-    {"ADD", InstructionDef("ADD", 0b0001, 1)},
-    {"SUB", InstructionDef("SUB", 0b0010, 1)},
-    {"OUT", InstructionDef("OUT", 0b1110)},
-    {"HLT", InstructionDef("HLT", 0b1111)},
-};
-
 template <wordSizeType CodeSize, wordSizeType OperandSize>
 class Instruction
 {
@@ -28,14 +21,14 @@ public:
                 return;
             }
             size_t sep = asmCode.find_first_of(" ");
-            _name = (sep == std::string::npos ? asmCode : asmCode.substr(0, sep));
-            if (instructionsSet.find(_name) == instructionsSet.end())
+            std::string instructionName = (sep == std::string::npos ? asmCode : asmCode.substr(0, sep));
+            auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&instructionName] (InstructionDef def) { return (def.name == instructionName); } );
+            if (defIt == instructionsSet.end())
             {
-                throw (std::runtime_error("instruction "+_name+" is unknown or invalid"));
+                throw (std::runtime_error("instruction "+instructionName+" is unknown or invalid"));
             }
-            InstructionDef instructionDefinition = instructionsSet.at(_name);
-            _code = instructionDefinition.code;
-            if (instructionDefinition.operandCount > 0)
+            _definition = std::make_shared<InstructionDef>(*defIt);
+            if (_definition->operandCount > 0)
             {
                 if (sep == std::string::npos)
                 {
@@ -50,9 +43,9 @@ public:
                     }
                     _operands.push_back(std::bitset<OperandSize>(atoi(asmCode.c_str())));
                 }
-                if (_operands.size() < instructionDefinition.operandCount)
+                if (_operands.size() < _definition->operandCount)
                 {
-                    throw (std::runtime_error("expected "+std::to_string(instructionDefinition.operandCount)+" operands, got " +std::to_string(_operands.size())));
+                    throw (std::runtime_error("expected "+std::to_string(_definition->operandCount)+" operands, got " +std::to_string(_operands.size())));
                 }
             }
         } catch (std::runtime_error e) {
@@ -64,18 +57,17 @@ public:
     {
         std::string output;
 
-        wordSizeType toPad = _operands.size() * OperandSize;
-        if (toPad < DWORD_SIZE) output += std::string(toPad, '0');
-        output += _code.to_string();
+        if (_definition == nullptr) output += std::string(OperandSize, '0'); //Pad opcode
+        else output += _definition->code.to_string();
         for (size_t i = 0; i < _operands.size(); i++)
         {
             output += _operands[i].to_string();
         }
+        if (_definition != nullptr && _definition->operandCount == 0) output += std::string(OperandSize, '0'); //Pad value
         return (output);
     }
 private:
-    std::string _name;
-    std::bitset<CodeSize> _code;
+    std::shared_ptr<InstructionDef> _definition;
     std::vector<std::bitset<OperandSize>> _operands;
 };
 

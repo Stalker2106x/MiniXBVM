@@ -2,11 +2,8 @@
 #define COMPUTER_HH_
 
 #include <unordered_map>
-#include "Computer/Display.hh"
-#include "Computer/Input.hh"
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
-#include "Computer/ControllerSequencer.hh"
 #include "Computer/Arithmetic.hh"
 #include "Computer/config.h"
 
@@ -43,17 +40,19 @@ public:
   std::string dumpRegister(RegisterType regType);
   size_t getMemorySize(MemoryType memType);
   std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType);
+  std::string getOutput();
 
   void cycle();
   void execute();
 
+  //EXECUTORS
+  friend void LDAExecutor(Computer &computer);
+  friend void ADDExecutor(Computer &computer);
+  friend void SUBExecutor(Computer &computer);
+  friend void OUTExecutor(Computer &computer);
+  friend void HLTExecutor(Computer &computer);
+
 private:
-  std::unordered_map<std::string, std::bitset<WORD_SIZE>> _instructionSet;
-
-  ControllerSequencer _controllerSequencer;
-  Input _input;
-  Display _display;
-
   Memory<WORD_SIZE, DWORD_SIZE> _RAM;
 
   Register<WORD_SIZE> _PC;

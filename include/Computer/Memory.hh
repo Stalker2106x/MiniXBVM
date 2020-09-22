@@ -6,6 +6,7 @@
 #include <vector>
 #include <bitset>
 #include "Computer/Arithmetic.hh"
+#include "Computer/Register.hh"
 
 template <wordSizeType AddrSize, wordSizeType RegSize>
 class Memory
