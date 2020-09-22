@@ -5,8 +5,8 @@
 ## About
 
 Mini8BVM is a complete Virtual Machine emulating a SAP-1 Microcomputer architecture written in C++.
-Full playground GUI included!
-The VM is cross platform, and uses C++14.
+Binary includes a GUI to fiddle with computer, ASM embedded IDE with full fledged SAP-1 Compiler.
+Features realtime watches and step by step execution for better understanding of arch flow.
 
 ## Contributors
 + Stabax ([http://stabax.org](http://stabax.org))
