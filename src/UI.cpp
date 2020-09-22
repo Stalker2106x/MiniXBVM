@@ -5,14 +5,16 @@
 #include <stdexcept>
 
 ImFontAtlas* UI::FontAtlas = NULL;
-std::string UI::asmProgram;
-std::string UI::machineProgram;
-std::string UI::infoModalText;
+char *UI::asmProgram = new char[2048];
+char *UI::machineProgram = new char[2048];
+char *UI::infoModalText = new char[2048];
 
 void UI::init()
 {
-    asmProgram.reserve(1024);
-    machineProgram.reserve(1024);
+    memset(asmProgram, 0, 2047);
+    asmProgram[2047] = '\0';
+    memset(machineProgram, 0, 2047);
+    machineProgram[2047] = '\0';
 }
 
 void UI::draw()
@@ -75,18 +77,31 @@ void UI::draw()
             ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_FirstUseEver);
             ImGui::Begin("Programmer");
 
-            ImGui::InputTextMultiline("ASM Program", (char*)asmProgram.c_str(), asmProgram.capacity() + 1, ImVec2(0, ImGui::GetTextLineHeight() * 25));
-            ImGui::InputTextMultiline("Machine Program", (char*)machineProgram.c_str(), machineProgram.capacity() + 1, ImVec2(0, ImGui::GetTextLineHeight() * 25));
+            ImGui::InputTextMultiline("ASM Program", asmProgram, 2047, ImVec2(0, ImGui::GetTextLineHeight() * 25));
+            ImGui::InputTextMultiline("Machine Program", machineProgram, IM_ARRAYSIZE(machineProgram), ImVec2(0, ImGui::GetTextLineHeight() * 25));
 
-            if (ImGui::Button("Compile")) //Next
+            if (ImGui::Button("Compile"))
             {
-                machineProgram = Cc::compile<DWORD_SIZE>(asmProgram).c_str();
+                try {
+                    memset(machineProgram, 0, 2047);
+                    std::string code = Cc::compile<DWORD_SIZE>(asmProgram);
+                    strncpy(machineProgram, code.c_str(), code.length()-1);
+                } catch(std::runtime_error e) {
+                    strncpy(machineProgram, e.what(), strlen(e.what()-1));
+                }
             }
             ImGui::SameLine();
-            if (ImGui::Button("Run")) //Next
+            if (ImGui::Button("Load to RAM"))
             {
-                infoModalText = "Run is not implemented.";
-                ImGui::OpenPopup("InfoModal");
+                std::istringstream ss(machineProgram);
+                std::string buffer;
+                std::bitset<WORD_SIZE> address = std::bitset<WORD_SIZE>(0);
+
+                while(std::getline(ss, buffer, '\n'))
+                {
+                    App::computer.writeMemory(MemoryType::RAM, address, std::bitset<DWORD_SIZE>(buffer));
+                    ++address;
+                }
             }
             ImGui::End();
 

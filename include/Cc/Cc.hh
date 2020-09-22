@@ -5,15 +5,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>
-#include "Computer/config.h"
-
-const std::unordered_map<std::string, std::bitset<WORD_SIZE>> instructionsSet = {
-    {"LDA", std::bitset<WORD_SIZE>(0b0000)},
-    {"ADD", std::bitset<WORD_SIZE>(0b0001)},
-    {"SUB", std::bitset<WORD_SIZE>(0b0010)},
-    {"OUT", std::bitset<WORD_SIZE>(0b1110)},
-    {"HLT", std::bitset<WORD_SIZE>(0b1111)}
-};
+#include "Cc/Instruction.hh"
 
 class Cc
 {
@@ -21,23 +13,24 @@ public:
     template<wordSizeType WordSize>
     static std::string compile(std::string fullBuffer)
     {
-        int lineNumber = 0;
+        int lineNumber = 1;
         std::istringstream ss(fullBuffer);
+        std::string errOutput;
         std::string output;
         std::string buffer;
 
         while(std::getline(ss, buffer, '\n'))
         {
             try {
-                size_t sep = buffer.find_first_of(" ");
-                if (sep == std::string::npos) return ("Syntax error on line "+lineNumber);
-                output += instructionsSet.at(buffer.substr(0, sep)).to_string() + " " + buffer.substr(sep + 1, buffer.length());
-                ++lineNumber;
-            } catch (...) {
-                return ("Syntax error on line "+lineNumber);
+                Instruction<WORD_SIZE, WORD_SIZE> instr(buffer);
+
+                output += instr.to_string()+"\n";
+            } catch (std::runtime_error e) {
+                errOutput += "Line "+std::to_string(lineNumber)+":"+e.what()+"\n";
             }
+            lineNumber++;
         }
-        return (output);
+        return (errOutput.empty() ? output : errOutput);
     }
 };
 

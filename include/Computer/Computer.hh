@@ -28,6 +28,18 @@ class Computer
 public:
   Computer();
 
+
+  template<wordSizeType AddrSize, wordSizeType RegSize>
+  void writeMemory(MemoryType memType, std::bitset<AddrSize> address, std::bitset<RegSize> value)
+  {
+    switch (memType)
+    {
+      case RAM:
+        _RAM.write(address, value);
+        break;
+    }
+  }
+
   std::string dumpRegister(RegisterType regType);
   size_t getMemorySize(MemoryType memType);
   std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType);

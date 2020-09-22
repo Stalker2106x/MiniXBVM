@@ -3,9 +3,6 @@
 
 Computer::Computer()
 {
-  _RAM.write(word(0b0000), dword(0b00000000));
-  _RAM.write(word(0b0001), dword(0b11110000));
-
   _PC.write(word(0b0000));
 }
 
