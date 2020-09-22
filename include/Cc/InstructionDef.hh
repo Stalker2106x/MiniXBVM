@@ -31,9 +31,9 @@ void OUTExecutor(Computer &computer);
 void HLTExecutor(Computer &computer);
 
 const std::vector<InstructionDef> instructionsSet = {
-    {"LDA", 0b0000, LDAExecutor, 1},
-    {"ADD", 0b0001, ADDExecutor, 1},
-    {"SUB", 0b0010, SUBExecutor, 1},
+    {"LDA", 0b0001, LDAExecutor, 1},
+    {"ADD", 0b0010, ADDExecutor, 1},
+    {"SUB", 0b0011, SUBExecutor, 1},
     {"OUT", 0b1110, OUTExecutor},
     {"HLT", 0b1111, HLTExecutor},
 };

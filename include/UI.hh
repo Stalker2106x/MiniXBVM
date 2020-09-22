@@ -19,6 +19,8 @@ class UI
 public:
     static void init();
     static void draw();
+    static void vmWindow();
+    static void programmerWindow();
 
     static ImFontAtlas* FontAtlas;
     static char *asmProgram;

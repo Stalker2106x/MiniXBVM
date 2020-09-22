@@ -43,7 +43,19 @@ public:
     bool carry = false;
     for (size_t i = 0; i < SetSize; i++)
     {
-      //NI
+      if (a[i] & b[i]) // 1 & 1
+      {
+        result[i] = 0;
+      }
+      else if (a[i] && !b[i]) // 1 & 0
+      {
+        if (carry) result[i] = 0;
+        else result[i] = 1;
+      }
+      else if (!a[i] && b[i]) // 0 & 1
+      {
+        carry = true;
+      }
     }
     return (result);
   }
@@ -82,6 +94,16 @@ public:
       }
     }
     return (result);
+  }
+
+  template <wordSizeType SetSize>
+  static std::bitset<SetSize> erase(std::bitset<SetSize> a, unsigned int rangeStart, unsigned int rangeEnd)
+  {
+    for (size_t i = rangeStart; i < rangeEnd; i++)
+    {
+      a[i] = 0;
+    }
+    return (a);
   }
 
 };

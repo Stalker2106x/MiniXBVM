@@ -100,7 +100,7 @@ int App::run(int argc, char** argv)
     io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 32.0f);
 
     static const ImWchar icon_ranges[] = { ICON_MIN_IONIC, ICON_MAX_IONIC, 0 };
-    io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 12.0f, NULL, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 22.0f, NULL, icon_ranges);
 
     unsigned char* pixels;
     int width, height;
@@ -149,7 +149,6 @@ void App::update(int deltaTime)
 {
     if (clock.cycle(deltaTime))
     {
-        std::cout << "clock tick" << std::endl;
         computer.cycle();
     }
 }

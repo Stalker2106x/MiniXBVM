@@ -5,7 +5,23 @@
 
 Computer::Computer()
 {
-  _PC.write(word(0b0000));
+  restart();
+}
+
+void Computer::restart()
+{
+  _PC.write(word(_RAM.getSize()-1));
+  _MAR.clear();
+  _IR.clear();
+  _accumulator.clear();
+  _Breg.clear();
+  _output.clear();
+}
+
+void Computer::reset()
+{
+  restart();
+  _RAM.clear();
 }
 
 std::string Computer::dumpRegister(RegisterType regType)
@@ -58,28 +74,27 @@ std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType
 
 std::string Computer::getOutput()
 {
-  unsigned long outputValue = _output.read().to_ulong();
-  int digits = 0;
-  if (outputValue < 0) digits = 1; // remove this line if '-' counts as a digit
-  while (outputValue) {
-      outputValue /= 10;
-      digits++;
+  return (std::to_string(_output.read().to_ulong()));
+}
+
+std::string Computer::getInstruction()
+{
+  word opCode = Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
+  if (defIt != instructionsSet.end())
+  {
+    return (defIt->name);
   }
-  return (std::string(5-digits, '0')+std::to_string(_output.read().to_ulong()));
+  return ("XXX");
 }
 
 void Computer::cycle()
 {
-  _MAR = _PC;
   ++_PC;
+  _MAR = _PC;
   _IR.write(_RAM[_MAR.read()].read()); //Rea)d the current instruction and store it in instruction registr
-
-  execute();
-}
-
-void Computer::execute()
-{
-  word opCode = Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), 0, WORD_SIZE-1);
+  word opCode = Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+  std::cout << opCode.to_string() << std::endl;
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {

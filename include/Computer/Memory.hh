@@ -1,6 +1,7 @@
 #ifndef MEMORY_HH_
 #define MEMORY_HH_
 
+#include <algorithm>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -34,7 +35,7 @@ public:
 
   void clear()
   {
-    _data.clear();
+    std::for_each(_data.begin(), _data.end(), [&](std::pair<std::bitset<AddrSize>, Register<RegSize>> item) { item.second.clear(); });
   }
 
   size_t getSize()

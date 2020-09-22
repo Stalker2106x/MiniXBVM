@@ -27,7 +27,7 @@ public:
 
   void clear()
   {
-    _data.clear();
+    _data = std::bitset<RegSize>(0);
   }
 
 private:

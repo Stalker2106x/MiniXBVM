@@ -13,6 +13,8 @@ public:
   };
 
   Clock();
+  unsigned int getFrequency();
+  void setFrequency(unsigned int value);
   size_t getTick();
   State getState();
   void toggle();

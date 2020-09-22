@@ -25,6 +25,8 @@ class Computer
 public:
   Computer();
 
+  void restart();
+  void reset();
 
   template<wordSizeType AddrSize, wordSizeType RegSize>
   void writeMemory(MemoryType memType, std::bitset<AddrSize> address, std::bitset<RegSize> value)
@@ -41,9 +43,9 @@ public:
   size_t getMemorySize(MemoryType memType);
   std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType);
   std::string getOutput();
+  std::string getInstruction();
 
   void cycle();
-  void execute();
 
   //EXECUTORS
   friend void LDAExecutor(Computer &computer);

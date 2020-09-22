@@ -13,6 +13,16 @@ size_t Clock::getTick()
   return (_tick);
 }
 
+unsigned int Clock::getFrequency()
+{
+  return (_frequency);
+}
+
+void Clock::setFrequency(unsigned int value)
+{
+  _frequency = value;
+}
+
 Clock::State Clock::getState()
 {
   return (_state);
@@ -32,7 +42,7 @@ void Clock::nextStep()
 
 bool Clock::cycle(int deltaTime)
 {
-  if (_state == Paused) return (false);
+  if (_state == Paused || _frequency == 0) return (false);
   _timeAccumulated += deltaTime;
   if (_timeAccumulated >= 1000/_frequency)
   {
