@@ -17,8 +17,7 @@ Features realtime watches and step by step execution for better understanding of
 This software is released under MIT License, which is defined inside "LICENSE" file.
 
 ## Dependencies
-+ OpenGL2
-+ FreeGLUT
++ FreeGLUT (OpenGL2)
 + Dear ImGUI
 + CMake
 
