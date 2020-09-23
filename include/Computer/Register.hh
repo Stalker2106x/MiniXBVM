@@ -4,8 +4,7 @@
 #include <unordered_map>
 #include <array>
 #include <bitset>
-#include "Computer/Arithmetic.hh"
-
+#include "Computer/config.h"
 template <wordSizeType RegSize>
 class Register
 {

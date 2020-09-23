@@ -1,8 +1,10 @@
+#include <stdexcept>
+#include <math.h>
 #include "UI.hh"
 #include "App.hh"
 #include "Cc/Cc.hh"
-#include <math.h>
-#include <stdexcept>
+#include "bitset_utils.hh"
+#include "Cc/examples.h"
 
 ImFontAtlas* UI::FontAtlas = NULL;
 char *UI::asmProgram = new char[2048];
@@ -120,14 +122,19 @@ void UI::programmerWindow()
     {
         if (ImGui::BeginMenu("Examples Programs"))
         {
-            if (ImGui::MenuItem("Basic add"))
+            if (ImGui::MenuItem("Addition"))
             {
-                std::string code = "LDA 4\nADD 5\nOUT\nHLT\n5\n10";
+                std::string code = EXAMPLE_ADD;
                 strncpy(asmProgram, code.c_str(), code.length()-1);
             }
-            if (ImGui::MenuItem("Basic sub"))
+            if (ImGui::MenuItem("Substraction"))
             {
-                std::string code = "LDA 4\nSUB 5\nOUT\nHLT\n10\n5";
+                std::string code = EXAMPLE_SUB;
+                strncpy(asmProgram, code.c_str(), code.length()-1);
+            }
+            if (ImGui::MenuItem("Multiplication"))
+            {
+                std::string code = EXAMPLE_MUL;
                 strncpy(asmProgram, code.c_str(), code.length()-1);
             }
             ImGui::EndMenu();
@@ -136,7 +143,7 @@ void UI::programmerWindow()
     }
 
     ImGui::Text("ASM Program");
-    ImGui::InputTextMultiline("ASM", asmProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20), ImGuiInputTextFlags_CharsUppercase);
+    ImGui::InputTextMultiline("ASM", asmProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20));
     ImGui::Text("Machine Program");
     ImGui::InputTextMultiline("MC", machineProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20), ImGuiInputTextFlags_ReadOnly);
 
@@ -144,7 +151,7 @@ void UI::programmerWindow()
     {
         try {
             memset(machineProgram, 0, 2047);
-            std::string code = Cc::compile<DWORD_SIZE>(asmProgram);
+            std::string code = Cc::compile<WORD_SIZE>(asmProgram);
             strncpy(machineProgram, code.c_str(), code.length()-1);
         } catch(std::runtime_error e) {
             strncpy(machineProgram, e.what(), strlen(e.what()-1));

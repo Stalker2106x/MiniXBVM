@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
-#include "Computer/Arithmetic.hh"
 #include "Computer/config.h"
 
 enum RegisterType {

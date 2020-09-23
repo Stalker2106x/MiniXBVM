@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Computer/Computer.hh"
 #include "Cc/InstructionDef.hh"
+#include "bitset_utils.hh"
 
 Computer::Computer()
 {
@@ -95,7 +96,7 @@ std::string Computer::getOutput()
 
 std::string Computer::getInstruction()
 {
-  word opCode = Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+  word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {
@@ -110,7 +111,7 @@ void Computer::cycle()
   ++_PC;
   _MAR = _PC;
   _IR.write(_RAM[_MAR.read()].read()); //Rea)d the current instruction and store it in instruction registr
-  word opCode = Arithmetic::range<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+  word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
   std::cout << opCode.to_string() << std::endl;
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
