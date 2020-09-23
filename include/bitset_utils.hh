@@ -78,7 +78,7 @@ std::string binaryStringFromString(const std::string &asmCode)
         }
         else if (asmCode.find(BIN_PREFIX) == 0) //Binary
         {
-            return (std::string(SetSize - asmCode.length(), '0') + std::string(asmCode.c_str() + 2));
+            return (std::string(SetSize - (asmCode.length() - 2), '0') + std::string(asmCode.c_str() + 2));
         }
     }
     return (std::bitset<SetSize>( atoi(asmCode.c_str()) ).to_string()); //10 Base
