@@ -8,6 +8,16 @@ Computer::Computer()
   restart();
 }
 
+void Computer::start()
+{
+  _state = Running;
+}
+
+void Computer::halt()
+{
+  _state = Off;
+}
+
 void Computer::restart()
 {
   _PC.write(word(_RAM.getSize()-1));
@@ -16,12 +26,18 @@ void Computer::restart()
   _accumulator.clear();
   _Breg.clear();
   _output.clear();
+  start();
 }
 
 void Computer::reset()
 {
   restart();
   _RAM.clear();
+}
+
+Computer::State Computer::getState()
+{
+  return (_state);
 }
 
 std::string Computer::dumpRegister(RegisterType regType)
@@ -90,6 +106,7 @@ std::string Computer::getInstruction()
 
 void Computer::cycle()
 {
+  if (_state != Running) return;
   ++_PC;
   _MAR = _PC;
   _IR.write(_RAM[_MAR.read()].read()); //Rea)d the current instruction and store it in instruction registr

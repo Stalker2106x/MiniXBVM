@@ -29,5 +29,5 @@ void OUTExecutor(Computer &computer)
 
 void HLTExecutor(Computer &computer)
 {
-    exit(0);
+    computer.halt();
 }

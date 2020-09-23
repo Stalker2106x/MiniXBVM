@@ -81,6 +81,7 @@ void UI::draw()
         ImGui::PopFont();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Reset Computer (Reset everything)");
+        ImGui::Text("State: %s", (App::computer.getState() == Computer::State::Running ? "Running" : "Off"));
         ImGui::Text("Program Counter: %s", App::computer.dumpRegister(ProgramCounter).c_str());
         ImGui::Text("Memory Adress Registry: %s", App::computer.dumpRegister(MemoryAdressRegistry).c_str());
         ImGui::Text("Instruction Register: %s", App::computer.dumpRegister(InstructionRegister).c_str());
@@ -113,22 +114,21 @@ void UI::draw()
 
 void UI::programmerWindow()
 {
-    ImGui::Begin("Programmer");
+    ImGui::Begin("Programmer", NULL,  ImGuiWindowFlags_MenuBar);
 
-    // Menu Bar
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("Examples Programs"))
         {
             if (ImGui::MenuItem("Basic add"))
             {
-                std::string code = "LDA 4\nADD 5\nOUT\n5\n10";
-                strncpy(machineProgram, code.c_str(), code.length()-1);
+                std::string code = "LDA 4\nADD 5\nOUT\nHLT\n5\n10";
+                strncpy(asmProgram, code.c_str(), code.length()-1);
             }
             if (ImGui::MenuItem("Basic sub"))
             {
-                std::string code = "LDA 4\nSUB 5\nOUT\n10\n5";
-                strncpy(machineProgram, code.c_str(), code.length()-1);
+                std::string code = "LDA 4\nSUB 5\nOUT\nHLT\n10\n5";
+                strncpy(asmProgram, code.c_str(), code.length()-1);
             }
             ImGui::EndMenu();
         }

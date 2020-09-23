@@ -23,10 +23,18 @@ enum MemoryType {
 class Computer
 {
 public:
+  enum State {
+    Off,
+    Running
+  };
+
   Computer();
 
+  void start();
+  void halt();
   void restart();
   void reset();
+  State getState();
 
   template<wordSizeType AddrSize, wordSizeType RegSize>
   void writeMemory(MemoryType memType, std::bitset<AddrSize> address, std::bitset<RegSize> value)
@@ -55,6 +63,7 @@ public:
   friend void HLTExecutor(Computer &computer);
 
 private:
+  State _state;
   Memory<WORD_SIZE, DWORD_SIZE> _RAM;
 
   Register<WORD_SIZE> _PC;
