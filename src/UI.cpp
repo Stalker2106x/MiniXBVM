@@ -5,18 +5,20 @@
 #include "Cc/Cc.hh"
 #include "bitset_utils.hh"
 #include "Cc/examples.h"
+#include "Editor/LanguageDef.hh"
 
 ImFontAtlas* UI::FontAtlas = NULL;
-char *UI::asmProgram = new char[2048];
+TextEditor UI::asmEditor;
 char *UI::machineProgram = new char[2048];
 char *UI::infoModalText = new char[2048];
 
 void UI::init()
 {
-    memset(asmProgram, 0, 2047);
-    asmProgram[2047] = '\0';
     memset(machineProgram, 0, 2047);
     machineProgram[2047] = '\0';
+    
+	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
+
 }
 
 void UI::draw()
@@ -112,6 +114,9 @@ void UI::draw()
     programmerWindow();
 
     ImGui::End();
+
+    // Rendering
+    ImGui::Render();
 }
 
 void UI::programmerWindow()
@@ -124,18 +129,15 @@ void UI::programmerWindow()
         {
             if (ImGui::MenuItem("Addition"))
             {
-                std::string code = EXAMPLE_ADD;
-                strncpy(asmProgram, code.c_str(), code.length()-1);
+                asmEditor.SetText(EXAMPLE_ADD);
             }
             if (ImGui::MenuItem("Substraction"))
             {
-                std::string code = EXAMPLE_SUB;
-                strncpy(asmProgram, code.c_str(), code.length()-1);
+                asmEditor.SetText(EXAMPLE_SUB);
             }
             if (ImGui::MenuItem("Multiplication"))
             {
-                std::string code = EXAMPLE_MUL;
-                strncpy(asmProgram, code.c_str(), code.length()-1);
+                asmEditor.SetText(EXAMPLE_MUL);
             }
             ImGui::EndMenu();
         }
@@ -143,7 +145,8 @@ void UI::programmerWindow()
     }
 
     ImGui::Text("ASM Program");
-    ImGui::InputTextMultiline("ASM", asmProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20));
+    asmEditor.Render("TextEditor", ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20));
+    //ImGui::InputTextMultiline("ASM", asmProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20));
     ImGui::Text("Machine Program");
     ImGui::InputTextMultiline("MC", machineProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20), ImGuiInputTextFlags_ReadOnly);
 
@@ -151,7 +154,7 @@ void UI::programmerWindow()
     {
         try {
             memset(machineProgram, 0, 2047);
-            std::string code = Cc::compile<WORD_SIZE>(asmProgram);
+            std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText());
             strncpy(machineProgram, code.c_str(), code.length()-1);
         } catch(std::runtime_error e) {
             strncpy(machineProgram, e.what(), strlen(e.what()-1));
@@ -171,4 +174,5 @@ void UI::programmerWindow()
         }
     }
     ImGui::End();
+    
 }

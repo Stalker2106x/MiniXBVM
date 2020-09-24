@@ -132,8 +132,6 @@ void App::mainLoop()
     update(deltaTime);
     UI::draw();
 
-    // Rendering
-    ImGui::Render();
     ImGuiIO& io = ImGui::GetIO();
     glViewport(0, 0, (GLsizei)io.DisplaySize.x, (GLsizei)io.DisplaySize.y);
     glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);

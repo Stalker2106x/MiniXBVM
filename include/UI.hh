@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <imgui/examples/imgui_impl_glut.h>
 #include <imgui/examples/imgui_impl_opengl2.h>
+#include <ImGuiColorTextEdit/TextEditor.h>
 
 #define ICON_MIN_IONIC  0xf100
 #define ICON_MAX_IONIC  0xf4cd
@@ -29,7 +30,9 @@ public:
     static void programmerWindow();
 
     static ImFontAtlas* FontAtlas;
-    static char *asmProgram;
+
+    static TextEditor asmEditor;
+
     static char *machineProgram;
     static char *infoModalText;
 };

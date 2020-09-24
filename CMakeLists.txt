@@ -7,9 +7,12 @@ file(GLOB
      source_files
      ${CMAKE_SOURCE_DIR}/src/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Computer/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/Editor/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/examples/imgui_impl_glut.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/examples/imgui_impl_opengl2.cpp
+     ${CMAKE_SOURCE_DIR}/thirdparty/imgui/examples/imgui_impl_opengl2.cpp
+     ${CMAKE_SOURCE_DIR}/thirdparty/ImGuiColorTextEdit/TextEditor.cpp
 )
 
 set(OPENGL_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/freeglut/build/lib)
@@ -32,7 +35,7 @@ if(NOT OPENGL_FOUND)
 endif(NOT OPENGL_FOUND)
 
 include_directories(${CMAKE_SOURCE_DIR}/include
-                    ${CMAKE_SOURCE_DIR}/thirdparty
+                    ${CMAKE_SOURCE_DIR}/thirdparty/
                     ${CMAKE_SOURCE_DIR}/thirdparty/imgui
                     ${CMAKE_SOURCE_DIR}/thirdparty/freeglut/include
                     )
