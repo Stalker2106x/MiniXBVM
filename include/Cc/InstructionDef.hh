@@ -27,6 +27,7 @@ public:
 void LDAExecutor(Computer &computer);
 void ADDExecutor(Computer &computer);
 void SUBExecutor(Computer &computer);
+void MULExecutor(Computer &computer);
 void OUTExecutor(Computer &computer);
 void HLTExecutor(Computer &computer);
 
@@ -34,6 +35,7 @@ const std::vector<InstructionDef> instructionsSet = {
     {"LDA", 0b0001, LDAExecutor, 1},
     {"ADD", 0b0010, ADDExecutor, 1},
     {"SUB", 0b0011, SUBExecutor, 1},
+    {"MUL", 0b0100, MULExecutor, 1},
     {"OUT", 0b1110, OUTExecutor},
     {"HLT", 0b1111, HLTExecutor},
 };

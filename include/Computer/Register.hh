@@ -56,7 +56,13 @@ public:
 
   Register<RegSize> operator-=(const Register<RegSize>& rhs)
   {
-    _data = (_data - rhs._data);
+    _data = _data - rhs._data;
+    return (*this);
+  }
+
+  Register<RegSize> operator*=(const Register<RegSize>& rhs)
+  {
+    _data = _data * rhs._data;
     return (*this);
   }
 
@@ -69,6 +75,11 @@ public:
   {
     return (_data - rhs.read());
   }
+  
+  Register<RegSize> operator*(const Register<RegSize>& rhs) const
+  {
+    return (_data * rhs.read());
+  }
 
   Register<RegSize> operator+(const std::bitset<RegSize>& rhs) const
   {
@@ -79,6 +90,12 @@ public:
   Register<RegSize> operator-(const std::bitset<RegSize>& rhs) const
   {
     _data = (_data - rhs);
+    return (*this);
+  }
+  
+  Register<RegSize> operator*(const std::bitset<RegSize>& rhs) const
+  {
+    _data = (_data * rhs);
     return (*this);
   }
 };

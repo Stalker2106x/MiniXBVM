@@ -58,6 +58,7 @@ public:
   friend void LDAExecutor(Computer &computer);
   friend void ADDExecutor(Computer &computer);
   friend void SUBExecutor(Computer &computer);
+  friend void MULExecutor(Computer &computer);
   friend void OUTExecutor(Computer &computer);
   friend void HLTExecutor(Computer &computer);
 
