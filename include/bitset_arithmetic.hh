@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 #include <bitset>
-#include "Computer/config.h"
+#include "config.h"
 
 bool fullAdder(bool b1, bool b2, bool& carry);
 

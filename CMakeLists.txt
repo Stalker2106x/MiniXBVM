@@ -15,8 +15,8 @@ file(GLOB
      ${CMAKE_SOURCE_DIR}/thirdparty/ImGuiColorTextEdit/TextEditor.cpp
 )
 
-set(OPENGL_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/freeglut/build/lib)
-set(GLUT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/thirdparty/freeglut/include)
+set(OPENGL_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/FreeGLUT/freeglut/freeglut/build/lib)
+set(GLUT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/thirdparty/FreeGLUT/freeglut/freeglut/include)
 
 # GLUT
 find_package(GLUT REQUIRED)
@@ -37,7 +37,7 @@ endif(NOT OPENGL_FOUND)
 include_directories(${CMAKE_SOURCE_DIR}/include
                     ${CMAKE_SOURCE_DIR}/thirdparty/
                     ${CMAKE_SOURCE_DIR}/thirdparty/imgui
-                    ${CMAKE_SOURCE_DIR}/thirdparty/freeglut/include
+                    ${CMAKE_SOURCE_DIR}/thirdparty/FreeGLUT/freeglut/freeglut/include
                     )
 
 

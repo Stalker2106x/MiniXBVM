@@ -5,7 +5,7 @@
 #include <string>
 #include <bitset>
 #include <functional>
-#include "Computer/config.h"
+#include "config.h"
 
 class Computer;
 
@@ -18,7 +18,7 @@ public:
     }
 
     std::string name;
-    std::bitset<WORD_SIZE> code;
+    word code;
     std::function<void(Computer&)> executor;
     size_t operandCount;
 };

@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
-#include "Computer/config.h"
+#include "config.h"
 
 enum RegisterType {
   ProgramCounter,

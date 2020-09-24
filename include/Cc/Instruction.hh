@@ -5,7 +5,7 @@
 #include <bitset>
 #include <algorithm>
 #include "Cc/InstructionDef.hh"
-#include "Computer/config.h"
+#include "config.h"
 #include "bitset_utils.hh"
 
 template <wordSizeType CodeSize, wordSizeType OperandSize>

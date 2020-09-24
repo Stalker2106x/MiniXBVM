@@ -165,7 +165,7 @@ void UI::programmerWindow()
     {
         std::istringstream ss(machineProgram);
         std::string buffer;
-        std::bitset<WORD_SIZE> address = std::bitset<WORD_SIZE>(0);
+        word address = word(0);
 
         while(std::getline(ss, buffer, '\n'))
         {

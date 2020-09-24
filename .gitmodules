@@ -4,3 +4,6 @@
 [submodule "thirdparty/ImGuiColorTextEdit"]
 	path = thirdparty/ImGuiColorTextEdit
 	url = https://github.com/BalazsJako/ImGuiColorTextEdit.git
+[submodule "thirdparty/FreeGLUT"]
+	path = thirdparty/FreeGLUT
+	url = https://github.com/dcnieho/FreeGLUT.git
