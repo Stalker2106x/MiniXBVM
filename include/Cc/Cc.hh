@@ -24,10 +24,10 @@ public:
             try {
                 if (asmCode.empty()) throw (std::runtime_error("instruction is null"));
                 size_t sep = asmCode.find_first_of(" ");
-                if (sep == std::string::npos && asmCode.find_first_not_of("0123456789" HEX_PREFIX BIN_PREFIX)) //no separator, check if is data
+                if (sep == std::string::npos) //no separator, check if is data
                 {
                     try {
-                        output += binaryStringFromString<WordSize*2>(asmCode) + '\n';
+                        output += binStringFromInt128<WordSize*2>(int128FromString(asmCode)) + '\n';
                         continue; //We consider it processed
                     } catch (...) {
                         //It was not data, continue gracefully...

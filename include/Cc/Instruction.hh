@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "Cc/InstructionDef.hh"
 #include "config.h"
-#include "bitset_utils.hh"
+#include "utils.hh"
 
 template <wordSizeType CodeSize, wordSizeType OperandSize>
 class Instruction
@@ -26,11 +26,7 @@ public:
                 asmCode = asmCode.substr(sep+1, asmCode.length());
                 if (!asmCode.empty())
                 {
-                    if (asmCode.find_first_not_of("0123456789") != std::string::npos)
-                    {
-                        throw (std::runtime_error("operand should be of numeric type"));
-                    }
-                    _operands.push_back(bitsetFromString<OperandSize>(binaryStringFromString<OperandSize>(asmCode)));
+                    _operands.push_back(std::bitset<OperandSize>(int128FromString(asmCode)));
                 }
                 if (_operands.size() < _definition.operandCount)
                 {

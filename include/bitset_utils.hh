@@ -3,9 +3,6 @@
 
 #include "bitset_arithmetic.hh"
 
-#define HEX_PREFIX "0x"
-#define BIN_PREFIX "0b"
-
 template <wordSizeType SetSize, wordSizeType FinalSize>
 std::bitset<FinalSize> bitsetRange(const std::bitset<SetSize> &a, unsigned int rangeStart, unsigned int rangeEnd)
 {
@@ -50,38 +47,6 @@ std::bitset<SetSize> bitsetErase(std::bitset<SetSize> a, unsigned int rangeStart
     a[i] = 0;
   }
   return (a);
-}
-
-template<wordSizeType SetSize>
-std::bitset<SetSize> bitsetFromString(const std::string &str)
-{
-    std::bitset<8> b(str[0]);
-    std::bitset<SetSize> bitset(str[0]);
-    for(auto it = str.begin() + 1; it != str.end(); ++it) {
-        std::bitset<SetSize> b(*it);
-        bitset <<= 8;
-        bitset |= b;
-    }
-    return bitset;
-}
-
-template <wordSizeType SetSize>
-std::string binaryStringFromString(const std::string &asmCode)
-{
-    if (asmCode.length() > 2)
-    {
-        std::string prefix = asmCode.substr(0, 2);
-
-        if (asmCode.find(HEX_PREFIX) == 0) //Hex
-        {
-            return (asmCode);
-        }
-        else if (asmCode.find(BIN_PREFIX) == 0) //Binary
-        {
-            return (std::string(SetSize - (asmCode.length() - 2), '0') + std::string(asmCode.c_str() + 2));
-        }
-    }
-    return (std::bitset<SetSize>( atoi(asmCode.c_str()) ).to_string()); //10 Base
 }
 
 /***********************
