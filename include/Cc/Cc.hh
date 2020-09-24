@@ -22,7 +22,7 @@ public:
         while(std::getline(ss, asmCode, '\n'))
         {
             try {
-                if (asmCode.empty()) throw (std::runtime_error("instruction is null"));
+                if (asmCode.empty()) continue;
                 size_t sep = asmCode.find_first_of(" ");
                 if (sep == std::string::npos) //no separator, check if is data
                 {
