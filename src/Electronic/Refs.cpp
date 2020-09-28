@@ -11,6 +11,13 @@ const Component PowerSupply5V = Component("PowerSupply5V", {
   endpoints[0].link->send(5.0_V, 100.0_mA);
 });
 
+//3.3V Power supply
+const Component PowerSupply3V3 = Component("PowerSupply3V3", {
+  {"Vcc", Endpoint::Type::Output}
+}, [&] (std::vector<Endpoint> endpoints) {
+  endpoints[0].link->send(3.3_V, 100.0_mA);
+});
+
 /**
  * Clock
  */
