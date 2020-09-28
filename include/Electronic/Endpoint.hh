@@ -14,6 +14,8 @@ public:
   };
   Endpoint(std::string name_, Type type_);
 
+  static Endpoint Gnd; //Ground point
+
   std::shared_ptr<Link> link;
   std::string name;
   Type type;
