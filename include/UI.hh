@@ -28,8 +28,13 @@ public:
     static void draw();
     static void vmWindow();
     static void programmerWindow();
+    
+    static void sfmlDraw(sf::RenderWindow &window);
 
     static ImFontAtlas* FontAtlas;
+
+    static sf::Texture backgroundTexture;
+    static sf::Sprite backgroundSprite;
 
     static TextEditor asmEditor;
 

@@ -1,7 +1,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
 #include "App.hh"
 
 //Static instanciation
@@ -10,7 +9,8 @@ Computer App::computer;
 Clock App::clock;
 
 int App::run(int argc, char** argv)
-{   sf::RenderWindow window(sf::VideoMode(1280, 768), "Mini8BVM");
+{
+    sf::RenderWindow window(sf::VideoMode(1280, 768), "Mini8BVM");
     window.setFramerateLimit(120);
     ImGui::SFML::Init(window);
 
@@ -47,7 +47,7 @@ int App::run(int argc, char** argv)
         UI::draw();
 
         window.clear();
-        //Draw sfml stuff here
+        UI::sfmlDraw(window);
         ImGui::SFML::Render(window);
         window.display();
     }

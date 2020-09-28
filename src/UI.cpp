@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <math.h>
+#include <SFML/Graphics.hpp>
 #include "UI.hh"
 #include "App.hh"
 #include "Cc/Cc.hh"
@@ -9,7 +10,12 @@
 #include <imgui_internal.h>
 
 ImFontAtlas* UI::FontAtlas = NULL;
+
+sf::Texture UI::backgroundTexture;
+sf::Sprite UI::backgroundSprite;
+
 TextEditor UI::asmEditor;
+
 bool UI::validMachineProgram;
 char *UI::machineProgram = new char[2048];
 char *UI::infoModalText = new char[2048];
@@ -21,6 +27,9 @@ void UI::init()
 
     validMachineProgram = false;
 	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
+
+    backgroundTexture.loadFromFile("Data/img/background.jpg");
+    backgroundSprite.setTexture(backgroundTexture);
 }
 
 void UI::draw()
@@ -182,4 +191,9 @@ void UI::programmerWindow()
         ImGui::PopStyleVar();
     }
     ImGui::End();
+}
+
+void UI::sfmlDraw(sf::RenderWindow &window)
+{
+    window.draw(backgroundSprite);
 }
