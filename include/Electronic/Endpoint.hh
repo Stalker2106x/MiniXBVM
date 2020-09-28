@@ -8,7 +8,7 @@ struct Endpoint
 {
 public:
   enum Type {
-    None,
+    Undefined,
     Input,
     Output
   };
