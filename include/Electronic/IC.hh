@@ -11,7 +11,10 @@ class IC
 {
 public:
   IC(std::string name_, std::initializer_list<Endpoint> endpoints);
+
   virtual void function() = 0;
+
+  Endpoint &get(std::string endpointName);
 
 private:
   std::string _name;
