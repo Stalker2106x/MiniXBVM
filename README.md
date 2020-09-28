@@ -31,11 +31,11 @@ First, fetch git submodules:
 
     git submodule init --update
 
-then, you need to build the FreeGLut (OpenGL) dependency:
+then, you need to build the SFML (UI) dependency:
 
-    cd thirdparty/freeglut
+    cd thirdparty/SFML
     mkdir build && cd build
-    cmake ..
+    cmake .. -DBUILD_SHARED_LIBS=ON
     make
 
 Move back to the root of the repository and start building the app.
