@@ -76,15 +76,12 @@ matrix:
             - llvm-toolchain-trusty
             - llvm-toolchain-trusty-6.0
 
-before_install:
-  - sudo apt-get -y install libxi-dev
-
 before_script:
   - if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then export CXX=${COMPILER}; fi
   - if [[ "${BUILD}" != "Doc" ]]; then ${CXX} --version; fi
   # Build freeglut
-  - mkdir -p thirdparty/freeglut/build
-  - cd thirdparty/freeglut/build
+  - mkdir -p thirdparty/SFML/build
+  - cd thirdparty/SFML/build
   - cmake .. -DCMAKE_BUILD_TYPE=${BUILD}
   - make
   - cd -
