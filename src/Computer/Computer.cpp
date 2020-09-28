@@ -1,4 +1,3 @@
-#include <iostream>
 #include <algorithm>
 #include "Computer/Computer.hh"
 #include "Cc/InstructionDef.hh"
@@ -112,7 +111,6 @@ void Computer::cycle()
   _MAR = _PC;
   _IR.write(_RAM[_MAR.read()].read()); //Rea)d the current instruction and store it in instruction registr
   word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
-  std::cout << opCode.to_string() << std::endl;
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {

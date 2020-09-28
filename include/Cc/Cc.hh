@@ -11,7 +11,7 @@ class Cc
 {
 public:
     template <wordSizeType WordSize>
-    static std::string compile(std::string buffer)
+    static std::string compile(std::string buffer, bool &validMachineProgram)
     {
         int lineNumber = 1;
         std::istringstream ss(buffer);
@@ -47,7 +47,16 @@ public:
             }
             lineNumber++;
         }
-        return (errOutput.empty() ? output : errOutput);
+        if (!errOutput.empty())
+        {
+            validMachineProgram = false;
+            return (errOutput);
+        }
+        else
+        {
+            validMachineProgram = true;
+            return (output);
+        }
     }
 };
 

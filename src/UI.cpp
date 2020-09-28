@@ -6,9 +6,11 @@
 #include "bitset_utils.hh"
 #include "Cc/examples.h"
 #include "Editor/LanguageDef.hh"
+#include <imgui_internal.h>
 
 ImFontAtlas* UI::FontAtlas = NULL;
 TextEditor UI::asmEditor;
+bool UI::validMachineProgram;
 char *UI::machineProgram = new char[2048];
 char *UI::infoModalText = new char[2048];
 
@@ -16,9 +18,9 @@ void UI::init()
 {
     memset(machineProgram, 0, 2047);
     machineProgram[2047] = '\0';
-    
-	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
 
+    validMachineProgram = false;
+	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
 }
 
 void UI::draw()
@@ -152,15 +154,16 @@ void UI::programmerWindow()
 
     if (ImGui::Button("Compile"))
     {
-        try {
-            memset(machineProgram, 0, 2047);
-            std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText());
-            strncpy(machineProgram, code.c_str(), code.length()-1);
-        } catch(std::runtime_error e) {
-            strncpy(machineProgram, e.what(), strlen(e.what()-1));
-        }
+        memset(machineProgram, 0, 2047);
+        std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText(), validMachineProgram);
+        strncpy(machineProgram, code.c_str(), code.length()-1);
     }
     ImGui::SameLine();
+    if (!validMachineProgram)
+    {
+        ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+    }
     if (ImGui::Button("Load to RAM"))
     {
         std::istringstream ss(machineProgram);
@@ -173,6 +176,10 @@ void UI::programmerWindow()
             ++address;
         }
     }
+    if (!validMachineProgram)
+    {
+        ImGui::PopItemFlag();
+        ImGui::PopStyleVar();
+    }
     ImGui::End();
-    
 }

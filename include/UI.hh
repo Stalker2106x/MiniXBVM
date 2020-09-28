@@ -33,6 +33,7 @@ public:
 
     static TextEditor asmEditor;
 
+    static bool validMachineProgram;
     static char *machineProgram;
     static char *infoModalText;
 };
