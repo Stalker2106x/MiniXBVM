@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.18)
 
 project (Mini8BVM)
 
@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #CORE FILES
-file(GLOB
-     source_files
+file(GLOB source_files
      ${CMAKE_SOURCE_DIR}/src/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Computer/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Editor/*.cpp
@@ -31,6 +30,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 #Build sequence
 add_executable(Mini8BVM ${source_files})
 
+#############
+# Dependencies  & Link
+#############
 
 # SFML
 set(SFML_STATIC_LIBRARIES FALSE)

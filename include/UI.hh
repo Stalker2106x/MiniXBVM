@@ -11,10 +11,12 @@
 #define ICON_MAX_IONIC  0xf4cd
 
 #define ICON_NEXT       u8"\uf217"
+#define ICON_STEP       u8"\uf365"
 #define ICON_PAUSE      u8"\uf341"
 #define ICON_PLAY       u8"\uf488"
-#define ICON_RESTART    u8"\uf38b"
-#define ICON_RESET      u8"\uf2c0"
+#define ICON_RESTART    u8"\uf36d"
+#define ICON_RESET      u8"\uf366"
+#define ICON_POWER      u8"\uf359"
 
 enum Font {
     Segment = 1,
