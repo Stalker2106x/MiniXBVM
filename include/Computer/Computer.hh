@@ -48,6 +48,7 @@ public:
 
   std::string dumpRegister(RegisterType regType);
   size_t getMemorySize(MemoryType memType);
+  size_t getMemoryUsedSize(MemoryType memType);
   std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType);
   std::string getOutput();
   std::string getInstruction();

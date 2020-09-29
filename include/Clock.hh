@@ -1,7 +1,7 @@
 #ifndef CLOCK_HH_
 #define CLOCK_HH_
 
-#include <iostream>
+#include <vector>
 
 class Clock
 {
@@ -17,6 +17,7 @@ public:
   void setFrequency(unsigned int value);
   size_t getTick();
   State getState();
+  const float *getHistoryData();
   void toggle();
   void nextStep();
   bool cycle(int deltaTime);
@@ -24,7 +25,9 @@ public:
 private:
   State _state;
   size_t _tick;
-  unsigned int _timeAccumulated;
+  std::vector<float> _historyData;
+  unsigned int _clockTimer;
+  unsigned int _dataTimer;
   unsigned int _frequency;
 };
 

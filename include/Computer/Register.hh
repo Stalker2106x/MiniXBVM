@@ -75,7 +75,7 @@ public:
   {
     return (_data - rhs.read());
   }
-  
+
   Register<RegSize> operator*(const Register<RegSize>& rhs) const
   {
     return (_data * rhs.read());

@@ -77,6 +77,17 @@ size_t Computer::getMemorySize(MemoryType memType)
   return (0);
 }
 
+size_t Computer::getMemoryUsedSize(MemoryType memType)
+{
+  switch (memType)
+  {
+    case RAM:
+      return (_RAM.getUsedSize());
+      break;
+  }
+  return (0);
+}
+
 std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType memType)
 {
   switch (memType)

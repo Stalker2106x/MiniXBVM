@@ -48,6 +48,8 @@ void UI::draw()
 
     if (ImGui::CollapsingHeader("Clock", ImGuiTreeNodeFlags_DefaultOpen))
     {
+        const float *data = App::clock.getHistoryData();
+        ImGui::PlotHistogram("", data, 200, 0, NULL, 0.0f, 1.0f, ImVec2(0, 20.0f));
         ImGui::Text("Tick: %d", App::clock.getTick());
         ImGui::Text("Frequency: %d Hz", App::clock.getFrequency());
         int freqSlider = (int)App::clock.getFrequency();
@@ -119,21 +121,23 @@ void UI::draw()
             ImGui::Text("B Register: %s", App::computer.dumpRegister(Bregister).c_str());
             ImGui::Text("Output Register: %s", App::computer.dumpRegister(Output).c_str());
 
-            //RAM
-            ImGui::Text("RAM Size: %d", App::computer.getMemorySize(MemoryType::RAM));
-            ImGui::Columns(2, "Bar"); // 4-ways, with border
-            ImGui::Separator();
-            ImGui::Text("Adress"); ImGui::NextColumn();
-            ImGui::Text("Variable"); ImGui::NextColumn();
-            ImGui::Separator();
-            auto ramDump = App::computer.dumpMemory(MemoryType::RAM);
-            for (int i = 0; i < ramDump.size(); i++)
+            if (ImGui::CollapsingHeader("Memory (RAM)", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                ImGui::Text("0x%s", ramDump[i].first.c_str());    ImGui::NextColumn();
-                ImGui::Text("%s", ramDump[i].second.c_str());   ImGui::NextColumn();
+                ImGui::ProgressBar(App::computer.getMemoryUsedSize(MemoryType::RAM) / App::computer.getMemorySize(MemoryType::RAM), ImVec2(0.0f, 0.0f));
+                ImGui::Columns(2, "Bar"); // 4-ways, with border
+                ImGui::Separator();
+                ImGui::Text("Adress"); ImGui::NextColumn();
+                ImGui::Text("Variable"); ImGui::NextColumn();
+                ImGui::Separator();
+                auto ramDump = App::computer.dumpMemory(MemoryType::RAM);
+                for (int i = 0; i < ramDump.size(); i++)
+                {
+                    ImGui::Text("0x%s", ramDump[i].first.c_str());    ImGui::NextColumn();
+                    ImGui::Text("%s", ramDump[i].second.c_str());   ImGui::NextColumn();
+                }
+                ImGui::Columns(1);
+                ImGui::Separator();
             }
-            ImGui::Columns(1);
-            ImGui::Separator();
         if (!computerOn)
         {
             ImGui::PopItemFlag();

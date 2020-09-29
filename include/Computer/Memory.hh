@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <bitset>
+#include <cmath>
 #include "Computer/Register.hh"
 
 template <wordSizeType AddrSize, wordSizeType RegSize>
@@ -39,7 +40,18 @@ public:
 
   size_t getSize()
   {
-    return (AddrSize * AddrSize);
+    return (pow(2, AddrSize));
+  }
+
+  size_t getUsedSize()
+  {
+    size_t size = 0;
+    std::bitset<RegSize> emptyReg = std::bitset<RegSize>(0);
+    for (auto it = _data.begin(); it != _data.end(); it++)
+    {
+      if (it->second.read() == emptyReg) break;
+    }
+    return (size);
   }
 
   Register<RegSize> operator[](std::bitset<AddrSize> address)
