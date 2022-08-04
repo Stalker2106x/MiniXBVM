@@ -1,6 +1,7 @@
 #ifndef CLOCK_HH_
 #define CLOCK_HH_
 
+#include <cstddef>
 #include <vector>
 
 class Clock
@@ -17,7 +18,9 @@ public:
   void setFrequency(unsigned int value);
   size_t getTick();
   State getState();
+  void reset();
   const float *getHistoryData();
+  void setState(Clock::State state);
   void toggle();
   void nextStep();
   bool cycle(int deltaTime);

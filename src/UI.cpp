@@ -34,6 +34,7 @@ void UI::init()
 
 void UI::draw()
 {
+    bool computerOn = (App::computer.getState() == Computer::State::Running);
     //Main Panel
     ImGui::Begin("VM", NULL);
 
@@ -60,28 +61,39 @@ void UI::draw()
         ImGui::Text("State: %s", (App::clock.getState() == Clock::State::Running ? "Running" : "Paused"));
         ImGui::Text("Control: ");
         ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        if (ImGui::Button((App::clock.getState() == Clock::State::Running ? ICON_PAUSE : ICON_PLAY), ImVec2(30, 30))) // Pause / Play
+
+        if (!computerOn)
         {
-            App::clock.toggle();
+            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
         }
-        ImGui::PopFont();
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(App::clock.getState() == Clock::State::Running ? "Pause clock" : "Resume clock");
-        ImGui::SameLine();
-        ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        // Next Button
-        if (ImGui::Button(ICON_NEXT, ImVec2(30, 30))) //Next
+            //Pause/Resume
+            if (ImGui::Button((App::clock.getState() == Clock::State::Running ? ICON_PAUSE : ICON_PLAY), ImVec2(30, 30))) // Pause / Play
+            {
+                App::clock.toggle();
+            }
+            ImGui::PopFont();
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip(App::clock.getState() == Clock::State::Running ? "Pause clock" : "Resume clock");
+            ImGui::SameLine();
+            ImGui::PushFont(FontAtlas->Fonts[Icons]);
+            // Next Button
+            if (ImGui::Button(ICON_NEXT, ImVec2(30, 30))) //Next
+            {
+                App::clock.nextStep();
+            }
+            ImGui::PopFont();
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Trigger one clock cycle");
+        if (!computerOn)
         {
-            App::clock.nextStep();
+            ImGui::PopItemFlag();
+            ImGui::PopStyleVar();
         }
-        ImGui::PopFont();
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Trigger one clock cycle");
     }
 
     if (ImGui::CollapsingHeader("Computer", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        bool computerOn = (App::computer.getState() == Computer::State::Running);
         ImGui::PushFont(FontAtlas->Fonts[Icons]);
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4((computerOn ? ImColor(0, 255, 0) : ImColor(255, 0, 0))));
         if (ImGui::Button(ICON_POWER, ImVec2(30, 30))) // Restart
@@ -107,6 +119,7 @@ void UI::draw()
             ImGui::PushFont(FontAtlas->Fonts[Icons]);
             if (ImGui::Button(ICON_RESET, ImVec2(30, 30))) // Reset
             {
+                App::clock.reset();
                 App::computer.reset();
             }
             ImGui::PopFont();

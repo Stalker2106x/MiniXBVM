@@ -2,6 +2,7 @@
 #include "Computer/Computer.hh"
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
+#include "App.hh"
 
 Computer::Computer()
 {
@@ -11,11 +12,13 @@ Computer::Computer()
 void Computer::start()
 {
   _state = Running;
+  App::clock.reset();
 }
 
 void Computer::halt()
 {
   _state = Off;
+  App::clock.setState(Clock::State::Paused);
 }
 
 void Computer::restart()

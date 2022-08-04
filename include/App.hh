@@ -11,12 +11,15 @@
 class App
 {
 public:
+    App();
     static int run(int argc, char** argv);
     static void update(int deltaTime);
     static void draw();
 
   static Computer computer;
   static Clock clock;
+
+  static App instance;
 
 private:
   static int oldTimeSinceStart;

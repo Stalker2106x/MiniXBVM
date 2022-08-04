@@ -8,6 +8,11 @@ int App::oldTimeSinceStart;
 Computer App::computer;
 Clock App::clock;
 
+App::App()
+{
+    App::instance = *this;
+}
+
 int App::run(int argc, char** argv)
 {
     sf::RenderWindow window(sf::VideoMode(1280, 768), "Mini8BVM");

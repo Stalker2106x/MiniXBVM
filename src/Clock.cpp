@@ -26,15 +26,27 @@ Clock::State Clock::getState()
   return (_state);
 }
 
+void Clock::reset()
+{
+  _tick = 0;
+  _clockTimer = 0;
+  _historyData.clear();
+}
+
 const float *Clock::getHistoryData()
 {
   return (&_historyData[0]);
 }
 
+void Clock::setState(Clock::State state)
+{
+  _state = state;
+  _clockTimer = 0;
+}
+
 void Clock::toggle()
 {
-  _state = (_state == Running ? Paused : Running);
-  _clockTimer = 0;
+  setState(_state == Running ? Paused : Running);
 }
 
 void Clock::nextStep()
