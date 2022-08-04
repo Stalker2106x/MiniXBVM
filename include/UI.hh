@@ -6,6 +6,8 @@
 #include <imgui/examples/imgui_impl_glut.h>
 #include <imgui/examples/imgui_impl_opengl2.h>
 #include <ImGuiColorTextEdit/TextEditor.h>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #define ICON_MIN_IONIC  0xf100
 #define ICON_MAX_IONIC  0xf4cd
@@ -17,6 +19,7 @@
 #define ICON_RESTART    u8"\uf36d"
 #define ICON_RESET      u8"\uf366"
 #define ICON_POWER      u8"\uf359"
+#define ICON_ERASE      u8"\uf4c5"
 
 enum Font {
     Segment = 1,
@@ -26,23 +29,30 @@ enum Font {
 class UI
 {
 public:
-    static void init();
-    static void draw();
-    static void vmWindow();
-    static void programmerWindow();
+    UI();
+    void init();
+    void draw();
+    void menuBar();
+    void vmWindow();
+    void programmerWindow();
+    void help();
     
-    static void sfmlDraw(sf::RenderWindow &window);
+    void sfmlDraw(sf::RenderWindow &window);
 
-    static ImFontAtlas* FontAtlas;
+    ImFontAtlas* fontAtlas;
 
-    static sf::Texture backgroundTexture;
-    static sf::Sprite backgroundSprite;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
 
-    static TextEditor asmEditor;
+    TextEditor asmEditor;
 
-    static bool validMachineProgram;
-    static char *machineProgram;
-    static char *infoModalText;
+    bool validMachineProgram;
+    char *machineProgram;
+    char *infoModalText;
+
+    static std::unique_ptr<UI> instance;
+private:
+    bool _showHelp;
 };
 
 #endif /* !UI_HH_ */

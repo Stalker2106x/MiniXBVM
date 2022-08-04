@@ -29,3 +29,16 @@ long long int int128FromString(std::string str)
   ss >> res;
   return (res);
 }
+
+std::string formatBinaryString(const std::string &str)
+{  
+  if (!str.size()) return "";
+  std::stringstream ss;
+
+  for (int i = 0; i < str.size(); i++)
+  {
+    if (i % 8 == 0) ss << ' ';
+    ss << str[i];
+  }
+  return ss.str();
+}

@@ -5,6 +5,7 @@
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
 #include "config.h"
+#include "Clock.hh"
 
 enum RegisterType {
   ProgramCounter,
@@ -12,7 +13,8 @@ enum RegisterType {
   InstructionRegister,
   Accumulator,
   Bregister,
-  Output
+  Output,
+  Status
 };
 
 enum MemoryType {
@@ -33,7 +35,7 @@ public:
   void halt();
   void restart();
   void reset();
-  State getState();
+  State getState() const;
 
   template<wordSizeType AddrSize, wordSizeType RegSize>
   void writeMemory(MemoryType memType, std::bitset<AddrSize> address, std::bitset<RegSize> value)
@@ -46,14 +48,15 @@ public:
     }
   }
 
-  std::string dumpRegister(RegisterType regType);
-  size_t getMemorySize(MemoryType memType);
-  size_t getMemoryUsedSize(MemoryType memType);
-  std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType);
-  std::string getOutput();
-  std::string getInstruction();
+  std::string dumpRegister(RegisterType regType, bool format) const;
+  size_t getMemorySize(MemoryType memType) const;
+  size_t getMemoryUsedSize(MemoryType memType) const;
+  std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType, bool format) const;
+  std::string getOutput() const;
+  std::string getInstruction() const;
+  std::string getFlags() const;
 
-  void cycle();
+  void cycle(int deltaTime);
 
   //EXECUTORS
   friend void LDAExecutor(Computer &computer);
@@ -63,6 +66,7 @@ public:
   friend void OUTExecutor(Computer &computer);
   friend void HLTExecutor(Computer &computer);
 
+  Clock clock;
 private:
   State _state;
   Memory<WORD_SIZE, DWORD_SIZE> _RAM;
@@ -72,6 +76,7 @@ private:
   Register<DWORD_SIZE> _IR;
   Register<DWORD_SIZE> _accumulator;
   Register<DWORD_SIZE> _Breg;
+  Register<WORD_SIZE> _SR;
   Register<DWORD_SIZE> _output;
 };
 

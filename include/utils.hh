@@ -15,4 +15,6 @@ std::string binStringFromInt128(long long int value)
     return (std::bitset<WordSize>(value).to_string());
 }
 
+std::string formatBinaryString(const std::string &str);
+
 #endif /* !UTILS_HH_ */

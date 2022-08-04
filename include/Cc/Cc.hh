@@ -47,7 +47,7 @@ public:
             }
             lineNumber++;
         }
-        if (!errOutput.empty())
+        if (!errOutput.empty() || !output.size())
         {
             validMachineProgram = false;
             return (errOutput);

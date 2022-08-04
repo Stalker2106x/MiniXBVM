@@ -1,8 +1,8 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define WORD_SIZE 4
-#define DWORD_SIZE 8
+#define WORD_SIZE 8
+#define DWORD_SIZE 16
 
 #define RAM_SIZE 16
 

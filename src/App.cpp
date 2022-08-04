@@ -3,14 +3,11 @@
 #include <SFML/Window/Event.hpp>
 #include "App.hh"
 
-//Static instanciation
-int App::oldTimeSinceStart;
-Computer App::computer;
-Clock App::clock;
+std::unique_ptr<App> App::instance = nullptr;
 
 App::App()
 {
-    App::instance = *this;
+    App::instance = std::unique_ptr<App>(this);
 }
 
 int App::run(int argc, char** argv)
@@ -19,7 +16,7 @@ int App::run(int argc, char** argv)
     window.setFramerateLimit(120);
     ImGui::SFML::Init(window);
 
-    UI::init();
+    ui.init();
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.Fonts->Clear();
@@ -30,7 +27,7 @@ int App::run(int argc, char** argv)
     io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f, NULL, icon_ranges);
 
     ImGui::SFML::UpdateFontTexture(); // important call: updates font texture
-    UI::FontAtlas = ImGui::GetIO().Fonts;
+    ui.fontAtlas = ImGui::GetIO().Fonts;
 
 
     sf::Clock deltaClock;
@@ -49,10 +46,10 @@ int App::run(int argc, char** argv)
         update(deltaTime.asMilliseconds());
         ImGui::SFML::Update(window, deltaTime);
 
-        UI::draw();
+        ui.draw();
 
         window.clear();
-        UI::sfmlDraw(window);
+        ui.sfmlDraw(window);
         ImGui::SFML::Render(window);
         window.display();
     }
@@ -64,8 +61,5 @@ int App::run(int argc, char** argv)
 
 void App::update(int deltaTime)
 {
-    if (clock.cycle(deltaTime))
-    {
-        computer.cycle();
-    }
+    computer.cycle(deltaTime);
 }

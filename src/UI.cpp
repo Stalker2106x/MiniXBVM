@@ -5,20 +5,19 @@
 #include "App.hh"
 #include "Cc/Cc.hh"
 #include "bitset_utils.hh"
+#include "utils.hh"
 #include "Cc/examples.h"
 #include "Editor/LanguageDef.hh"
 #include <imgui_internal.h>
 
-ImFontAtlas* UI::FontAtlas = NULL;
+std::unique_ptr<UI> UI::instance = nullptr;
 
-sf::Texture UI::backgroundTexture;
-sf::Sprite UI::backgroundSprite;
-
-TextEditor UI::asmEditor;
-
-bool UI::validMachineProgram;
-char *UI::machineProgram = new char[2048];
-char *UI::infoModalText = new char[2048];
+UI::UI()
+{
+    machineProgram = new char[2048];
+    infoModalText = new char[2048];
+    UI::instance = std::unique_ptr<UI>(this);
+}
 
 void UI::init()
 {
@@ -30,11 +29,38 @@ void UI::init()
 
     backgroundTexture.loadFromFile("Data/img/background.jpg");
     backgroundSprite.setTexture(backgroundTexture);
+    _showHelp = true;
+}
+
+void UI::menuBar()
+{
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("Help")) {
+            if(ImGui::MenuItem("About"))
+            {
+                //Do something
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 }
 
 void UI::draw()
 {
-    bool computerOn = (App::computer.getState() == Computer::State::Running);
+    menuBar();
+    vmWindow();
+    programmerWindow();
+    help();
+
+    // Rendering
+    ImGui::Render();
+}
+
+void UI::vmWindow()
+{
+    Computer &computer = App::instance->computer;
+    bool computerOn = (computer.getState() == Computer::State::Running);
     //Main Panel
     ImGui::Begin("VM", NULL);
 
@@ -42,25 +68,23 @@ void UI::draw()
     {
         ImGui::Text("Output: ");
         ImGui::SameLine();
-        ImGui::PushFont(FontAtlas->Fonts[Segment]);
-        ImGui::Text("%s", App::computer.getOutput().c_str());
+        ImGui::PushFont(fontAtlas->Fonts[Segment]);
+        ImGui::Text("%s", computer.getOutput().c_str());
         ImGui::PopFont();
     }
 
-    if (ImGui::CollapsingHeader("Clock", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Computer", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        const float *data = App::clock.getHistoryData();
-        ImGui::PlotHistogram("", data, 200, 0, NULL, 0.0f, 1.0f, ImVec2(0, 20.0f));
-        ImGui::Text("Tick: %d", App::clock.getTick());
-        ImGui::Text("Frequency: %d Hz", App::clock.getFrequency());
-        int freqSlider = (int)App::clock.getFrequency();
+        ImGui::Text("Tick: %d", computer.clock.getTick());
+        ImGui::Text("Frequency: %d Hz", computer.clock.getFrequency());
+        int freqSlider = (int)computer.clock.getFrequency();
         if (ImGui::SliderInt("Frequency (0-300Hz)", &freqSlider, 0, 300))
         {
-            App::clock.setFrequency(freqSlider);
+            computer.clock.setFrequency(freqSlider);
         }
-        ImGui::Text("State: %s", (App::clock.getState() == Clock::State::Running ? "Running" : "Paused"));
+        ImGui::Text("State: %s", (computer.clock.getState() == Clock::State::Running ? "Running" : "Paused"));
         ImGui::Text("Control: ");
-        ImGui::PushFont(FontAtlas->Fonts[Icons]);
+        ImGui::PushFont(fontAtlas->Fonts[Icons]);
 
         if (!computerOn)
         {
@@ -68,19 +92,19 @@ void UI::draw()
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
         }
             //Pause/Resume
-            if (ImGui::Button((App::clock.getState() == Clock::State::Running ? ICON_PAUSE : ICON_PLAY), ImVec2(30, 30))) // Pause / Play
+            if (ImGui::Button((computer.clock.getState() == Clock::State::Running ? ICON_PAUSE : ICON_PLAY), ImVec2(30, 30))) // Pause / Play
             {
-                App::clock.toggle();
+                computer.clock.toggle();
             }
             ImGui::PopFont();
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(App::clock.getState() == Clock::State::Running ? "Pause clock" : "Resume clock");
+                ImGui::SetTooltip(computer.clock.getState() == Clock::State::Running ? "Pause clock" : "Resume clock");
             ImGui::SameLine();
-            ImGui::PushFont(FontAtlas->Fonts[Icons]);
+            ImGui::PushFont(fontAtlas->Fonts[Icons]);
             // Next Button
             if (ImGui::Button(ICON_NEXT, ImVec2(30, 30))) //Next
             {
-                App::clock.nextStep();
+                computer.clock.nextStep();
             }
             ImGui::PopFont();
             if (ImGui::IsItemHovered())
@@ -90,80 +114,55 @@ void UI::draw()
             ImGui::PopItemFlag();
             ImGui::PopStyleVar();
         }
-    }
+        ImGui::SameLine();
+        ImGui::PushFont(fontAtlas->Fonts[Icons]);
+        if (ImGui::Button(ICON_RESTART, ImVec2(30, 30))) // Restart
+        {
+            computer.restart();
+        }
+        ImGui::PopFont();
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Restart Computer (Resets all registers)");
+        ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, true).c_str());
+        ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, true).c_str());
+        ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, true).c_str(), computer.getInstruction().c_str());
+        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, true).c_str());
+        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, true).c_str());
+        ImGui::Text("Status Register: %s", computer.getFlags().c_str());
+        ImGui::Text("Output Register: %s", computer.dumpRegister(Output, true).c_str());
 
-    if (ImGui::CollapsingHeader("Computer", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::PushFont(FontAtlas->Fonts[Icons]);
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4((computerOn ? ImColor(0, 255, 0) : ImColor(255, 0, 0))));
-        if (ImGui::Button(ICON_POWER, ImVec2(30, 30))) // Restart
+        if (ImGui::CollapsingHeader("Memory (RAM)", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            if (computerOn) App::computer.halt();
-            else App::computer.start();
-        }
-        ImGui::PopStyleColor();
-        if (!computerOn)
-        {
-            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-        }
+            ImGui::Text("Memory (%d/%d):", computer.getMemoryUsedSize(MemoryType::RAM), computer.getMemorySize(MemoryType::RAM));
             ImGui::SameLine();
-            if (ImGui::Button(ICON_RESTART, ImVec2(30, 30))) // Restart
+            ImGui::ProgressBar(float(computer.getMemoryUsedSize(MemoryType::RAM)) / float(computer.getMemorySize(MemoryType::RAM)), ImVec2(0.0f, 0.0f));
+            ImGui::SameLine();
+            ImGui::PushFont(fontAtlas->Fonts[Icons]);
+            if (ImGui::Button(ICON_ERASE, ImVec2(30, 30))) // Restart
             {
-                App::computer.restart();
+                computer.reset();
             }
             ImGui::PopFont();
             if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Restart Computer (Reset all registers)");
-            ImGui::SameLine();
-            ImGui::PushFont(FontAtlas->Fonts[Icons]);
-            if (ImGui::Button(ICON_RESET, ImVec2(30, 30))) // Reset
+                ImGui::SetTooltip("Empty RAM (Restarts computer)");
+            ImGui::Columns(2, "Bar"); // 4-ways, with border
+            ImGui::Separator();
+            ImGui::Text("Adress"); ImGui::NextColumn();
+            ImGui::Text("Data"); ImGui::NextColumn();
+            ImGui::Separator();
+            auto ramDump = computer.dumpMemory(MemoryType::RAM, true);
+            for (int i = 0; i < ramDump.size(); i++)
             {
-                App::clock.reset();
-                App::computer.reset();
+                ImGui::Text("0x%s", ramDump[i].first.c_str());    ImGui::NextColumn();
+                ImGui::Text("%s", ramDump[i].second.c_str());   ImGui::NextColumn();
             }
-            ImGui::PopFont();
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Reset Computer (Reset everything)");
-            ImGui::Text("State: %s", (App::computer.getState() == Computer::State::Running ? "Running" : "Off"));
-            ImGui::Text("Program Counter: %s", App::computer.dumpRegister(ProgramCounter).c_str());
-            ImGui::Text("Memory Adress Registry: %s", App::computer.dumpRegister(MemoryAdressRegistry).c_str());
-            ImGui::Text("Instruction Register: %s", App::computer.dumpRegister(InstructionRegister).c_str());
-            ImGui::Text("Instruction: %s", App::computer.getInstruction().c_str());
-            ImGui::Text("Accumulator: %s", App::computer.dumpRegister(Accumulator).c_str());
-            ImGui::Text("B Register: %s", App::computer.dumpRegister(Bregister).c_str());
-            ImGui::Text("Output Register: %s", App::computer.dumpRegister(Output).c_str());
-
-            if (ImGui::CollapsingHeader("Memory (RAM)", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                ImGui::ProgressBar(App::computer.getMemoryUsedSize(MemoryType::RAM) / App::computer.getMemorySize(MemoryType::RAM), ImVec2(0.0f, 0.0f));
-                ImGui::Columns(2, "Bar"); // 4-ways, with border
-                ImGui::Separator();
-                ImGui::Text("Adress"); ImGui::NextColumn();
-                ImGui::Text("Variable"); ImGui::NextColumn();
-                ImGui::Separator();
-                auto ramDump = App::computer.dumpMemory(MemoryType::RAM);
-                for (int i = 0; i < ramDump.size(); i++)
-                {
-                    ImGui::Text("0x%s", ramDump[i].first.c_str());    ImGui::NextColumn();
-                    ImGui::Text("%s", ramDump[i].second.c_str());   ImGui::NextColumn();
-                }
-                ImGui::Columns(1);
-                ImGui::Separator();
-            }
-        if (!computerOn)
-        {
-            ImGui::PopItemFlag();
-            ImGui::PopStyleVar();
+            ImGui::Columns(1);
+            ImGui::Separator();
         }
     }
-
-    programmerWindow();
 
     ImGui::End();
 
-    // Rendering
-    ImGui::Render();
 }
 
 void UI::programmerWindow()
@@ -201,7 +200,10 @@ void UI::programmerWindow()
     {
         memset(machineProgram, 0, 2047);
         std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText(), validMachineProgram);
-        strncpy(machineProgram, code.c_str(), code.length()-1);
+        if (validMachineProgram)
+        {
+            strncpy(machineProgram, code.c_str(), code.length()-1);
+        }
     }
     ImGui::SameLine();
     if (!validMachineProgram)
@@ -217,7 +219,7 @@ void UI::programmerWindow()
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::computer.writeMemory(MemoryType::RAM, address, std::bitset<DWORD_SIZE>(buffer));
+            App::instance->computer.writeMemory(MemoryType::RAM, address, std::bitset<DWORD_SIZE>(buffer));
             ++address;
         }
     }
@@ -226,6 +228,21 @@ void UI::programmerWindow()
         ImGui::PopItemFlag();
         ImGui::PopStyleVar();
     }
+    ImGui::End();
+}
+
+
+void UI::help()
+{
+    if (!_showHelp) return;
+    ImGui::Begin("Help", NULL);
+
+    ImGui::Text("Welcome to Mini8BVM, the 8-Bit CPU Emulator Written in C++");
+    if (ImGui::Button("Dismiss"))
+    {
+        _showHelp = false;
+    }
+
     ImGui::End();
 }
 

@@ -14,12 +14,12 @@ public:
   };
 
   Clock();
-  unsigned int getFrequency();
+  unsigned int getFrequency() const;
   void setFrequency(unsigned int value);
-  size_t getTick();
-  State getState();
+  size_t getTick() const;
+  State getState() const;
   void reset();
-  const float *getHistoryData();
+  const bool isTickTriggered() const;
   void setState(Clock::State state);
   void toggle();
   void nextStep();
@@ -28,7 +28,7 @@ public:
 private:
   State _state;
   size_t _tick;
-  std::vector<float> _historyData;
+  bool _tickTriggered;
   unsigned int _clockTimer;
   unsigned int _dataTimer;
   unsigned int _frequency;
