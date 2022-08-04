@@ -37,7 +37,7 @@ add_executable(Mini8BVM ${source_files})
 # SFML
 set(SFML_STATIC_LIBRARIES FALSE)
 set(SFML_DIR ${CMAKE_SOURCE_DIR}/thirdparty/SFML/build)
-find_package(SFML 2.5 COMPONENTS audio graphics window system)
+find_package(SFML 2.5.1 COMPONENTS audio graphics window system)
 if(NOT SFML_FOUND)
     message(FATAL_ERROR "Could not find SFML")
 endif()

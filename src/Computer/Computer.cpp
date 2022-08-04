@@ -2,6 +2,8 @@
 #include "Computer/Computer.hh"
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
+#include "App.hh"
+#include "utils.hh"
 
 Computer::Computer()
 {
@@ -11,11 +13,13 @@ Computer::Computer()
 void Computer::start()
 {
   _state = Running;
+  clock.reset();
 }
 
 void Computer::halt()
 {
   _state = Off;
+  clock.setState(Clock::State::Paused);
 }
 
 void Computer::restart()
@@ -26,47 +30,53 @@ void Computer::restart()
   _accumulator.clear();
   _Breg.clear();
   _output.clear();
+  _SR.clear();
   start();
 }
 
 void Computer::reset()
 {
-  restart();
   _RAM.clear();
+  restart();
 }
 
-Computer::State Computer::getState()
+Computer::State Computer::getState() const
 {
   return (_state);
 }
 
-std::string Computer::dumpRegister(RegisterType regType)
+std::string Computer::dumpRegister(RegisterType regType, bool format) const
 {
+  auto dump = std::string();
   switch (regType)
   {
     case ProgramCounter:
-      return (_PC.read().to_string());
+      dump = _PC.read().to_string();
       break;
     case MemoryAdressRegistry:
-      return (_MAR.read().to_string());
+      dump = _MAR.read().to_string();
       break;
     case InstructionRegister:
-      return (_IR.read().to_string());
+      dump = _IR.read().to_string();
       break;
     case Accumulator:
-      return (_accumulator.read().to_string());
+      dump = _accumulator.read().to_string();
       break;
     case Bregister:
-      return (_Breg.read().to_string());
+      dump = _Breg.read().to_string();
       break;
     case Output:
-      return (_output.read().to_string());
+      dump = _output.read().to_string();
+      break;
+    case Status:
+      dump = _SR.read().to_string();
       break;
   }
-  return (std::string(""));
+  if (format) dump = formatBinaryString(dump);
+  return (dump);
 }
 
-size_t Computer::getMemorySize(MemoryType memType)
+size_t Computer::getMemorySize(MemoryType memType) const
 {
   switch (memType)
   {
@@ -77,7 +87,7 @@ size_t Computer::getMemorySize(MemoryType memType)
   return (0);
 }
 
-size_t Computer::getMemoryUsedSize(MemoryType memType)
+size_t Computer::getMemoryUsedSize(MemoryType memType) const
 {
   switch (memType)
   {
@@ -88,23 +98,31 @@ size_t Computer::getMemoryUsedSize(MemoryType memType)
   return (0);
 }
 
-std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType memType)
+std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType memType, bool format) const
 {
+  auto dump = std::vector<std::pair<std::string, std::string>>();
   switch (memType)
   {
     case RAM:
-      return (_RAM.dump());
+      dump = _RAM.dump();
       break;
   }
-  return (std::vector<std::pair<std::string, std::string>>());
+  if (format)
+  {
+    for (size_t i = 0; i < dump.size(); i++)
+    {
+      dump[i].second = formatBinaryString(dump[i].second);
+    }
+  }
+  return (dump);
 }
 
-std::string Computer::getOutput()
+std::string Computer::getOutput() const
 {
   return (std::to_string(_output.read().to_ulong()));
 }
 
-std::string Computer::getInstruction()
+std::string Computer::getInstruction() const
 {
   word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
@@ -115,16 +133,34 @@ std::string Computer::getInstruction()
   return ("XXX");
 }
 
-void Computer::cycle()
+std::string Computer::getFlags() const
+{
+  std::string res = "";
+  auto state = _SR.read();
+  if (state[0] == 1)
+    res += "CY";
+  else
+    res += "--";
+  if (state[1] == 1)
+    res += "ZR";
+  else
+    res += "--";
+  return (res);
+}
+
+void Computer::cycle(int deltaTime)
 {
   if (_state != Running) return;
-  ++_PC;
-  _MAR = _PC;
-  _IR.write(_RAM[_MAR.read()].read()); //Rea)d the current instruction and store it in instruction registr
-  word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
-  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
-  if (defIt != instructionsSet.end())
+  if (clock.cycle(deltaTime))
   {
-    defIt->executor(*this);
+    ++_PC;
+    _MAR = _PC;
+    _IR.write(_RAM[_MAR.read()].read()); //Read the current instruction and store it in instruction registr
+    word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+    auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
+    if (defIt != instructionsSet.end())
+    {
+      defIt->executor(*this);
+    }
   }
 }

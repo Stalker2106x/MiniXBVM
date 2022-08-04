@@ -2,7 +2,6 @@
 #define MEMORY_HH_
 
 #include <algorithm>
-#include <iostream>
 #include <unordered_map>
 #include <vector>
 #include <bitset>
@@ -28,7 +27,7 @@ public:
     _data[address].write(value);
   }
 
-  const std::bitset<RegSize> read(const std::bitset<AddrSize> address)
+  const std::bitset<RegSize> read(const std::bitset<AddrSize> address) const
   {
     return (_data[address].read());
   }
@@ -38,35 +37,35 @@ public:
     std::for_each(_data.begin(), _data.end(), [&](std::pair<std::bitset<AddrSize>, Register<RegSize>> item) { item.second.clear(); });
   }
 
-  size_t getSize()
+  size_t getSize() const
   {
     return (pow(2, AddrSize));
   }
 
-  size_t getUsedSize()
+  size_t getUsedSize() const
   {
     size_t size = 0;
     std::bitset<RegSize> emptyReg = std::bitset<RegSize>(0);
     for (auto it = _data.begin(); it != _data.end(); it++)
     {
-      if (it->second.read() == emptyReg) break;
+      if (it->second.read() != emptyReg) size += 1;
     }
     return (size);
   }
 
-  Register<RegSize> operator[](std::bitset<AddrSize> address)
+  Register<RegSize> operator[](std::bitset<AddrSize> address) const
   {
-    return (_data[address]);
+    return (_data.at(address));
   }
 
-  std::vector<std::pair<std::string, std::string>> dump()
+  std::vector<std::pair<std::string, std::string>> dump() const
   {
     std::bitset<AddrSize> lastAddress = std::bitset<AddrSize>(getSize()-1);
     std::vector<std::pair<std::string, std::string>> dump;
 
     for (std::bitset<AddrSize> it = std::bitset<AddrSize>(0); it < lastAddress; ++it)
     {
-      dump.push_back(std::make_pair(it.to_string(), _data[it].read().to_string()));
+      dump.push_back(std::make_pair(it.to_string(), _data.at(it).read().to_string()));
     }
     return (dump);
   }

@@ -3,5 +3,6 @@
 
 int main(int argc, char **argv)
 {
-  return (App::run(argc, argv));
+  auto app = App();
+  return (app.run(argc, argv));
 }

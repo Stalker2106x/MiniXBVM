@@ -19,7 +19,7 @@ public:
     _data = value;
   }
 
-  const std::bitset<RegSize> read()
+  const std::bitset<RegSize> read() const
   {
     return (_data);
   }

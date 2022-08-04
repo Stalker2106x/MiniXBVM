@@ -6,20 +6,22 @@
 
 #include "UI.hh"
 #include "Computer/Computer.hh"
-#include "Clock.hh"
 
 class App
 {
 public:
-    static int run(int argc, char** argv);
-    static void update(int deltaTime);
-    static void draw();
+  App();
+  int run(int argc, char** argv);
+  void update(int deltaTime);
+  void draw();
 
-  static Computer computer;
-  static Clock clock;
+  Computer computer;
+  UI ui;
+
+  static std::unique_ptr<App> instance;
 
 private:
-  static int oldTimeSinceStart;
+  int oldTimeSinceStart;
 };
 
 #endif /* !APP_HH_ */
