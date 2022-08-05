@@ -6,6 +6,7 @@
 #include "Computer/Register.hh"
 #include "config.h"
 #include "Clock.hh"
+#include "utils.hh"
 
 enum RegisterType {
   ProgramCounter,
@@ -48,10 +49,10 @@ public:
     }
   }
 
-  std::string dumpRegister(RegisterType regType, bool format) const;
+  std::string dumpRegister(RegisterType regType, Base base) const;
   size_t getMemorySize(MemoryType memType) const;
   size_t getMemoryUsedSize(MemoryType memType) const;
-  std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType, bool format) const;
+  std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType, Base addrBase, Base valueBase) const;
   std::string getOutput() const;
   std::string getInstruction() const;
   std::string getFlags() const;
@@ -69,7 +70,7 @@ public:
   Clock clock;
 private:
   State _state;
-  Memory<WORD_SIZE, DWORD_SIZE> _RAM;
+  Memory<ADDRESS_SIZE, DWORD_SIZE> _RAM;
 
   Register<WORD_SIZE> _PC;
   Register<WORD_SIZE> _MAR;

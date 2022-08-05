@@ -27,7 +27,7 @@ public:
                 if (sep == std::string::npos) //no separator, check if is data
                 {
                     try {
-                        output += binStringFromInt128<WordSize*2>(int128FromString(asmCode)) + '\n';
+                        output += bitsetToString(Base::Bin, std::bitset<DWORD_SIZE>(int128FromString(asmCode))) + '\n';
                         continue; //We consider it processed
                     } catch (...) {
                         //It was not data, continue gracefully...

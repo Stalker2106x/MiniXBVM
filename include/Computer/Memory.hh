@@ -58,16 +58,9 @@ public:
     return (_data.at(address));
   }
 
-  std::vector<std::pair<std::string, std::string>> dump() const
+  std::unordered_map<std::bitset<AddrSize>, Register<RegSize>> read() const
   {
-    std::bitset<AddrSize> lastAddress = std::bitset<AddrSize>(getSize()-1);
-    std::vector<std::pair<std::string, std::string>> dump;
-
-    for (std::bitset<AddrSize> it = std::bitset<AddrSize>(0); it < lastAddress; ++it)
-    {
-      dump.push_back(std::make_pair(it.to_string(), _data.at(it).read().to_string()));
-    }
-    return (dump);
+    return (_data);
   }
 
 private:

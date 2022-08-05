@@ -43,6 +43,8 @@ public:
 
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
+    sf::Texture logoTexture;
+    sf::Sprite logoSprite;
 
     TextEditor asmEditor;
 

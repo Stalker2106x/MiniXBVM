@@ -29,7 +29,11 @@ void UI::init()
 
     backgroundTexture.loadFromFile("Data/img/background.jpg");
     backgroundSprite.setTexture(backgroundTexture);
-    _showHelp = true;
+
+    logoTexture.loadFromFile("Data/img/logo.png");
+    logoSprite.setTexture(logoTexture);
+
+    _showHelp = false;
 }
 
 void UI::menuBar()
@@ -38,7 +42,7 @@ void UI::menuBar()
         if (ImGui::BeginMenu("Help")) {
             if(ImGui::MenuItem("About"))
             {
-                //Do something
+                _showHelp = true;
             }
             ImGui::EndMenu();
         }
@@ -66,8 +70,6 @@ void UI::vmWindow()
 
     if (ImGui::CollapsingHeader("Display", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        ImGui::Text("Output: ");
-        ImGui::SameLine();
         ImGui::PushFont(fontAtlas->Fonts[Segment]);
         ImGui::Text("%s", computer.getOutput().c_str());
         ImGui::PopFont();
@@ -123,13 +125,13 @@ void UI::vmWindow()
         ImGui::PopFont();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Restart Computer (Resets all registers)");
-        ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, true).c_str());
-        ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, true).c_str());
-        ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, true).c_str(), computer.getInstruction().c_str());
-        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, true).c_str());
-        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, true).c_str());
+        ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, Base::Bin).c_str());
+        ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, Base::Bin).c_str());
+        ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, Base::Bin).c_str(), computer.getInstruction().c_str());
+        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, Base::Bin).c_str());
+        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, Base::Bin).c_str());
         ImGui::Text("Status Register: %s", computer.getFlags().c_str());
-        ImGui::Text("Output Register: %s", computer.dumpRegister(Output, true).c_str());
+        ImGui::Text("Output Register: %s", computer.dumpRegister(Output, Base::Bin).c_str());
 
         if (ImGui::CollapsingHeader("Memory (RAM)", ImGuiTreeNodeFlags_DefaultOpen))
         {
@@ -150,7 +152,7 @@ void UI::vmWindow()
             ImGui::Text("Adress"); ImGui::NextColumn();
             ImGui::Text("Data"); ImGui::NextColumn();
             ImGui::Separator();
-            auto ramDump = computer.dumpMemory(MemoryType::RAM, true);
+            auto ramDump = computer.dumpMemory(MemoryType::RAM, Base::Hex, Base::Bin);
             for (int i = 0; i < ramDump.size(); i++)
             {
                 ImGui::Text("0x%s", ramDump[i].first.c_str());    ImGui::NextColumn();
@@ -237,6 +239,7 @@ void UI::help()
     if (!_showHelp) return;
     ImGui::Begin("Help", NULL);
 
+    ImGui::Image(logoSprite);
     ImGui::Text("Welcome to Mini8BVM, the 8-Bit CPU Emulator Written in C++");
     if (ImGui::Button("Dismiss"))
     {
