@@ -2,7 +2,6 @@
 #define BITSET_ARITHMETIC_HH_
 
 #include <stdexcept>
-#include <bitset>
 #include "config.h"
 
 bool fullAdder(bool b1, bool b2, bool& carry);

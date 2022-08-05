@@ -1,6 +1,6 @@
 #include "Computer/Register.hh"
 
-Register::Register(const int regSize)
+Register::Register(const int regSize) : _data(regSize, 0)
 {
 
 }
@@ -45,7 +45,7 @@ Register Register::operator+=(Register& rhs)
 
 Register Register::operator++()
 {
-    _data = _data + bitset(_regSize, 0b1);
+    _data = _data + bitset(_regSize, 1);
     return (*this);
 }
 

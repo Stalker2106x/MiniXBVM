@@ -77,6 +77,6 @@ bitset operator+=(bitset lhs, const bitset& rhs)
 
 bitset operator++(bitset& rhs)
 {
-  rhs = rhs + bitset(rhs.size(), 0b1);
+  rhs = rhs + bitset(rhs.size(), 1);
   return (rhs);
 }
