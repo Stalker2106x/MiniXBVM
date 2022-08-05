@@ -5,6 +5,7 @@
 #include <imgui-SFML.h>
 
 #include "UI.hh"
+#include "Cc/Cc.hh"
 #include "Computer/Computer.hh"
 
 class App
@@ -17,6 +18,7 @@ public:
 
   Computer computer;
   UI ui;
+  Cc cc;
 
   static std::unique_ptr<App> instance;
 

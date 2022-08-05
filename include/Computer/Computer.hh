@@ -30,7 +30,7 @@ public:
     Running
   };
 
-  Computer();
+  Computer(int addrSize, int regSize);
 
   void start();
   void halt();
@@ -38,17 +38,7 @@ public:
   void reset();
   State getState() const;
 
-  template<wordSizeType AddrSize, wordSizeType RegSize>
-  void writeMemory(MemoryType memType, std::bitset<AddrSize> address, std::bitset<RegSize> value)
-  {
-    switch (memType)
-    {
-      case RAM:
-        _RAM.write(address, value);
-        break;
-    }
-  }
-
+  void writeMemory(MemoryType memType, bitset address, bitset value);
   std::string dumpRegister(RegisterType regType, Base base) const;
   size_t getMemorySize(MemoryType memType) const;
   size_t getMemoryUsedSize(MemoryType memType) const;
@@ -70,15 +60,15 @@ public:
   Clock clock;
 private:
   State _state;
-  Memory<ADDRESS_SIZE, DWORD_SIZE> _RAM;
+  Memory _RAM;
 
-  Register<WORD_SIZE> _PC;
-  Register<WORD_SIZE> _MAR;
-  Register<DWORD_SIZE> _IR;
-  Register<DWORD_SIZE> _accumulator;
-  Register<DWORD_SIZE> _Breg;
-  Register<WORD_SIZE> _SR;
-  Register<DWORD_SIZE> _output;
+  Register _PC;
+  Register _MAR;
+  Register _IR;
+  Register _accumulator;
+  Register _Breg;
+  Register _SR;
+  Register _output;
 };
 
 #endif /* !COMPUTER_HH_ */

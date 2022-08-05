@@ -5,99 +5,39 @@
 #include <array>
 #include <bitset>
 #include "config.h"
-template <wordSizeType RegSize>
+#include "bitset_utils.hh"
+
 class Register
 {
 public:
-  Register() {};
-  Register(const std::bitset<RegSize> data)
-  : _data(data)
-  {};
+  Register(const int regSize);
+  Register(const bitset data);
 
-  void write(const std::bitset<RegSize> value)
-  {
-    _data = value;
-  }
+  void write(const bitset value);
 
-  const std::bitset<RegSize> read() const
-  {
-    return (_data);
-  }
+  const bitset read() const;
 
-  void clear()
-  {
-    _data = std::bitset<RegSize>(0);
-  }
+  void clear();
 
 private:
-  std::bitset<RegSize> _data;
+  int _regSize;
+  bitset _data;
 
   /*********************
   ** OPERATORS OVERLOAD
   *********************/
 public:
-  Register<RegSize> operator=(Register<RegSize>& rhs)
-  {
-    _data = rhs.read();
-    return (*this);
-  }
-
-  Register<RegSize> operator+=(Register<RegSize>& rhs)
-  {
-    _data = _data + rhs._data;
-    return (*this);
-  }
-
-  Register<RegSize> operator++()
-  {
-    _data = _data + std::bitset<RegSize>(0b1);
-    return (*this);
-  }
-
-  Register<RegSize> operator-=(const Register<RegSize>& rhs)
-  {
-    _data = _data - rhs._data;
-    return (*this);
-  }
-
-  Register<RegSize> operator*=(const Register<RegSize>& rhs)
-  {
-    _data = _data * rhs._data;
-    return (*this);
-  }
-
-  Register<RegSize> operator+(const Register<RegSize>& rhs) const
-  {
-    return (_data + rhs.read());
-  }
-
-  Register<RegSize> operator-(const Register<RegSize>& rhs) const
-  {
-    return (_data - rhs.read());
-  }
-
-  Register<RegSize> operator*(const Register<RegSize>& rhs) const
-  {
-    return (_data * rhs.read());
-  }
-
-  Register<RegSize> operator+(const std::bitset<RegSize>& rhs) const
-  {
-    _data = (_data + rhs);
-    return (*this);
-  }
-
-  Register<RegSize> operator-(const std::bitset<RegSize>& rhs) const
-  {
-    _data = (_data - rhs);
-    return (*this);
-  }
-  
-  Register<RegSize> operator*(const std::bitset<RegSize>& rhs) const
-  {
-    _data = (_data * rhs);
-    return (*this);
-  }
+  Register operator=(Register& rhs);
+  Register operator+=(Register& rhs);
+  Register operator++();
+  Register operator-=(const Register& rhs);
+  Register operator*=(const Register& rhs);
+  Register operator+(const Register& rhs) const;
+  Register operator-(const Register& rhs) const;
+  Register operator*(const Register& rhs) const;
+  Register operator+(const bitset& rhs);
+  Register operator-(const bitset& rhs);
+  Register operator*(const bitset& rhs);
 };
 
 #endif /* !REGISTER_HH_ */

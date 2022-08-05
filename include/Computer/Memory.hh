@@ -7,69 +7,25 @@
 #include <bitset>
 #include <cmath>
 #include "Computer/Register.hh"
+#include "utils.hh"
 
-template <wordSizeType AddrSize, wordSizeType RegSize>
 class Memory
 {
 public:
-  Memory()
-  {
-    std::bitset<AddrSize> lastAddress = std::bitset<AddrSize>(getSize()-1);
+  Memory(const int addrSize, const int regSize);
 
-    for (std::bitset<AddrSize> it = std::bitset<AddrSize>(0); it < lastAddress; ++it)
-    {
-      _data.emplace(it, Register<RegSize>());
-    }
-  }
-
-  void write(const std::bitset<AddrSize> address, const std::bitset<RegSize> value)
-  {
-    _data[address].write(value);
-  }
-
-  const std::bitset<RegSize> read(const std::bitset<AddrSize> address) const
-  {
-    return (_data[address].read());
-  }
-
-  void clear()
-  {
-    std::bitset<AddrSize> lastAddress = std::bitset<AddrSize>(getSize()-1);
-
-    for (std::bitset<AddrSize> it = std::bitset<AddrSize>(0); it < lastAddress; ++it)
-    {
-      _data.at(it).clear();
-    }
-  }
-
-  size_t getSize() const
-  {
-    return (pow(2, AddrSize));
-  }
-
-  size_t getUsedSize() const
-  {
-    size_t size = 0;
-    std::bitset<RegSize> emptyReg = std::bitset<RegSize>(0);
-    for (auto it = _data.begin(); it != _data.end(); it++)
-    {
-      if (it->second.read() != emptyReg) size += 1;
-    }
-    return (size);
-  }
-
-  Register<RegSize> operator[](std::bitset<AddrSize> address) const
-  {
-    return (_data.at(address));
-  }
-
-  std::unordered_map<std::bitset<AddrSize>, Register<RegSize>> read() const
-  {
-    return (_data);
-  }
+  void write(const bitset address, const bitset value);
+  const bitset read(const bitset address) const;
+  void clear();
+  size_t getSize() const;
+  size_t getUsedSize() const;
+  Register operator[](bitset address) const;
+  std::unordered_map<bitset, Register, BitsetHash> read() const;
 
 private:
-  std::unordered_map<std::bitset<AddrSize>, Register<RegSize>> _data;
+  int _addrSize;
+  int _regSize;
+  std::unordered_map<bitset, Register, BitsetHash> _data;
 };
 
 #endif /* !MEMORY_HH_ */

@@ -1,7 +1,7 @@
 #include <bitset>
 #include "utils.hh"
 
-long long int int128FromString(std::string str)
+long long int intFromString(std::string str)
 {
   if (str.length() > 1)
   {
@@ -27,6 +27,33 @@ long long int int128FromString(std::string str)
   ss << str;
   ss >> res;
   return (res);
+}
+
+
+std::string bitsetToString(Base base, bitset set, bool addSpaces)
+{
+    if (base == Base::ASCII) return (std::to_string(intFromString(set.to_string())));
+    std::stringstream ss;
+    if (base == Base::Bin)
+    {
+        std::string str = set.to_string();
+        for (int i = 0; i < str.size(); i++)
+        {
+            if (addSpaces && i != 0 && (i % 8 == 0))
+            {
+                std::cout << "added at" << i << " for " << str;
+                ss << ' ';
+            }
+            ss << str[i];
+        }
+    }
+    else //Dec, Hex, Oct
+    {
+        if (base == Base::Hex) ss << "0x" << std::hex;
+        if (base == Base::Oct) ss << "0" << std::oct;
+        ss << std::uppercase << intFromString(set.to_string());
+    }
+    return (ss.str());
 }
 
 std::string baseToLabel(Base base)

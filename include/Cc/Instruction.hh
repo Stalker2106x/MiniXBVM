@@ -8,7 +8,6 @@
 #include "config.h"
 #include "utils.hh"
 
-template <wordSizeType CodeSize, wordSizeType OperandSize>
 class Instruction
 {
 public:
@@ -26,7 +25,7 @@ public:
                 asmCode = asmCode.substr(sep+1, asmCode.length());
                 if (!asmCode.empty())
                 {
-                    _operands.push_back(std::bitset<OperandSize>(int128FromString(asmCode)));
+                    _operands.push_back(bitset(WORD_SIZE, intFromString(asmCode)));
                 }
                 if (_operands.size() < _definition.operandCount)
                 {
@@ -47,12 +46,12 @@ public:
         {
             output += _operands[i].to_string();
         }
-        if (_definition.operandCount == 0) output += std::string(OperandSize, '0'); //Pad value
+        if (_definition.operandCount == 0) output += std::string(WORD_SIZE, '0'); //Pad value
         return (output);
     }
 private:
     InstructionDef _definition;
-    std::vector<std::bitset<OperandSize>> _operands;
+    std::vector<bitset> _operands;
 };
 
 #endif /* INSTRUCTION_HH_ */

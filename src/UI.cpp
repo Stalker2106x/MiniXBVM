@@ -246,7 +246,7 @@ void UI::programmerWindow()
     if (ImGui::Button("Compile"))
     {
         memset(machineProgram, 0, 2047);
-        std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText(), validMachineProgram);
+        std::string code = App::instance->cc.compile(asmEditor.GetText(), validMachineProgram);
         if (code.length() > 0)
         {
             strncpy(machineProgram, code.c_str(), code.length()-1);
@@ -262,11 +262,11 @@ void UI::programmerWindow()
     {
         std::istringstream ss(machineProgram);
         std::string buffer;
-        word address = word(0);
+        bitset address = bitset(WORD_SIZE, 0);
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer.writeMemory(MemoryType::RAM, address, std::bitset<DWORD_SIZE>(buffer));
+            App::instance->computer.writeMemory(MemoryType::RAM, address, bitset(DWORD_SIZE, intFromString(buffer)));
             ++address;
         }
     }

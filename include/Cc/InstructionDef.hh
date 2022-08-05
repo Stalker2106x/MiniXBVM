@@ -18,7 +18,7 @@ public:
     }
 
     std::string name;
-    word code;
+    bitset code;
     std::function<void(Computer&)> executor;
     size_t operandCount;
 };

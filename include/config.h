@@ -1,13 +1,14 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define WORD_SIZE 4
-#define DWORD_SIZE 8
-#define ADDRESS_SIZE 4
+#include <sul/dynamic_bitset.hpp>
+
+const int WORD_SIZE = 4;
+const int DWORD_SIZE = 4;
+const int ADDRESS_SIZE = 4;
 
 typedef size_t wordSizeType; //Has to match bitset type... <size_t>
 
-typedef std::bitset<WORD_SIZE> word;
-typedef std::bitset<DWORD_SIZE> dword;
+typedef sul::dynamic_bitset<> bitset;
 
 #endif /* !CONFIG_H_ */
