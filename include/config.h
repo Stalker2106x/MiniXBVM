@@ -1,10 +1,9 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#define WORD_SIZE 8
-#define DWORD_SIZE 16
-
-#define RAM_SIZE 16
+#define WORD_SIZE 4
+#define DWORD_SIZE 8
+#define ADDRESS_SIZE 4
 
 typedef size_t wordSizeType; //Has to match bitset type... <size_t>
 

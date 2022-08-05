@@ -1,4 +1,3 @@
-#include <sstream>
 #include <bitset>
 #include "utils.hh"
 
@@ -30,15 +29,12 @@ long long int int128FromString(std::string str)
   return (res);
 }
 
-std::string formatBinaryString(const std::string &str)
-{  
-  if (!str.size()) return "";
-  std::stringstream ss;
-
-  for (int i = 0; i < str.size(); i++)
-  {
-    if (i % 8 == 0) ss << ' ';
-    ss << str[i];
-  }
-  return ss.str();
+std::string baseToLabel(Base base)
+{
+  if (base == Base::Bin) return ("Bin");
+  else if (base == Base::Oct) return ("Oct");
+  else if (base == Base::Hex) return ("Hex");
+  else if (base == Base::Dec) return ("Dec");
+  else if (base == Base::ASCII) return ("ASCII");
+  else return ("?");
 }

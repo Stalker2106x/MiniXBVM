@@ -3,7 +3,6 @@
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
 #include "App.hh"
-#include "utils.hh"
 
 Computer::Computer()
 {
@@ -45,34 +44,33 @@ Computer::State Computer::getState() const
   return (_state);
 }
 
-std::string Computer::dumpRegister(RegisterType regType, bool format) const
+std::string Computer::dumpRegister(RegisterType regType, Base base) const
 {
   auto dump = std::string();
   switch (regType)
   {
     case ProgramCounter:
-      dump = _PC.read().to_string();
+      dump = bitsetToString(base, _PC.read(), true);
       break;
     case MemoryAdressRegistry:
-      dump = _MAR.read().to_string();
+      dump = bitsetToString(base, _MAR.read(), true);
       break;
     case InstructionRegister:
-      dump = _IR.read().to_string();
+      dump = bitsetToString(base, _IR.read(), true);
       break;
     case Accumulator:
-      dump = _accumulator.read().to_string();
+      dump = bitsetToString(base, _accumulator.read(), true);
       break;
     case Bregister:
-      dump = _Breg.read().to_string();
+      dump = bitsetToString(base, _Breg.read(), true);
       break;
     case Output:
-      dump = _output.read().to_string();
+      dump = bitsetToString(base, _output.read(), true);
       break;
     case Status:
-      dump = _SR.read().to_string();
+      dump = bitsetToString(base, _SR.read(), true);
       break;
   }
-  if (format) dump = formatBinaryString(dump);
   return (dump);
 }
 
@@ -98,21 +96,20 @@ size_t Computer::getMemoryUsedSize(MemoryType memType) const
   return (0);
 }
 
-std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType memType, bool format) const
+std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType memType, Base addrBase, Base valueBase) const
 {
   auto dump = std::vector<std::pair<std::string, std::string>>();
   switch (memType)
   {
     case RAM:
-      dump = _RAM.dump();
+      auto rawDump = _RAM.read();
+      std::bitset<ADDRESS_SIZE> lastAddress = std::bitset<ADDRESS_SIZE>(_RAM.getSize()-1);
+
+      for (std::bitset<ADDRESS_SIZE> it = std::bitset<ADDRESS_SIZE>(0); it < lastAddress; ++it)
+      {
+        dump.push_back(std::make_pair(bitsetToString(addrBase, it, true), bitsetToString(valueBase, rawDump.at(it).read(), true)));
+      }
       break;
-  }
-  if (format)
-  {
-    for (size_t i = 0; i < dump.size(); i++)
-    {
-      dump[i].second = formatBinaryString(dump[i].second);
-    }
   }
   return (dump);
 }

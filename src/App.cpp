@@ -21,7 +21,7 @@ int App::run(int argc, char** argv)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.Fonts->Clear();
     io.Fonts->AddFontDefault();
-    io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 32.0f);
+    io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 64.0f);
 
     static const ImWchar icon_ranges[] = { ICON_MIN_IONIC, ICON_MAX_IONIC, 0 };
     io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f, NULL, icon_ranges);

@@ -5,7 +5,6 @@
 #include "App.hh"
 #include "Cc/Cc.hh"
 #include "bitset_utils.hh"
-#include "utils.hh"
 #include "Cc/examples.h"
 #include "Editor/LanguageDef.hh"
 #include <imgui_internal.h>
@@ -29,7 +28,13 @@ void UI::init()
 
     backgroundTexture.loadFromFile("Data/img/background.jpg");
     backgroundSprite.setTexture(backgroundTexture);
-    _showHelp = true;
+
+    logoTexture.loadFromFile("Data/img/logo.png");
+    logoSprite.setTexture(logoTexture);
+
+    _showHelp = false;
+    _addrBase = Base::Bin;
+    _valueBase = Base::Bin;
 }
 
 void UI::menuBar()
@@ -38,7 +43,7 @@ void UI::menuBar()
         if (ImGui::BeginMenu("Help")) {
             if(ImGui::MenuItem("About"))
             {
-                //Do something
+                _showHelp = true;
             }
             ImGui::EndMenu();
         }
@@ -51,6 +56,7 @@ void UI::draw()
     menuBar();
     vmWindow();
     programmerWindow();
+    ramInspector();
     help();
 
     // Rendering
@@ -66,8 +72,6 @@ void UI::vmWindow()
 
     if (ImGui::CollapsingHeader("Display", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        ImGui::Text("Output: ");
-        ImGui::SameLine();
         ImGui::PushFont(fontAtlas->Fonts[Segment]);
         ImGui::Text("%s", computer.getOutput().c_str());
         ImGui::PopFont();
@@ -123,46 +127,88 @@ void UI::vmWindow()
         ImGui::PopFont();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Restart Computer (Resets all registers)");
-        ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, true).c_str());
-        ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, true).c_str());
-        ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, true).c_str(), computer.getInstruction().c_str());
-        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, true).c_str());
-        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, true).c_str());
+        ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, Base::Bin).c_str());
+        ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, Base::Bin).c_str());
+        ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, Base::Bin).c_str(), computer.getInstruction().c_str());
+        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, Base::Bin).c_str());
+        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, Base::Bin).c_str());
         ImGui::Text("Status Register: %s", computer.getFlags().c_str());
-        ImGui::Text("Output Register: %s", computer.dumpRegister(Output, true).c_str());
-
-        if (ImGui::CollapsingHeader("Memory (RAM)", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            ImGui::Text("Memory (%d/%d):", computer.getMemoryUsedSize(MemoryType::RAM), computer.getMemorySize(MemoryType::RAM));
-            ImGui::SameLine();
-            ImGui::ProgressBar(float(computer.getMemoryUsedSize(MemoryType::RAM)) / float(computer.getMemorySize(MemoryType::RAM)), ImVec2(0.0f, 0.0f));
-            ImGui::SameLine();
-            ImGui::PushFont(fontAtlas->Fonts[Icons]);
-            if (ImGui::Button(ICON_ERASE, ImVec2(30, 30))) // Restart
-            {
-                computer.reset();
-            }
-            ImGui::PopFont();
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip("Empty RAM (Restarts computer)");
-            ImGui::Columns(2, "Bar"); // 4-ways, with border
-            ImGui::Separator();
-            ImGui::Text("Adress"); ImGui::NextColumn();
-            ImGui::Text("Data"); ImGui::NextColumn();
-            ImGui::Separator();
-            auto ramDump = computer.dumpMemory(MemoryType::RAM, true);
-            for (int i = 0; i < ramDump.size(); i++)
-            {
-                ImGui::Text("0x%s", ramDump[i].first.c_str());    ImGui::NextColumn();
-                ImGui::Text("%s", ramDump[i].second.c_str());   ImGui::NextColumn();
-            }
-            ImGui::Columns(1);
-            ImGui::Separator();
-        }
+        ImGui::Text("Output Register: %s", computer.dumpRegister(Output, Base::Bin).c_str());
     }
 
     ImGui::End();
 
+}
+
+void UI::ramInspector()
+{
+    Computer &computer = App::instance->computer;
+    ImGui::Begin("RAM", NULL);
+
+    ImGui::Text("Memory (%d/%d):", computer.getMemoryUsedSize(MemoryType::RAM), computer.getMemorySize(MemoryType::RAM));
+    ImGui::SameLine();
+    ImGui::ProgressBar(float(computer.getMemoryUsedSize(MemoryType::RAM)) / float(computer.getMemorySize(MemoryType::RAM)), ImVec2(0.0f, 0.0f));
+    ImGui::SameLine();
+    ImGui::PushFont(fontAtlas->Fonts[Icons]);
+    if (ImGui::Button(ICON_ERASE, ImVec2(30, 30))) // Restart
+    {
+        computer.reset();
+    }
+    ImGui::PopFont();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Empty RAM (Restarts computer)");
+    //Array
+    const int COLUMNS_COUNT = 2;
+    if (ImGui::BeginTable("RAM", COLUMNS_COUNT, ImGuiTableFlags_Borders))
+    {
+        ImGui::TableSetupColumn("Adress");
+        ImGui::TableSetupColumn("Data");
+
+        // Instead of calling TableHeadersRow() we'll submit custom headers ourselves
+        ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+        for (int column = 0; column < COLUMNS_COUNT; column++)
+        {
+            ImGui::TableSetColumnIndex(column);
+            const char* column_name = ImGui::TableGetColumnName(column); // Retrieve name passed to TableSetupColumn()
+            ImGui::PushID(column);
+            ImGui::TableHeader(column_name);
+            ImGui::SameLine(ImGui::GetColumnWidth()-20);
+            if (ImGui::Button(baseToLabel(column == 0 ? _addrBase : _valueBase).c_str(), ImVec2(30, 20)))
+            {
+                if (column == 0)
+                {
+                    if (_addrBase == Base::Bin) _addrBase = Base::Oct;
+                    else if (_addrBase == Base::Oct) _addrBase = Base::Hex;
+                    else if (_addrBase == Base::Hex) _addrBase = Base::Dec;
+                    else if (_addrBase == Base::Dec) _addrBase = Base::Bin;
+                }
+                else if (column == 1)
+                {
+                    if (_valueBase == Base::Bin) _valueBase = Base::Oct;
+                    else if (_valueBase == Base::Oct) _valueBase = Base::Hex;
+                    else if (_valueBase == Base::Hex) _valueBase = Base::Dec;
+                    else if (_valueBase == Base::Dec) _valueBase = Base::ASCII;
+                    else if (_valueBase == Base::ASCII) _valueBase = Base::Bin;
+                }
+            }
+            ImGui::PopID();
+        }
+        auto ramDump = computer.dumpMemory(MemoryType::RAM, _addrBase, _valueBase);
+        for (int i = 0; i < ramDump.size(); i++)
+        {
+            bool active = (ramDump[i].first == computer.dumpRegister(ProgramCounter, _addrBase));
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            if (active) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(255, 0, 0)));
+            ImGui::Text("%s", ramDump[i].first.c_str());
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%s", ramDump[i].second.c_str());
+            if (active) ImGui::PopStyleColor();
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::End();
 }
 
 void UI::programmerWindow()
@@ -191,16 +237,17 @@ void UI::programmerWindow()
     }
 
     ImGui::Text("ASM Program");
-    asmEditor.Render("TextEditor", ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20));
-    //ImGui::InputTextMultiline("ASM", asmProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20));
+    ImVec2 avail_size = ImGui::GetContentRegionAvail();
+    asmEditor.Render("TextEditor", ImVec2(avail_size.x, avail_size.y / 2));
     ImGui::Text("Machine Program");
-    ImGui::InputTextMultiline("MC", machineProgram, 2047, ImVec2(ImGui::GetContentRegionAvailWidth(), ImGui::GetTextLineHeight() * 20), ImGuiInputTextFlags_ReadOnly);
+    avail_size = ImGui::GetContentRegionAvail();
+    ImGui::InputTextMultiline("MC", machineProgram, 2047, ImVec2(avail_size.x, avail_size.y - 20), ImGuiInputTextFlags_ReadOnly);
 
     if (ImGui::Button("Compile"))
     {
         memset(machineProgram, 0, 2047);
         std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText(), validMachineProgram);
-        if (validMachineProgram)
+        if (code.length() > 0)
         {
             strncpy(machineProgram, code.c_str(), code.length()-1);
         }
@@ -237,6 +284,7 @@ void UI::help()
     if (!_showHelp) return;
     ImGui::Begin("Help", NULL);
 
+    ImGui::Image(logoSprite);
     ImGui::Text("Welcome to Mini8BVM, the 8-Bit CPU Emulator Written in C++");
     if (ImGui::Button("Dismiss"))
     {
