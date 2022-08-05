@@ -8,7 +8,7 @@ Mini8BVM is a Graphical Virtual Machine emulating a SAP-X Microcomputer architec
 Binary includes a feature-rich IDE for SAP-X assembler and a compiler.  
 Dynamic register/memory watches and step by step execution for better understanding of code flow.  
 
-![VM Overview](/docs/overview.png?raw=true)
+![VM Overview](/docs/app.png?raw=true)
 
 ## Contributors
 + Stabax ([http://stabax.org](http://stabax.org))
@@ -36,6 +36,13 @@ then, you need to build the SFML (UI) dependency:
     cd thirdparty/SFML
     mkdir build && cd build
     cmake .. -DBUILD_SHARED_LIBS=ON
+    make
+
+then, you need to build the imgui-SFML dependency:
+
+    cd thirdparty/imgui-SFML
+    mkdir build && cd build
+    cmake .. -DBUILD_SHARED_LIBS=ON -DSFML_DIR=../SFML/build/ -DIMGUI_DIR=../imgui/
     make
 
 Move back to the root of the repository and start building the app.

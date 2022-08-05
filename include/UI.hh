@@ -3,11 +3,12 @@
 
 #include <string>
 #include <imgui.h>
-#include <imgui/examples/imgui_impl_glut.h>
-#include <imgui/examples/imgui_impl_opengl2.h>
+#include <imgui/backends/imgui_impl_glut.h>
+#include <imgui/backends/imgui_impl_opengl2.h>
 #include <ImGuiColorTextEdit/TextEditor.h>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include "utils.hh"
 
 #define ICON_MIN_IONIC  0xf100
 #define ICON_MAX_IONIC  0xf4cd
@@ -34,6 +35,7 @@ public:
     void draw();
     void menuBar();
     void vmWindow();
+    void ramInspector();
     void programmerWindow();
     void help();
     
@@ -55,6 +57,8 @@ public:
     static std::unique_ptr<UI> instance;
 private:
     bool _showHelp;
+    Base _addrBase;
+    Base _valueBase;
 };
 
 #endif /* !UI_HH_ */

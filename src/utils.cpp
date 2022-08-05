@@ -28,3 +28,13 @@ long long int int128FromString(std::string str)
   ss >> res;
   return (res);
 }
+
+std::string baseToLabel(Base base)
+{
+  if (base == Base::Bin) return ("Bin");
+  else if (base == Base::Oct) return ("Oct");
+  else if (base == Base::Hex) return ("Hex");
+  else if (base == Base::Dec) return ("Dec");
+  else if (base == Base::ASCII) return ("ASCII");
+  else return ("?");
+}

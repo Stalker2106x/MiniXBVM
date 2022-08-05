@@ -21,7 +21,7 @@ public:
             {
                 if (sep == std::string::npos)
                 {
-                    throw (std::runtime_error("no separator ' ' found"));
+                    throw (std::runtime_error("Missing separator ' ' for instruction operand"));
                 }
                 asmCode = asmCode.substr(sep+1, asmCode.length());
                 if (!asmCode.empty())

@@ -34,7 +34,12 @@ public:
 
   void clear()
   {
-    std::for_each(_data.begin(), _data.end(), [&](std::pair<std::bitset<AddrSize>, Register<RegSize>> item) { item.second.clear(); });
+    std::bitset<AddrSize> lastAddress = std::bitset<AddrSize>(getSize()-1);
+
+    for (std::bitset<AddrSize> it = std::bitset<AddrSize>(0); it < lastAddress; ++it)
+    {
+      _data.at(it).clear();
+    }
   }
 
   size_t getSize() const
