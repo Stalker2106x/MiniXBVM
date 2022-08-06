@@ -41,8 +41,7 @@ std::string bitsetToString(Base base, bitset set, bool addSpaces)
         {
             if (addSpaces && i != 0 && (i % 8 == 0))
             {
-                std::cout << "added at" << i << " for " << str;
-                ss << ' ';
+              ss << ' ';
             }
             ss << str[i];
         }

@@ -3,6 +3,7 @@
 
 #include <sul/dynamic_bitset.hpp>
 
+const int BYTE_SIZE = 8;
 const int WORD_SIZE = 4;
 const int DWORD_SIZE = 8;
 const int ADDRESS_SIZE = 4;

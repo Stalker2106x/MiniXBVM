@@ -28,12 +28,12 @@ void OUTExecutor(Computer &computer);
 void HLTExecutor(Computer &computer);
 
 const std::vector<InstructionDef> instructionsSet = {
-    {"LDA", 0, LDAExecutor, 1},
-    {"ADD", 1, ADDExecutor, 1},
-    {"SUB", 2, SUBExecutor, 1},
-    {"MUL", 3, MULExecutor, 1},
-    {"OUT", 4, OUTExecutor},
-    {"HLT", 5, HLTExecutor},
+    {"LDA", 1, LDAExecutor, 1},
+    {"ADD", 2, ADDExecutor, 1},
+    {"SUB", 3, SUBExecutor, 1},
+    {"MUL", 4, MULExecutor, 1},
+    {"OUT", 5, OUTExecutor},
+    {"HLT", 6, HLTExecutor},
 };
 
 #endif /* INSTRUCTION_HH_ */
