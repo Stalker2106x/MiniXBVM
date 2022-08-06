@@ -66,10 +66,10 @@ VM supports word sizes up to 18446744073709551615 bits (size_t underlying type)
 
 We use a custom implementation of SAP-X which instructions are defined here
 
-| keyword | code | usage |
-| --- | ---- | ---- |
-| LDA | 0001 | Load addressed memory contents into accumulator |
-| ADD | 0010 | Add addressed memory contents to accumulator |
-| SUB | 0011 | Subtract addressed memory contents from accumulator |
-| OUT | 1110 | Load accumulator data into output register |
-| HLT | 1111 | Stop processing |
+| keyword | usage |
+| --- | ---- |
+| LDA | Load addressed memory contents into accumulator |
+| ADD | Add addressed memory contents to accumulator |
+| SUB | Subtract addressed memory contents from accumulator |
+| OUT | Load accumulator data into output register |
+| HLT | Stop processing |
