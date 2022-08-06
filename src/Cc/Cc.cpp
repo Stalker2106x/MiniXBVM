@@ -32,7 +32,11 @@ std::string Cc::compile(std::string buffer, bool &validMachineProgram)
                     throw (std::runtime_error("instruction "+buffer+" is unknown or invalid"));
                 }
             }
-            output += instructionsIt->code.to_string();
+            else
+            {
+                output += instructionsIt->code.to_string();
+                if (instructionsIt->operandCount == 0) output += "0000"; //Pad with zeros if no operands are expected
+            }
             //Parse remaining line if any
             int operandsFound = 0;
             while (lss.tellg() != -1)
@@ -50,25 +54,17 @@ std::string Cc::compile(std::string buffer, bool &validMachineProgram)
             output += '\n';
         } catch (std::runtime_error e) {
             errOutput += "Line "+std::to_string(lineNumber)+":"+e.what()+"\n";
+            validMachineProgram = false; //Invalidate machine program immediately
         }
         lineNumber++;
     }
-    if (!errOutput.empty() || !output.size())
-    {
-        validMachineProgram = false;
-        return (errOutput);
-    }
-    else
-    {
-        validMachineProgram = true;
-        return (output);
-    }
+    return (validMachineProgram ? output : errOutput);
 }
 
 std::string Cc::parseData(const std::string &buffer)
 {
     try {
-        return (bitsetToString(Base::Bin, bitset(DWORD_SIZE, intFromString(buffer))));
+        return (bitsetToString(Base::Bin, bitset(WORD_SIZE, intFromString(buffer))));
     } catch (...) {
         throw (std::runtime_error("failed to parse operand "+buffer+": invalid integer"));
     }

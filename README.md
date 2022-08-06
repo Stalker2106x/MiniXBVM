@@ -1,14 +1,16 @@
 ![Logo](/MiniXBVM.png?raw=true)
 
-[![Build Status](https://travis-ci.org/Stalker2106x/Mini8BVM.svg?branch=master)](https://travis-ci.org/Stalker2106x/Mini8BVM)
+[![Build Status](https://travis-ci.org/Stalker2106x/MiniXBVM.svg?branch=master)](https://travis-ci.org/Stalker2106x/MiniXBVM)
 
 ## About
 
-Mini8BVM is a Graphical Virtual Machine emulating a SAP-X Microcomputer architecture written in C++.  
+MiniXBVM is a Graphical Virtual Machine emulating a SAP-X Microcomputer architecture written in C++.  
 Binary includes a feature-rich IDE for SAP-X assembler and a compiler.  
 Dynamic register/memory watches and step by step execution for better understanding of code flow.  
 
 ![VM Overview](/docs/app.png?raw=true)
+
+The software has been tested on Windows using MinGW GCC 11.2, MacOS X using GCC 12, and Linux using GCC 9.1.0
 
 ## Contributors
 + Stabax ([http://stabax.org](http://stabax.org))
@@ -19,8 +21,11 @@ Dynamic register/memory watches and step by step execution for better understand
 This software is released under MIT License, which is defined inside "LICENSE" file.
 
 ## Dependencies
-+ FreeGLUT (OpenGL2)
+
++ SFML
 + Dear ImGUI
++ imgui-SFML
++ dynamic_bitset (pinam45)
 + CMake
 
 ## Getting Started
@@ -54,15 +59,14 @@ Move back to the root of the repository and start building the app.
 
 ### Hardware configuration
 
-For optimisation purposes, the VM is compiled with static word size.
-A few defines allow the user to recompile the software with different word size.
+For testing purposes, the VM uses dynamic word size. This means you can customize WORD/DWORD size, memory, and registers size at runtime.  
 VM supports word sizes up to 18446744073709551615 bits (size_t underlying type)
 
 ### Instruction set
 
-We use a custom implementation of SAP-1 which instructions are defined here
+We use a custom implementation of SAP-X which instructions are defined here
 
-| keyword | binary | usage |
+| keyword | code | usage |
 | --- | ---- | ---- |
 | LDA | 0001 | Load addressed memory contents into accumulator |
 | ADD | 0010 | Add addressed memory contents to accumulator |

@@ -2,7 +2,7 @@
 #include "Computer/Computer.hh"
 #include "bitset_utils.hh"
 
-InstructionDef::InstructionDef(std::string name_, unsigned long long, std::function<void(Computer&)> executor_, size_t operandCount_)
+InstructionDef::InstructionDef(std::string name_, unsigned long long code_, std::function<void(Computer&)> executor_, size_t operandCount_)
 : name(name_), code(WORD_SIZE, code_), operandCount(operandCount_), executor(executor_)
 {
 }
