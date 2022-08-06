@@ -50,8 +50,8 @@ public:
 
     TextEditor asmEditor;
 
-    bool validMachineProgram;
-    char *machineProgram;
+    char *compilationOutput;
+    char *compilationLogs;
     char *infoModalText;
 
     static std::unique_ptr<UI> instance;

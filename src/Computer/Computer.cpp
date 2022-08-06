@@ -4,7 +4,9 @@
 #include "bitset_utils.hh"
 #include "App.hh"
 
-Computer::Computer()
+Computer::Computer(int addrSize, int regSize)
+  : _RAM(addrSize, regSize), _PC(regSize), _MAR(regSize), _IR(regSize),
+    _accumulator(regSize), _Breg(regSize), _SR(regSize), _output(regSize)
 {
   restart();
 }
@@ -23,7 +25,7 @@ void Computer::halt()
 
 void Computer::restart()
 {
-  _PC.write(word(_RAM.getSize()-1));
+  _PC.write(bitset(WORD_SIZE, _RAM.getSize()-1));
   _MAR.clear();
   _IR.clear();
   _accumulator.clear();
@@ -37,6 +39,16 @@ void Computer::reset()
 {
   _RAM.clear();
   restart();
+}
+
+void Computer::writeMemory(MemoryType memType, bitset address, bitset value)
+{
+  switch (memType)
+  {
+    case RAM:
+      _RAM.write(address, value);
+      break;
+  }
 }
 
 Computer::State Computer::getState() const
@@ -103,9 +115,9 @@ std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType
   {
     case RAM:
       auto rawDump = _RAM.read();
-      std::bitset<ADDRESS_SIZE> lastAddress = std::bitset<ADDRESS_SIZE>(_RAM.getSize()-1);
+      bitset lastAddress = bitset(ADDRESS_SIZE, _RAM.getSize()-1);
 
-      for (std::bitset<ADDRESS_SIZE> it = std::bitset<ADDRESS_SIZE>(0); it < lastAddress; ++it)
+      for (bitset it = bitset(ADDRESS_SIZE, 0); it < lastAddress; ++it)
       {
         dump.push_back(std::make_pair(bitsetToString(addrBase, it, true), bitsetToString(valueBase, rawDump.at(it).read(), true)));
       }
@@ -116,12 +128,12 @@ std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType
 
 std::string Computer::getOutput() const
 {
-  return (std::to_string(_output.read().to_ulong()));
+  return (std::to_string(intFromString(Base::Bin, _output.read().to_string())));
 }
 
 std::string Computer::getInstruction() const
 {
-  word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+  bitset opCode = bitsetRange(_IR.read(), WORD_SIZE, DWORD_SIZE);
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {
@@ -153,7 +165,7 @@ void Computer::cycle(int deltaTime)
     ++_PC;
     _MAR = _PC;
     _IR.write(_RAM[_MAR.read()].read()); //Read the current instruction and store it in instruction registr
-    word opCode = bitsetRange<DWORD_SIZE, WORD_SIZE>(_IR.read(), WORD_SIZE, DWORD_SIZE);
+    bitset opCode = bitsetRange(_IR.read(), WORD_SIZE, DWORD_SIZE);
     auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
     if (defIt != instructionsSet.end())
     {

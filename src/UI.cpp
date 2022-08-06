@@ -13,17 +13,19 @@ std::unique_ptr<UI> UI::instance = nullptr;
 
 UI::UI()
 {
-    machineProgram = new char[2048];
+    compilationOutput = new char[2048];
+    compilationLogs = new char[2048];
     infoModalText = new char[2048];
     UI::instance = std::unique_ptr<UI>(this);
 }
 
 void UI::init()
 {
-    memset(machineProgram, 0, 2047);
-    machineProgram[2047] = '\0';
+    memset(compilationOutput, 0, 2047);
+    compilationOutput[2047] = '\0';
+    memset(compilationLogs, 0, 2047);
+    compilationLogs[2047] = '\0';
 
-    validMachineProgram = false;
 	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
 
     backgroundTexture.loadFromFile("Data/img/background.jpg");
@@ -130,8 +132,8 @@ void UI::vmWindow()
         ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, Base::Bin).c_str());
         ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, Base::Bin).c_str());
         ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, Base::Bin).c_str(), computer.getInstruction().c_str());
-        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, Base::Bin).c_str());
-        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, Base::Bin).c_str());
+        ImGui::Text("Accumulator: %s -> %s", computer.dumpRegister(Accumulator, Base::Bin).c_str(), computer.dumpRegister(Accumulator, Base::Dec).c_str());
+        ImGui::Text("B Register: %s -> %s", computer.dumpRegister(Bregister, Base::Bin).c_str(), computer.dumpRegister(Bregister, Base::Dec).c_str());
         ImGui::Text("Status Register: %s", computer.getFlags().c_str());
         ImGui::Text("Output Register: %s", computer.dumpRegister(Output, Base::Bin).c_str());
     }
@@ -194,16 +196,19 @@ void UI::ramInspector()
             ImGui::PopID();
         }
         auto ramDump = computer.dumpMemory(MemoryType::RAM, _addrBase, _valueBase);
+        auto pcValue = computer.dumpRegister(ProgramCounter, _addrBase);
         for (int i = 0; i < ramDump.size(); i++)
         {
-            bool active = (ramDump[i].first == computer.dumpRegister(ProgramCounter, _addrBase));
+            bool active = (ramDump[i].first == pcValue);
+            bool empty = (ramDump[i].second == bitsetToString(Base::Bin, bitset(DWORD_SIZE, 0)));
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             if (active) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(255, 0, 0)));
+            if (empty) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(47, 79, 79)));
             ImGui::Text("%s", ramDump[i].first.c_str());
             ImGui::TableSetColumnIndex(1);
             ImGui::Text("%s", ramDump[i].second.c_str());
-            if (active) ImGui::PopStyleColor();
+            if (active || empty) ImGui::PopStyleColor();
         }
         ImGui::EndTable();
     }
@@ -213,6 +218,7 @@ void UI::ramInspector()
 
 void UI::programmerWindow()
 {
+    static Cc::Output lastCC;
     ImGui::Begin("Programmer", NULL,  ImGuiWindowFlags_MenuBar);
 
     if (ImGui::BeginMenuBar())
@@ -235,42 +241,59 @@ void UI::programmerWindow()
         }
         ImGui::EndMenuBar();
     }
-
-    ImGui::Text("ASM Program");
+    if (ImGui::BeginTabBar("EditorTabs", ImGuiTabBarFlags_None))
+    {
+        if (ImGui::BeginTabItem("Assembly"))
+        {
+            ImGui::Text("ASM Program");
+            ImVec2 avail_size = ImGui::GetContentRegionAvail();
+            asmEditor.Render("TextEditor", ImVec2(avail_size.x, avail_size.y / 2));
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Generated"))
+        {
+            ImGui::Text("Generated machine code");
+            ImVec2 avail_size = ImGui::GetContentRegionAvail();
+            ImGui::InputTextMultiline("", compilationOutput, 2047, ImVec2(avail_size.x, avail_size.y / 2), ImGuiInputTextFlags_ReadOnly);
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }
+    ImGui::Text("Compilation output");
     ImVec2 avail_size = ImGui::GetContentRegionAvail();
-    asmEditor.Render("TextEditor", ImVec2(avail_size.x, avail_size.y / 2));
-    ImGui::Text("Machine Program");
-    avail_size = ImGui::GetContentRegionAvail();
-    ImGui::InputTextMultiline("MC", machineProgram, 2047, ImVec2(avail_size.x, avail_size.y - 20), ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputTextMultiline("##MC", compilationLogs, 2047, ImVec2(avail_size.x, avail_size.y - 20), ImGuiInputTextFlags_ReadOnly);
 
     if (ImGui::Button("Compile"))
     {
-        memset(machineProgram, 0, 2047);
-        std::string code = Cc::compile<WORD_SIZE>(asmEditor.GetText(), validMachineProgram);
-        if (code.length() > 0)
+        memset(compilationLogs, 0, 2047);
+        memset(compilationOutput, 0, 2047);
+        Cc compiler;
+        lastCC = compiler.compile(asmEditor.GetText());
+        if (lastCC.code.length() > 0 && lastCC.log.length() > 0)
         {
-            strncpy(machineProgram, code.c_str(), code.length()-1);
+            strncpy(compilationLogs, lastCC.log.c_str(), lastCC.log.length()-1);
+            strncpy(compilationOutput, lastCC.code.c_str(), lastCC.code.length()-1);
         }
     }
     ImGui::SameLine();
-    if (!validMachineProgram)
+    if (!lastCC.success)
     {
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
         ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
     }
     if (ImGui::Button("Load to RAM"))
     {
-        std::istringstream ss(machineProgram);
+        std::istringstream ss(lastCC.code);
         std::string buffer;
-        word address = word(0);
+        bitset address = bitset(WORD_SIZE, 0);
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer.writeMemory(MemoryType::RAM, address, std::bitset<DWORD_SIZE>(buffer));
+            App::instance->computer.writeMemory(MemoryType::RAM, address, bitset(DWORD_SIZE, intFromString(Base::Bin, buffer)));
             ++address;
         }
     }
-    if (!validMachineProgram)
+    if (!lastCC.success)
     {
         ImGui::PopItemFlag();
         ImGui::PopStyleVar();

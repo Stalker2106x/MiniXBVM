@@ -1,13 +1,14 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.10)
 
 project (Mini8BVM)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #CORE FILES
 file(GLOB source_files
      ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/Cc/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Computer/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Editor/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Electronic/*.cpp
@@ -18,6 +19,7 @@ file(GLOB source_files
 
 include_directories(${CMAKE_SOURCE_DIR}/include
                     ${CMAKE_SOURCE_DIR}/thirdparty/
+                    ${CMAKE_SOURCE_DIR}/thirdparty/dynamic_bitset/include
                     ${CMAKE_SOURCE_DIR}/thirdparty/imgui
                     ${CMAKE_SOURCE_DIR}/thirdparty/imgui-sfml/
                     ${CMAKE_SOURCE_DIR}/thirdparty/SFML/include

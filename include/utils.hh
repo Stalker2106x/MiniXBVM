@@ -4,14 +4,51 @@
 #include <sstream>
 #include <string>
 #include <ios>
-#include <iostream>
 #include <map>
 #include "config.h"
 
 #define HEX_DELIM 'x'
 #define BIN_DELIM 'b'
 
+struct BitsetHash {
+  size_t operator()(const bitset& set) const
+  {
+      return set.to_string().size();
+  }
+};
+
+struct not_alphanumeric {
+    bool operator()(char c) {
+        return (!std::isalpha(c) && !std::isdigit(c));
+    }
+};
+
+struct not_binary {
+    bool operator()(char c) {
+        return (std::string("01").find(c) == std::string::npos);
+    }
+};
+
+struct not_octal {
+    bool operator()(char c) {
+        return (std::string("01234567").find(c) == std::string::npos);
+    }
+};
+
+struct not_decimal {
+    bool operator()(char c) {
+        return (std::string("0123456789").find(c) == std::string::npos);
+    }
+};
+
+struct not_hexadecimal {
+    bool operator()(char c) {
+        return (std::string("0123456789ABCDEF").find(c) == std::string::npos);
+    }
+};
+
 enum Base {
+    Unknown,
     Bin,
     Oct,
     Hex,
@@ -19,36 +56,11 @@ enum Base {
     ASCII
 };
 
-long long int int128FromString(std::string str);
+long long int intFromString(Base stringBase, std::string str);
 
 std::string formatBinaryString(const std::string &str);
 
-template <wordSizeType WordSize>
-std::string bitsetToString(Base base, std::bitset<WordSize> bitset, bool addSpaces = false)
-{
-    if (base == Base::ASCII) return (std::string(1, static_cast<unsigned char>(bitset.to_ulong())));
-    std::stringstream ss;
-    if (base == Base::Bin)
-    {
-        std::string str = bitset.to_string();
-        for (int i = 0; i < str.size(); i++)
-        {
-            if (addSpaces && i != 0 && (i % 8 == 0))
-            {
-                std::cout << "added at" << i << " for " << str;
-                ss << ' ';
-            }
-            ss << str[i];
-        }
-    }
-    else //Dec, Hex, Oct
-    {
-        if (base == Base::Hex) ss << "0x" << std::hex;
-        if (base == Base::Oct) ss << "0" << std::oct;
-        ss << std::uppercase << bitset.to_ulong();
-    }
-    return (ss.str());
-}
+std::string bitsetToString(Base base, bitset set, bool addSpaces = false);
 
 std::string baseToLabel(Base base);
 

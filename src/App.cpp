@@ -5,7 +5,7 @@
 
 std::unique_ptr<App> App::instance = nullptr;
 
-App::App()
+App::App() : computer(ADDRESS_SIZE, DWORD_SIZE)
 {
     App::instance = std::unique_ptr<App>(this);
 }
