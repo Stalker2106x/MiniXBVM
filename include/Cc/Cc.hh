@@ -5,12 +5,6 @@
 #include <map>
 #include <cctype>
 
-struct invalid_varname {
-    bool operator()(char c) {
-        return (!std::isalpha(c) && !std::isdigit(c));
-    }
-};
-
 class Cc
 {
 public:

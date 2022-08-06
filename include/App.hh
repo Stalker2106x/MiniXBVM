@@ -18,7 +18,6 @@ public:
 
   Computer computer;
   UI ui;
-  Cc cc;
 
   static std::unique_ptr<App> instance;
 

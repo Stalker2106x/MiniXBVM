@@ -128,7 +128,7 @@ std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType
 
 std::string Computer::getOutput() const
 {
-  return (std::to_string(intFromString(_output.read().to_string())));
+  return (std::to_string(intFromString(Base::Bin, _output.read().to_string())));
 }
 
 std::string Computer::getInstruction() const

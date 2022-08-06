@@ -9,7 +9,6 @@
 Cc::Output Cc::compile(const std::string &input)
 {
     std::string inputProcessed(input);
-    int lineNumber = 1;
     Output output;
     std::string line;
 
@@ -17,6 +16,7 @@ Cc::Output Cc::compile(const std::string &input)
     //Pass 1: Implementation: We generate the code
     for (size_t pass = 0; pass <= 1; pass++)
     {
+        int lineNumber = 0;
         std::istringstream iss(inputProcessed);
         while(std::getline(iss, line, '\n'))
         {
@@ -24,6 +24,8 @@ Cc::Output Cc::compile(const std::string &input)
                 if (line.empty()) continue; //Skip empty line
                 std::istringstream lss(line);
                 std::string buffer;
+
+                lineNumber++;
                 //Parse first word (usually instruction)
                 lss >> buffer;
                 auto instructionsIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&buffer] (InstructionDef def) { return (def.name == buffer); } );
@@ -68,7 +70,6 @@ Cc::Output Cc::compile(const std::string &input)
                 output.log += "Line "+std::to_string(lineNumber)+":"+e.what()+"\n";
                 output.success = false; //Invalidate machine program immediately
             }
-            lineNumber++;
         }
     }
     if (output.success) output.log += "Compiled with success!\n";
@@ -85,7 +86,7 @@ Cc::Variable Cc::parseVariable(const std::string &line, const size_t lineNumber)
 
     if (lss >> buffer) //Parse name
     {
-        if (std::isdigit(buffer[0]) || std::find_if(buffer.begin(), buffer.end(), invalid_varname()) != buffer.end())
+        if (std::isdigit(buffer[0]) || std::find_if(buffer.begin(), buffer.end(), not_alphanumeric()) != buffer.end())
         {
             throw (std::runtime_error("failed to parse variable "+buffer+": invalid name (Only letters and digits, cannot start with a digit)"));
         }
@@ -98,7 +99,7 @@ Cc::Variable Cc::parseVariable(const std::string &line, const size_t lineNumber)
             else throw (std::runtime_error("failed to parse variable "+var.name+": Size "+buffer+" unknown, can be any of: db, dw, dd"));
             if (lss >> buffer) //Parse value
             {
-                var.value = bitsetToString(Base::Bin, bitset(DWORD_SIZE, intFromString(buffer)));
+                var.value = bitsetToString(Base::Bin, bitset(DWORD_SIZE, intFromString(Base::Unknown, buffer)));
             }
             else
             {
@@ -114,15 +115,15 @@ Cc::Variable Cc::parseVariable(const std::string &line, const size_t lineNumber)
     {
         throw (std::runtime_error("failed to parse variable"));
     }
-    //Since we have a valid var, we can assign its address before leaving
-    var.address = bitsetToString(Base::Bin, bitset(WORD_SIZE, lineNumber));
+    //Since we have a valid var, we can assign its address before leaving (address = lineNumber-1)
+    var.address = bitsetToString(Base::Bin, bitset(WORD_SIZE, lineNumber-1));
     return (var);
 }
 
 std::string Cc::parseValue(const std::string &buffer)
 {
     try {
-        return (bitsetToString(Base::Bin, bitset(WORD_SIZE, intFromString(buffer))));
+        return (bitsetToString(Base::Bin, bitset(WORD_SIZE, intFromString(Base::Unknown, buffer))));
     } catch (...) {
         throw (std::runtime_error("failed to parse operand "+buffer+": invalid integer"));
     }
@@ -130,7 +131,7 @@ std::string Cc::parseValue(const std::string &buffer)
 
 std::string Cc::parseOperand(const std::string &buffer)
 {
-    if (!std::isdigit(buffer[0]) && std::find_if(buffer.begin(), buffer.end(), invalid_varname()) == buffer.end()) //Looks like a variable
+    if (!std::isdigit(buffer[0]) && std::find_if(buffer.begin(), buffer.end(), not_alphanumeric()) == buffer.end()) //Looks like a variable
     {
         if (heap.find(buffer) != heap.end())
         {

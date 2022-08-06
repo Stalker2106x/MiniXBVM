@@ -132,8 +132,8 @@ void UI::vmWindow()
         ImGui::Text("Program Counter: %s", computer.dumpRegister(ProgramCounter, Base::Bin).c_str());
         ImGui::Text("Memory Adress Registry: %s", computer.dumpRegister(MemoryAdressRegistry, Base::Bin).c_str());
         ImGui::Text("Instruction Register: %s -> %s", computer.dumpRegister(InstructionRegister, Base::Bin).c_str(), computer.getInstruction().c_str());
-        ImGui::Text("Accumulator: %s", computer.dumpRegister(Accumulator, Base::Bin).c_str());
-        ImGui::Text("B Register: %s", computer.dumpRegister(Bregister, Base::Bin).c_str());
+        ImGui::Text("Accumulator: %s -> %s", computer.dumpRegister(Accumulator, Base::Bin).c_str(), computer.dumpRegister(Accumulator, Base::Dec).c_str());
+        ImGui::Text("B Register: %s -> %s", computer.dumpRegister(Bregister, Base::Bin).c_str(), computer.dumpRegister(Bregister, Base::Dec).c_str());
         ImGui::Text("Status Register: %s", computer.getFlags().c_str());
         ImGui::Text("Output Register: %s", computer.dumpRegister(Output, Base::Bin).c_str());
     }
@@ -267,7 +267,8 @@ void UI::programmerWindow()
     {
         memset(compilationLogs, 0, 2047);
         memset(compilationOutput, 0, 2047);
-        lastCC = App::instance->cc.compile(asmEditor.GetText());
+        Cc compiler;
+        lastCC = compiler.compile(asmEditor.GetText());
         if (lastCC.code.length() > 0 && lastCC.log.length() > 0)
         {
             strncpy(compilationLogs, lastCC.log.c_str(), lastCC.log.length()-1);
@@ -288,7 +289,7 @@ void UI::programmerWindow()
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer.writeMemory(MemoryType::RAM, address, bitset(DWORD_SIZE, intFromString(buffer)));
+            App::instance->computer.writeMemory(MemoryType::RAM, address, bitset(DWORD_SIZE, intFromString(Base::Bin, buffer)));
             ++address;
         }
     }

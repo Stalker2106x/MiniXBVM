@@ -17,7 +17,38 @@ struct BitsetHash {
   }
 };
 
+struct not_alphanumeric {
+    bool operator()(char c) {
+        return (!std::isalpha(c) && !std::isdigit(c));
+    }
+};
+
+struct not_binary {
+    bool operator()(char c) {
+        return (std::string("01").find(c) == std::string::npos);
+    }
+};
+
+struct not_octal {
+    bool operator()(char c) {
+        return (std::string("01234567").find(c) == std::string::npos);
+    }
+};
+
+struct not_decimal {
+    bool operator()(char c) {
+        return (std::string("0123456789").find(c) == std::string::npos);
+    }
+};
+
+struct not_hexadecimal {
+    bool operator()(char c) {
+        return (std::string("0123456789ABCDEF").find(c) == std::string::npos);
+    }
+};
+
 enum Base {
+    Unknown,
     Bin,
     Oct,
     Hex,
@@ -25,7 +56,7 @@ enum Base {
     ASCII
 };
 
-long long int intFromString(std::string str);
+long long int intFromString(Base stringBase, std::string str);
 
 std::string formatBinaryString(const std::string &str);
 
