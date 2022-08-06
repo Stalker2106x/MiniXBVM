@@ -12,17 +12,13 @@ class Computer;
 struct InstructionDef
 {
 public:
-    InstructionDef(std::string name_, wordSizeType code_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0)
-    : name(name_), code(code_), operandCount(operandCount_), executor(executor_)
-    {
-    }
-
+    InstructionDef(std::string name_, wordSizeType code_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0);
+    
     std::string name;
     bitset code;
     std::function<void(Computer&)> executor;
     size_t operandCount;
 };
-
 //EXECUTORS
 void LDAExecutor(Computer &computer);
 void ADDExecutor(Computer &computer);

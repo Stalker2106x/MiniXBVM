@@ -2,6 +2,11 @@
 #include "Computer/Computer.hh"
 #include "bitset_utils.hh"
 
+InstructionDef::InstructionDef(std::string name_, wordSizeType code_, std::function<void(Computer&)> executor_, size_t operandCount_)
+: name(name_), code(code_), operandCount(operandCount_), executor(executor_)
+{
+}
+
 void LDAExecutor(Computer &computer)
 {
     computer._MAR.write(bitsetRange(computer._IR.read(), 0, WORD_SIZE));//Extract adress from IR
@@ -28,7 +33,6 @@ void MULExecutor(Computer &computer)
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator *= computer._Breg;
 }
-
 
 void OUTExecutor(Computer &computer)
 {

@@ -2,7 +2,7 @@
 
 bitset bitsetRange(const bitset &a, unsigned int rangeStart, unsigned int rangeEnd)
 {
-  bitset result;
+  bitset result = bitset(rangeEnd-rangeStart, 0);
   for (size_t i = rangeStart, j = 0; i < rangeEnd; i++, j++)
   {
     result[j] = a[i];
@@ -12,7 +12,7 @@ bitset bitsetRange(const bitset &a, unsigned int rangeStart, unsigned int rangeE
 
 bitset bitsetPad(const bitset &a)
 {
-  bitset result;
+  bitset result = bitset(a.size(), 0);
   for (size_t i = 0; i <= a.size(); i++)
   {
     result[i] = a[i];
@@ -22,7 +22,7 @@ bitset bitsetPad(const bitset &a)
 
 bitset bitsetConcat(const bitset &a, const bitset &b)
 {
-  bitset result;
+  bitset result = bitset(a.size(), 0);
   for (size_t i = 1; i <= 2; i++)
   {
     for (size_t j = 0; j < a.size(); j++)

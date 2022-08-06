@@ -5,6 +5,8 @@ project (Mini8BVM)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_FLAGS_DEBUG  "-ggdb")
+
 #CORE FILES
 file(GLOB source_files
      ${CMAKE_SOURCE_DIR}/src/*.cpp

@@ -1,12 +1,12 @@
 #include "Computer/Register.hh"
 
-Register::Register(const int regSize) : _data(regSize, 0)
+Register::Register(const int regSize) : _regSize(regSize), _data(regSize, 0)
 {
 
 }
 
 Register::Register(const bitset data)
-: _data(data)
+: _regSize(data.size()), _data(data)
 {
 
 }
