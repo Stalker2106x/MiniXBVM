@@ -36,6 +36,7 @@ void UI::init()
     logoSprite.setTexture(logoTexture);
 
     _showHelp = false;
+    _showSettings = false;
     _addrBase = Base::Bin;
     _valueBase = Base::Bin;
 }
@@ -57,10 +58,11 @@ void UI::menuBar()
 void UI::draw()
 {
     menuBar();
+    settingsWindow();
     vmWindow();
     programmerWindow();
     ramInspector();
-    help();
+    helpWindow();
 
     // Rendering
     ImGui::Render();
@@ -68,7 +70,7 @@ void UI::draw()
 
 void UI::vmWindow()
 {
-    Computer &computer = App::instance->computer;
+    Computer &computer = *(App::instance->computer);
     bool computerOn = (computer.getState() == Computer::State::Running);
     //Main Panel
     ImGui::Begin("VM", NULL);
@@ -145,7 +147,7 @@ void UI::vmWindow()
 
 void UI::ramInspector()
 {
-    Computer &computer = App::instance->computer;
+    Computer &computer = *(App::instance->computer);
     ImGui::Begin("RAM", NULL);
 
     ImGui::Text("Memory (%d/%d):", computer.getMemoryUsedSize(MemoryType::RAM), computer.getMemorySize(MemoryType::RAM));
@@ -201,7 +203,7 @@ void UI::ramInspector()
         for (int i = 0; i < ramDump.size(); i++)
         {
             bool active = (ramDump[i].first == pcValue);
-            bool empty = (ramDump[i].second == bitsetToString(Base::Bin, bitset(DWORD_SIZE, 0)));
+            bool empty = (ramDump[i].second == bitsetToString(Base::Bin, bitset(App::instance->config.ramDataBitsize, 0)));
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             if (active) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(255, 0, 0)));
@@ -286,11 +288,11 @@ void UI::programmerWindow()
     {
         std::istringstream ss(lastCC.code);
         std::string buffer;
-        bitset address = bitset(WORD_SIZE, 0);
+        bitset address = bitset(App::instance->config.ramAddrBitsize, 0);
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer.writeMemory(MemoryType::RAM, address, bitset(DWORD_SIZE, intFromString(Base::Bin, buffer)));
+            App::instance->computer->writeMemory(MemoryType::RAM, address, bitset(App::instance->config.ramAddrBitsize, intFromString(Base::Bin, buffer)));
             ++address;
         }
     }
@@ -302,8 +304,25 @@ void UI::programmerWindow()
     ImGui::End();
 }
 
+void UI::settingsWindow()
+{
+    if (!_showSettings) return;
+    ImGui::Begin("Settings", NULL);
 
-void UI::help()
+    if (ImGui::Button("Apply"))
+    {
+        _showHelp = false;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel"))
+    {
+        _showHelp = false;
+    }
+
+    ImGui::End();
+}
+
+void UI::helpWindow()
 {
     if (!_showHelp) return;
     ImGui::Begin("Help", NULL);

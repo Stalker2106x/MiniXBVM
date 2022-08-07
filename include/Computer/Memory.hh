@@ -12,7 +12,7 @@
 class Memory
 {
 public:
-  Memory(const int addrSize, const int regSize);
+  Memory();
 
   void write(const bitset address, const bitset value);
   const bitset read(const bitset address) const;
@@ -23,8 +23,6 @@ public:
   std::unordered_map<bitset, Register, BitsetHash> read() const;
 
 private:
-  int _addrSize;
-  int _regSize;
   std::unordered_map<bitset, Register, BitsetHash> _data;
 };
 

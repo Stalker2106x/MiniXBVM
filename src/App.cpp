@@ -5,9 +5,10 @@
 
 std::unique_ptr<App> App::instance = nullptr;
 
-App::App() : computer(ADDRESS_SIZE, DWORD_SIZE)
+App::App()
 {
     App::instance = std::unique_ptr<App>(this);
+    computer = std::make_unique<Computer>();
 }
 
 int App::run(int argc, char** argv)
@@ -61,5 +62,5 @@ int App::run(int argc, char** argv)
 
 void App::update(int deltaTime)
 {
-    computer.cycle(deltaTime);
+    computer->cycle(deltaTime);
 }

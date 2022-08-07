@@ -10,7 +10,7 @@
 class Register
 {
 public:
-  Register(const int regSize);
+  Register();
   Register(const bitset data);
 
   void write(const bitset value);
@@ -20,7 +20,6 @@ public:
   void clear();
 
 private:
-  int _regSize;
   bitset _data;
 
   /*********************

@@ -30,7 +30,7 @@ public:
     Running
   };
 
-  Computer(int addrSize, int regSize);
+  Computer();
 
   void start();
   void halt();

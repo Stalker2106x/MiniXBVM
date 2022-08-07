@@ -16,8 +16,9 @@ public:
   void update(int deltaTime);
   void draw();
 
-  Computer computer;
+  std::unique_ptr<Computer> computer;
   UI ui;
+  Config config;
 
   static std::unique_ptr<App> instance;
 

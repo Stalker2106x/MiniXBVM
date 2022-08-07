@@ -1,14 +1,13 @@
 #include "Computer/Register.hh"
+#include "App.hh"
 
-Register::Register(const int regSize) : _regSize(regSize), _data(regSize, 0)
+Register::Register() : _data(App::instance->config.ramDataBitsize, 0)
 {
-
 }
 
 Register::Register(const bitset data)
-: _regSize(data.size()), _data(data)
+: _data(data)
 {
-
 }
 
 void Register::write(const bitset value)
@@ -23,7 +22,7 @@ const bitset Register::read() const
 
 void Register::clear()
 {
-    _data = bitset(_regSize, 0);
+    _data.reset();
 }
 
 /**
@@ -45,7 +44,7 @@ Register Register::operator+=(Register& rhs)
 
 Register Register::operator++()
 {
-    _data = _data + bitset(_regSize, 1);
+    _data = _data + bitset(App::instance->config.ramDataBitsize, 1);
     return (*this);
 }
 

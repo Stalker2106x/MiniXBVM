@@ -3,10 +3,20 @@
 
 #include <sul/dynamic_bitset.hpp>
 
-const int BYTE_SIZE = 8;
-const int WORD_SIZE = 4;
-const int DWORD_SIZE = 8;
-const int ADDRESS_SIZE = 4;
+#define OPCODE_BITSIZE 4
+
+struct Config {
+    Config() : byteSize(8), wordSize(16), dwordSize(32),
+        ramAddrBitsize(8), ramDataBitsize(8)
+    {};
+
+    const size_t byteSize;
+    const size_t wordSize;
+    const size_t dwordSize;
+
+    const size_t ramAddrBitsize; //Size of ram address
+    const size_t ramDataBitsize; //Size of ram value
+};
 
 typedef size_t wordSizeType; //Has to match bitset type... <size_t>
 
