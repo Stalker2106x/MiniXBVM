@@ -137,7 +137,7 @@ std::string Computer::getInstruction() const
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {
-    return (defIt->name);
+    return (defIt->keyword);
   }
   return ("XXX");
 }
