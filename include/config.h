@@ -7,7 +7,7 @@
 
 struct Config {
     Config() : byteSize(8), wordSize(16), dwordSize(32),
-        ramAddrBitsize(8), ramDataBitsize(8)
+        ramAddrBitsize(4), ramDataBitsize(8)
     {};
 
     const size_t byteSize;

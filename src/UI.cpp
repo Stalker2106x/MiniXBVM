@@ -292,7 +292,7 @@ void UI::programmerWindow()
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer->writeMemory(MemoryType::RAM, address, bitset(App::instance->config.ramAddrBitsize, intFromString(Base::Bin, buffer)));
+            App::instance->computer->writeMemory(MemoryType::RAM, address, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Bin, buffer)));
             ++address;
         }
     }
