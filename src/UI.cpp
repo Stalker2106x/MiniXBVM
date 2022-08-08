@@ -29,8 +29,8 @@ void UI::init()
     memset(compilationLogs, 0, 2047);
     compilationLogs[2047] = '\0';
 
-    itoa(App::instance->config.ramAddrBitsize, ramAddrSize, 128);
-    itoa(App::instance->config.ramDataBitsize, ramDataSize, 128);
+    sprintf(ramAddrSize, "%d", App::instance->config.ramAddrBitsize);
+    sprintf(ramDataSize, "%d", App::instance->config.ramDataBitsize);
 
 	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
 	asmEditor.SetPalette(ExtTextEditor::GetCustomPalette());
