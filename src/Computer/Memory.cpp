@@ -8,7 +8,7 @@ Memory::Memory()
 
     for (bitset it = bitset(App::instance->config.ramAddrBitsize, 0); it < lastAddress; ++it)
     {
-        _data.emplace(it, Register());
+        _data.emplace(it, Register(App::instance->config.ramDataBitsize));
     }
 }
 

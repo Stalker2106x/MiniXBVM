@@ -6,8 +6,8 @@
 #include <iostream>
 
 Computer::Computer()
-  : _RAM(), _PC(), _MAR(), _IR(),
-    _accumulator(), _Breg(), _SR(), _output()
+  : _RAM(), _PC(App::instance->config.ramAddrBitsize), _MAR(App::instance->config.ramAddrBitsize), _IR(OPCODE_BITSIZE),
+    _accumulator(App::instance->config.ramDataBitsize), _Breg(App::instance->config.ramDataBitsize), _SR(2), _output(App::instance->config.ramDataBitsize)
 {
   restart();
 }

@@ -1,7 +1,7 @@
 #include "Computer/Register.hh"
 #include "App.hh"
 
-Register::Register() : _data(App::instance->config.ramDataBitsize, 0)
+Register::Register(const size_t regSize) : _data(regSize, 0)
 {
 }
 
@@ -50,7 +50,7 @@ Register Register::operator+=(const size_t& rhs)
 
 Register Register::operator++()
 {
-    _data = _data + bitset(App::instance->config.ramDataBitsize, 1);
+    _data = _data + bitset(_data.size(), 1);
     return (*this);
 }
 
