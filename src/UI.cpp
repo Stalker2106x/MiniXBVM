@@ -216,11 +216,11 @@ void UI::ramInspector()
         for (int i = 0; i < ramDump.size(); i++)
         {
             bool active = (ramDump[i].first == pcValue);
-            bool empty = (ramDump[i].second == bitsetToString(Base::Bin, bitset(App::instance->config.ramDataBitsize, 0)));
+            bool empty = (i > computer.getMemoryUsedSize(MemoryType::RAM));
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             if (active) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(255, 0, 0)));
-            if (empty) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(47, 79, 79)));
+            else if (empty) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(47, 79, 79)));
             ImGui::Text("%s", ramDump[i].first.c_str());
             ImGui::TableSetColumnIndex(1);
             ImGui::Text("%s", ramDump[i].second.c_str());

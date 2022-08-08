@@ -161,24 +161,15 @@ std::string Computer::getFlags() const
 bitset Computer::getOperandBitset() const
 {
   bitset operand = bitsetRange(_RAM[_MAR.read()].read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
-  size_t remainingBlocks = (App::instance->config.ramAddrBitsize - OPCODE_BITSIZE) / App::instance->config.ramDataBitsize;
-  for (size_t currentBlock = 0; currentBlock < remainingBlocks; currentBlock++)
+  size_t remainingBits = (App::instance->config.ramAddrBitsize - OPCODE_BITSIZE);
+  size_t remainingBlocks = (remainingBits / App::instance->config.ramDataBitsize) + ((remainingBits % App::instance->config.ramDataBitsize) == 0 ? 0 : 1);
+  for (size_t currentBlock = 1; currentBlock <= remainingBlocks; currentBlock++)
   {
     //One instruction + operands exceed one memory block, so we need to grab multiple
-    operand.append(*(_RAM[_MAR.read()+currentBlock].read().data()));
+    operand = bitsetConcat(operand, _RAM[_MAR.read()+currentBlock].read());
   }
+  std::cout << operand.to_string() << std::endl;
   return (operand);
-}
-
-size_t Computer::getPCIncrement() const
-{
-  const bitset currentAddr = _MAR.read();
-  if (currentAddr == bitset(currentAddr.size(), 0)) return (1); //Empty reg, jump 1
-  const bitset opCode = bitsetRange(_RAM[_MAR.read()].read(), 0, OPCODE_BITSIZE);
-  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
-  if (defIt == instructionsSet.end()) return (1); //Garbage, jump 1
-  int instructionSize = (OPCODE_BITSIZE + (defIt->operandCount * App::instance->config.ramAddrBitsize));
-  return ((instructionSize / App::instance->config.ramDataBitsize) + ((instructionSize % App::instance->config.ramDataBitsize) == 0 ? 0 : 1));
 }
 
 void Computer::cycle(int deltaTime)
@@ -186,7 +177,7 @@ void Computer::cycle(int deltaTime)
   if (_state != Running) return;
   if (clock.cycle(deltaTime))
   {
-    _PC += getPCIncrement();
+    _PC += getInstructionSize(_IR.read());
     _MAR = _PC;
     const bitset opCode = bitsetRange(_RAM[_MAR.read()].read(), 0, OPCODE_BITSIZE);
     _IR.write(opCode); //Read the current instruction and store it in instruction registr

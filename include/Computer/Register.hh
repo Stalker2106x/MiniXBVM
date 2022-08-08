@@ -1,8 +1,6 @@
 #ifndef REGISTER_HH_
 #define REGISTER_HH_
 
-#include <unordered_map>
-#include <array>
 #include <bitset>
 #include "config.h"
 #include "bitset_utils.hh"

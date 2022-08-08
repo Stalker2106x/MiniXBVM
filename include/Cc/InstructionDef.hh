@@ -19,6 +19,11 @@ public:
     std::function<void(Computer&)> executor;
     size_t operandCount;
 };
+
+//Util
+size_t getInstructionSize(bitset opCode);
+size_t getInstructionSize(const InstructionDef &keyword);
+
 //EXECUTORS
 void LDAExecutor(Computer &computer);
 void ADDExecutor(Computer &computer);

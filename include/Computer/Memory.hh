@@ -2,7 +2,7 @@
 #define MEMORY_HH_
 
 #include <algorithm>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <bitset>
 #include <cmath>
@@ -20,10 +20,10 @@ public:
   size_t getSize() const;
   size_t getUsedSize() const;
   Register operator[](bitset address) const;
-  std::unordered_map<bitset, Register, BitsetHash> read() const;
+  std::map<bitset, Register> read() const;
 
 private:
-  std::unordered_map<bitset, Register, BitsetHash> _data;
+  std::map<bitset, Register> _data;
 };
 
 #endif /* !MEMORY_HH_ */
