@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <variant>
+#include "App.hh"
 #include "Cc/Cc.hh"
 #include "Cc/InstructionDef.hh"
 #include "utils.hh"
@@ -95,13 +96,13 @@ Cc::Variable Cc::parseVariable(const std::string &line, const size_t lineNumber)
         var.name = buffer;
         if (lss >> buffer) //Parse size
         {
-            if (buffer == "db") var.bits = BYTE_SIZE;
-            else if (buffer == "dw") var.bits = WORD_SIZE;
-            else if (buffer == "dd") var.bits = DWORD_SIZE;
+            if (buffer == "db") var.bits = App::instance->config.byteSize;
+            else if (buffer == "dw") var.bits = App::instance->config.wordSize;
+            else if (buffer == "dd") var.bits = App::instance->config.dwordSize;
             else throw (std::runtime_error("failed to parse variable "+var.name+": Size "+buffer+" unknown, can be any of: db, dw, dd"));
             if (lss >> buffer) //Parse value
             {
-                var.value = bitsetToString(Base::Bin, bitset(DWORD_SIZE, intFromString(Base::Unknown, buffer)));
+                var.value = bitsetToString(Base::Bin, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Unknown, buffer)));
             }
             else
             {
@@ -118,14 +119,14 @@ Cc::Variable Cc::parseVariable(const std::string &line, const size_t lineNumber)
         throw (std::runtime_error("failed to parse variable"));
     }
     //Since we have a valid var, we can assign its address before leaving (address = lineNumber-1)
-    var.address = bitsetToString(Base::Bin, bitset(WORD_SIZE, lineNumber-1));
+    var.address = bitsetToString(Base::Bin, bitset(App::instance->config.ramAddrBitsize, lineNumber-1));
     return (var);
 }
 
 std::string Cc::parseValue(const std::string &buffer)
 {
     try {
-        return (bitsetToString(Base::Bin, bitset(WORD_SIZE, intFromString(Base::Unknown, buffer))));
+        return (bitsetToString(Base::Bin, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Unknown, buffer))));
     } catch (...) {
         throw (std::runtime_error("failed to parse operand "+buffer+": invalid integer"));
     }

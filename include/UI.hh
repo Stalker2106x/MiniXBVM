@@ -37,7 +37,8 @@ public:
     void vmWindow();
     void ramInspector();
     void programmerWindow();
-    void help();
+    void helpWindow();
+    void settingsWindow();
     
     void sfmlDraw(sf::RenderWindow &window);
 
@@ -57,6 +58,7 @@ public:
     static std::unique_ptr<UI> instance;
 private:
     bool _showHelp;
+    bool _showSettings;
     Base _addrBase;
     Base _valueBase;
 };

@@ -4,9 +4,9 @@
 #include "bitset_utils.hh"
 #include "App.hh"
 
-Computer::Computer(int addrSize, int regSize)
-  : _RAM(addrSize, regSize), _PC(regSize), _MAR(regSize), _IR(regSize),
-    _accumulator(regSize), _Breg(regSize), _SR(regSize), _output(regSize)
+Computer::Computer()
+  : _RAM(), _PC(), _MAR(), _IR(),
+    _accumulator(), _Breg(), _SR(), _output()
 {
   restart();
 }
@@ -25,7 +25,7 @@ void Computer::halt()
 
 void Computer::restart()
 {
-  _PC.write(bitset(WORD_SIZE, _RAM.getSize()-1));
+  _PC.write(bitset(App::instance->config.ramAddrBitsize, _RAM.getSize()-1));
   _MAR.clear();
   _IR.clear();
   _accumulator.clear();
@@ -115,9 +115,9 @@ std::vector<std::pair<std::string, std::string>> Computer::dumpMemory(MemoryType
   {
     case RAM:
       auto rawDump = _RAM.read();
-      bitset lastAddress = bitset(ADDRESS_SIZE, _RAM.getSize()-1);
+      bitset lastAddress = bitset(App::instance->config.ramAddrBitsize, _RAM.getSize()-1);
 
-      for (bitset it = bitset(ADDRESS_SIZE, 0); it < lastAddress; ++it)
+      for (bitset it = bitset(App::instance->config.ramAddrBitsize, 0); it < lastAddress; ++it)
       {
         dump.push_back(std::make_pair(bitsetToString(addrBase, it, true), bitsetToString(valueBase, rawDump.at(it).read(), true)));
       }
@@ -133,7 +133,7 @@ std::string Computer::getOutput() const
 
 std::string Computer::getInstruction() const
 {
-  bitset opCode = bitsetRange(_IR.read(), WORD_SIZE, DWORD_SIZE);
+  bitset opCode = bitsetRange(_IR.read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {
@@ -165,7 +165,7 @@ void Computer::cycle(int deltaTime)
     ++_PC;
     _MAR = _PC;
     _IR.write(_RAM[_MAR.read()].read()); //Read the current instruction and store it in instruction registr
-    bitset opCode = bitsetRange(_IR.read(), WORD_SIZE, DWORD_SIZE);
+    bitset opCode = bitsetRange(_IR.read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
     auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
     if (defIt != instructionsSet.end())
     {

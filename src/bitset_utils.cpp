@@ -3,9 +3,9 @@
 bitset bitsetRange(const bitset &a, unsigned int rangeStart, unsigned int rangeEnd)
 {
   bitset result = bitset(rangeEnd-rangeStart, 0);
-  for (size_t i = rangeStart, j = 0; i < rangeEnd; i++, j++)
+  for (size_t i = rangeStart, resIt = 0; i < rangeEnd; i++, resIt++)
   {
-    result[j] = a[i];
+    result[resIt] = a[i];
   }
   return (result);
 }
