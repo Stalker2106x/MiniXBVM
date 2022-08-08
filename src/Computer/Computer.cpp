@@ -3,6 +3,7 @@
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
 #include "App.hh"
+#include <iostream>
 
 Computer::Computer()
   : _RAM(), _PC(), _MAR(), _IR(),
@@ -171,10 +172,13 @@ bitset Computer::getOperandBitset() const
 
 size_t Computer::getPCIncrement() const
 {
+  const bitset currentAddr = _MAR.read();
+  if (currentAddr == bitset(currentAddr.size(), 0)) return (1); //Empty reg, jump 1
   const bitset opCode = bitsetRange(_RAM[_MAR.read()].read(), 0, OPCODE_BITSIZE);
-  if (opCode == bitset(opCode.size(), 0)) return (1); //Empty reg, jump 1
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
-  return (OPCODE_BITSIZE + (defIt->operandCount * App::instance->config.ramDataBitsize)) / App::instance->config.ramDataBitsize;
+  if (defIt == instructionsSet.end()) return (1); //Garbage, jump 1
+  int instructionSize = (OPCODE_BITSIZE + (defIt->operandCount * App::instance->config.ramAddrBitsize));
+  return ((instructionSize / App::instance->config.ramDataBitsize) + ((instructionSize % App::instance->config.ramDataBitsize) == 0 ? 0 : 1));
 }
 
 void Computer::cycle(int deltaTime)
