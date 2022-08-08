@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <math.h>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include "UI.hh"
 #include "App.hh"
@@ -13,6 +14,8 @@ std::unique_ptr<UI> UI::instance = nullptr;
 
 UI::UI()
 {
+    ramAddrSize = new char[128];
+    ramDataSize = new char[128];
     compilationOutput = new char[2048];
     compilationLogs = new char[2048];
     infoModalText = new char[2048];
@@ -25,6 +28,9 @@ void UI::init()
     compilationOutput[2047] = '\0';
     memset(compilationLogs, 0, 2047);
     compilationLogs[2047] = '\0';
+
+    itoa(App::instance->config.ramAddrBitsize, ramAddrSize, 128);
+    itoa(App::instance->config.ramDataBitsize, ramDataSize, 128);
 
 	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
 	asmEditor.SetPalette(ExtTextEditor::GetCustomPalette());
@@ -44,6 +50,13 @@ void UI::init()
 void UI::menuBar()
 {
     if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            if(ImGui::MenuItem("Settings"))
+            {
+                _showSettings = true;
+            }
+            ImGui::EndMenu();
+        }
         if (ImGui::BeginMenu("Help")) {
             if(ImGui::MenuItem("About"))
             {
@@ -309,15 +322,24 @@ void UI::settingsWindow()
     if (!_showSettings) return;
     ImGui::Begin("Settings", NULL);
 
+    ImGui::InputText("RAM Address size (in bits)", ramAddrSize, IM_ARRAYSIZE(ramAddrSize));
+    ImGui::InputText("RAM Data size (in bits)", ramDataSize, IM_ARRAYSIZE(ramDataSize));
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Apply configuration (Will completely reset computer)");
     if (ImGui::Button("Apply"))
     {
-        _showHelp = false;
+        App::instance->config.ramAddrBitsize = atoi(ramAddrSize);
+        App::instance->config.ramDataBitsize = atoi(ramDataSize);
+        App::instance->setComputer();
+        _showSettings = false;
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel"))
     {
-        _showHelp = false;
+        _showSettings = false;
     }
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Closes this window without altering computer");
 
     ImGui::End();
 }

@@ -12,6 +12,8 @@ class App
 {
 public:
   App();
+  
+  void setComputer();
   int run(int argc, char** argv);
   void update(int deltaTime);
   void draw();

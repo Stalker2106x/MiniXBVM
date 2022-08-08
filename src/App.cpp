@@ -8,6 +8,11 @@ std::unique_ptr<App> App::instance = nullptr;
 App::App()
 {
     App::instance = std::unique_ptr<App>(this);
+    setComputer();
+}
+
+void App::setComputer()
+{
     computer = std::make_unique<Computer>();
 }
 

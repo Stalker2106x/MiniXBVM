@@ -51,6 +51,8 @@ public:
 
     TextEditor asmEditor;
 
+    char *ramDataSize;
+    char *ramAddrSize;
     char *compilationOutput;
     char *compilationLogs;
     char *infoModalText;
