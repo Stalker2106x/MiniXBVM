@@ -7,6 +7,8 @@ namespace ExtTextEditor {
     namespace LanguageDefinition {
         const TextEditor::LanguageDefinition& ASM();
     }
+
+    const TextEditor::Palette & GetCustomPalette();
 }
 
 #endif /* !LANGUAGEDEF_HH_ */

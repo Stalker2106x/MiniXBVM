@@ -12,9 +12,9 @@ class Computer;
 struct InstructionDef
 {
 public:
-    InstructionDef(std::string name_, unsigned long long code_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0);
+    InstructionDef(std::string keyword_, unsigned long long code_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0);
 
-    std::string name;
+    std::string keyword;
     bitset code;
     std::function<void(Computer&)> executor;
     size_t operandCount;
@@ -33,7 +33,7 @@ const std::vector<InstructionDef> instructionsSet = {
     {"SUB", 3, SUBExecutor, 1},
     {"MUL", 4, MULExecutor, 1},
     {"OUT", 5, OUTExecutor},
-    {"HLT", 6, HLTExecutor},
+    {"HLT", 6, HLTExecutor}
 };
 
 #endif /* INSTRUCTION_HH_ */

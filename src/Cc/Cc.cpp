@@ -28,7 +28,9 @@ Cc::Output Cc::compile(const std::string &input)
                 lineNumber++;
                 //Parse first word (usually instruction)
                 lss >> buffer;
-                auto instructionsIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&buffer] (InstructionDef def) { return (def.name == buffer); } );
+                std::string keyword(buffer);
+                std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::toupper);
+                auto instructionsIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
                 if (instructionsIt == instructionsSet.end())
                 {
                     if (pass == 0) //Instruction was not found, pass 0, we consider that it is a variable
@@ -63,7 +65,7 @@ Cc::Output Cc::compile(const std::string &input)
                 }
                 if (instructionsIt->operandCount != operandsFound)
                 {
-                    throw (std::runtime_error("instruction "+instructionsIt->name+" expects "+std::to_string(instructionsIt->operandCount)+" operands, "+std::to_string(operandsFound)+" found."));
+                    throw (std::runtime_error("instruction "+instructionsIt->keyword+" expects "+std::to_string(instructionsIt->operandCount)+" operands, "+std::to_string(operandsFound)+" found."));
                 }
                 output.code += '\n';
             } catch (std::runtime_error e) {

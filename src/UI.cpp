@@ -27,6 +27,7 @@ void UI::init()
     compilationLogs[2047] = '\0';
 
 	asmEditor.SetLanguageDefinition(ExtTextEditor::LanguageDefinition::ASM());
+	asmEditor.SetPalette(ExtTextEditor::GetCustomPalette());
 
     backgroundTexture.loadFromFile("Data/img/background.jpg");
     backgroundSprite.setTexture(backgroundTexture);
