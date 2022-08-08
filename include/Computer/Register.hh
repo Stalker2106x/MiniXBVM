@@ -26,8 +26,9 @@ private:
   ** OPERATORS OVERLOAD
   *********************/
 public:
-  Register operator=(Register& rhs);
-  Register operator+=(Register& rhs);
+  Register operator=(const Register& rhs);
+  Register operator+=(const Register& rhs);
+  Register operator+=(const size_t& rhs);
   Register operator++();
   Register operator-=(const Register& rhs);
   Register operator*=(const Register& rhs);

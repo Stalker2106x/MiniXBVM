@@ -30,15 +30,21 @@ void Register::clear()
  */
 
 
-Register Register::operator=(Register& rhs)
+Register Register::operator=(const Register& rhs)
 {
     _data = rhs.read();
     return (*this);
 }
 
-Register Register::operator+=(Register& rhs)
+Register Register::operator+=(const Register& rhs)
 {
     _data = _data + rhs._data;
+    return (*this);
+}
+
+Register Register::operator+=(const size_t& rhs)
+{
+    _data = _data + rhs;
     return (*this);
 }
 

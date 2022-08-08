@@ -10,27 +10,27 @@ InstructionDef::InstructionDef(std::string keyword_, unsigned long long code_, s
 
 void LDAExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._accumulator.write(computer._RAM[computer._MAR.read()].read());
 }
 
 void ADDExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator += computer._Breg;
 }
 
 void SUBExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator -= computer._Breg;
 }
 
 void MULExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator *= computer._Breg;
 }

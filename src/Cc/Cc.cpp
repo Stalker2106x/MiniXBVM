@@ -17,7 +17,7 @@ Cc::Output Cc::compile(const std::string &input)
     //Pass 1: Implementation: We generate the code
     for (size_t pass = 0; pass <= 1; pass++)
     {
-        int lineNumber = 0;
+        size_t lineNumber = 0;
         std::istringstream iss(inputProcessed);
         while(std::getline(iss, line, '\n'))
         {
@@ -25,6 +25,7 @@ Cc::Output Cc::compile(const std::string &input)
                 if (line.empty()) continue; //Skip empty line
                 std::istringstream lss(line);
                 std::string buffer;
+                std::string lineOutput;
 
                 lineNumber++;
                 //Parse first word (usually instruction)
@@ -51,9 +52,9 @@ Cc::Output Cc::compile(const std::string &input)
                 {
                     if (pass == 1)
                     {
-                        output.code += instructionsIt->code.to_string();
+                        lineOutput.insert(0, instructionsIt->code.to_string());
                         //Pad with zeros if no operands are expected
-                        if (instructionsIt->operandCount == 0) output.code += "0000";
+                        if (instructionsIt->operandCount == 0) lineOutput.insert(0, std::string(App::instance->config.ramDataBitsize-OPCODE_BITSIZE, '0'));
                     }
                 }
                 if (pass == 0) continue; //We skip operand parsing on declarative pass
@@ -61,14 +62,26 @@ Cc::Output Cc::compile(const std::string &input)
                 int operandsFound = 0;
                 while (lss >> buffer)
                 {
-                    output.code += parseOperand(buffer);
+                    const Config &config = App::instance->config;
+                    std::string operand = parseOperand(buffer);
+                    //Write remaining data on opcode block
+                    lineOutput.insert(0, operand.substr(0, config.ramDataBitsize - OPCODE_BITSIZE));
+                    //Write all additional blocks if any
+                    for (size_t blockIterator = config.ramDataBitsize - OPCODE_BITSIZE; blockIterator < operand.length(); blockIterator += config.ramDataBitsize)
+                    {
+                        if (blockIterator == (config.ramDataBitsize - OPCODE_BITSIZE)) output.code += lineOutput + '\n'; //Flush existing buffer into output
+                        lineNumber++;
+                        std::string blockData = operand.substr(blockIterator, config.ramDataBitsize);
+                        if (blockData.length() < config.ramDataBitsize) blockData += std::string(config.ramDataBitsize - blockData.length(), '0'); //Pad block if needed
+                        output.code += blockData + '\n';
+                    }
                     operandsFound += 1;
                 }
                 if (instructionsIt->operandCount != operandsFound)
                 {
                     throw (std::runtime_error("instruction "+instructionsIt->keyword+" expects "+std::to_string(instructionsIt->operandCount)+" operands, "+std::to_string(operandsFound)+" found."));
                 }
-                output.code += '\n';
+                output.code += lineOutput + '\n';
             } catch (std::runtime_error e) {
                 output.log += "Line "+std::to_string(lineNumber)+":"+e.what()+"\n";
                 output.success = false; //Invalidate machine program immediately

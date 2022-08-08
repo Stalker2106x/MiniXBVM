@@ -133,7 +133,7 @@ std::string Computer::getOutput() const
 
 std::string Computer::getInstruction() const
 {
-  bitset opCode = bitsetRange(_IR.read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
+  const bitset opCode = _IR.read();
   auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
   if (defIt != instructionsSet.end())
   {
@@ -157,15 +157,35 @@ std::string Computer::getFlags() const
   return (res);
 }
 
+bitset Computer::getOperandBitset() const
+{
+  bitset operand = bitsetRange(_RAM[_MAR.read()].read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
+  size_t remainingBlocks = (App::instance->config.ramAddrBitsize - OPCODE_BITSIZE) / App::instance->config.ramDataBitsize;
+  for (size_t currentBlock = 0; currentBlock < remainingBlocks; currentBlock++)
+  {
+    //One instruction + operands exceed one memory block, so we need to grab multiple
+    operand.append(*(_RAM[_MAR.read()+currentBlock].read().data()));
+  }
+  return (operand);
+}
+
+size_t Computer::getPCIncrement() const
+{
+  const bitset opCode = bitsetRange(_RAM[_MAR.read()].read(), 0, OPCODE_BITSIZE);
+  if (opCode == bitset(opCode.size(), 0)) return (1); //Empty reg, jump 1
+  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
+  return (OPCODE_BITSIZE + (defIt->operandCount * App::instance->config.ramDataBitsize)) / App::instance->config.ramDataBitsize;
+}
+
 void Computer::cycle(int deltaTime)
 {
   if (_state != Running) return;
   if (clock.cycle(deltaTime))
   {
-    ++_PC;
+    _PC += getPCIncrement();
     _MAR = _PC;
-    _IR.write(_RAM[_MAR.read()].read()); //Read the current instruction and store it in instruction registr
-    bitset opCode = bitsetRange(_IR.read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
+    const bitset opCode = bitsetRange(_RAM[_MAR.read()].read(), 0, OPCODE_BITSIZE);
+    _IR.write(opCode); //Read the current instruction and store it in instruction registr
     auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
     if (defIt != instructionsSet.end())
     {

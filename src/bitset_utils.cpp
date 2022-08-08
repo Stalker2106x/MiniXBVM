@@ -52,6 +52,12 @@ bitset operator+(bitset lhs, const bitset &rhs)
   return (lhs);
 }
 
+bitset operator+(bitset lhs, const size_t &rhs)
+{
+  lhs = lhs + bitset(lhs.size(), rhs);
+  return (lhs);
+}
+
 bitset operator-(bitset lhs, const bitset &rhs)
 {
   bitsetSubtract(lhs, rhs);
@@ -75,8 +81,14 @@ bitset operator+=(bitset lhs, const bitset& rhs)
   return (lhs);
 }
 
-bitset operator++(bitset& rhs)
+bitset operator+=(bitset lhs, const size_t& rhs)
 {
-  rhs = rhs + bitset(rhs.size(), 1);
-  return (rhs);
+  lhs = lhs + rhs;
+  return (lhs);
+}
+
+bitset operator++(bitset& lhs)
+{
+  lhs = lhs + 1;
+  return (lhs);
 }

@@ -47,6 +47,9 @@ public:
   std::string getInstruction() const;
   std::string getFlags() const;
 
+  bitset getOperandBitset() const;
+  size_t getPCIncrement() const;
+
   void cycle(int deltaTime);
 
   //EXECUTORS
