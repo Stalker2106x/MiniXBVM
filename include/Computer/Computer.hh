@@ -1,7 +1,7 @@
 #ifndef COMPUTER_HH_
 #define COMPUTER_HH_
 
-#include <unordered_map>
+#include <map>
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
 #include "config.h"
@@ -46,6 +46,9 @@ public:
   std::string getOutput() const;
   std::string getInstruction() const;
   std::string getFlags() const;
+
+  bitset getOperandBitset() const;
+  size_t getPCIncrement() const;
 
   void cycle(int deltaTime);
 

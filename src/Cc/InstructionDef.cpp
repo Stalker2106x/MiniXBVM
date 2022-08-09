@@ -8,29 +8,42 @@ InstructionDef::InstructionDef(std::string keyword_, unsigned long long code_, s
 {
 }
 
+size_t getInstructionSize(bitset opCode)
+{
+  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
+  if (defIt == instructionsSet.end()) return (1); //Garbage, jump 1
+  return (getInstructionSize(*defIt));
+}
+
+size_t getInstructionSize(const InstructionDef &instr)
+{
+  int instructionSize = (OPCODE_BITSIZE + (instr.operandCount * App::instance->config.ramAddrBitsize));
+  return ((instructionSize / App::instance->config.ramDataBitsize) + ((instructionSize % App::instance->config.ramDataBitsize) == 0 ? 0 : 1));
+}
+
 void LDAExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._accumulator.write(computer._RAM[computer._MAR.read()].read());
 }
 
 void ADDExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator += computer._Breg;
 }
 
 void SUBExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator -= computer._Breg;
 }
 
 void MULExecutor(Computer &computer)
 {
-    computer._MAR.write(bitsetRange(computer._IR.read(), 0, OPCODE_BITSIZE));//Extract adress from IR
+    computer._MAR.write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
     computer._Breg.write(computer._RAM[computer._MAR.read()].read());
     computer._accumulator *= computer._Breg;
 }

@@ -14,10 +14,12 @@ bitset bitsetErase(bitset a, unsigned int rangeStart, unsigned int rangeEnd);
  ***********************/
 
 bitset operator+(bitset lhs, const bitset &rhs);
+bitset operator+(bitset lhs, const size_t &rhs);
 bitset operator-(bitset lhs, const bitset &rhs);
 bitset operator*(bitset lhs, const bitset &rhs);
 // bitset operator/(const bitset &lhs, const bitset &rhs);
 bitset operator+=(bitset lhs, const bitset& rhs);
+bitset operator+=(bitset lhs, const size_t &rhs);
 bitset operator++(bitset& rhs);
 
 

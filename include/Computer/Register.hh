@@ -1,8 +1,6 @@
 #ifndef REGISTER_HH_
 #define REGISTER_HH_
 
-#include <unordered_map>
-#include <array>
 #include <bitset>
 #include "config.h"
 #include "bitset_utils.hh"
@@ -10,7 +8,7 @@
 class Register
 {
 public:
-  Register();
+  Register(const size_t regSize);
   Register(const bitset data);
 
   void write(const bitset value);
@@ -26,8 +24,9 @@ private:
   ** OPERATORS OVERLOAD
   *********************/
 public:
-  Register operator=(Register& rhs);
-  Register operator+=(Register& rhs);
+  Register operator=(const Register& rhs);
+  Register operator+=(const Register& rhs);
+  Register operator+=(const size_t& rhs);
   Register operator++();
   Register operator-=(const Register& rhs);
   Register operator*=(const Register& rhs);

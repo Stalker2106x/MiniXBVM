@@ -8,7 +8,7 @@ Memory::Memory()
 
     for (bitset it = bitset(App::instance->config.ramAddrBitsize, 0); it < lastAddress; ++it)
     {
-        _data.emplace(it, Register());
+        _data.emplace(it, Register(App::instance->config.ramDataBitsize));
     }
 }
 
@@ -40,12 +40,11 @@ size_t Memory::getSize() const
 size_t Memory::getUsedSize() const
 {
     size_t size = 0;
-    bitset emptyReg = bitset(App::instance->config.ramDataBitsize, 0);
-    for (auto it = _data.begin(); it != _data.end(); ++it)
+    for (auto rit = _data.rbegin(); rit != _data.rend(); ++rit)
     {
-        if (it->second.read() != emptyReg) size += 1;
+        if (rit->second.read().any()) return (std::distance(_data.begin(), rit.base()));
     }
-    return (size);
+    return (0);
 }
 
 Register Memory::operator[](bitset address) const
@@ -53,7 +52,7 @@ Register Memory::operator[](bitset address) const
     return (_data.at(address));
 }
 
-std::unordered_map<bitset, Register, BitsetHash> Memory::read() const
+std::map<bitset, Register> Memory::read() const
 {
     return (_data);
 }

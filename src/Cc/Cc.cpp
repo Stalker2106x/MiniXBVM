@@ -17,7 +17,7 @@ Cc::Output Cc::compile(const std::string &input)
     //Pass 1: Implementation: We generate the code
     for (size_t pass = 0; pass <= 1; pass++)
     {
-        int lineNumber = 0;
+        size_t lineNumber = 0;
         std::istringstream iss(inputProcessed);
         while(std::getline(iss, line, '\n'))
         {
@@ -25,14 +25,15 @@ Cc::Output Cc::compile(const std::string &input)
                 if (line.empty()) continue; //Skip empty line
                 std::istringstream lss(line);
                 std::string buffer;
+                std::string lineOutput;
 
                 lineNumber++;
                 //Parse first word (usually instruction)
                 lss >> buffer;
                 std::string keyword(buffer);
                 std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::toupper);
-                auto instructionsIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
-                if (instructionsIt == instructionsSet.end())
+                auto instructionIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
+                if (instructionIt == instructionsSet.end())
                 {
                     if (pass == 0) //Instruction was not found, pass 0, we consider that it is a variable
                     {
@@ -49,11 +50,15 @@ Cc::Output Cc::compile(const std::string &input)
                 }
                 else
                 {
-                    if (pass == 1)
+                    if (pass == 0)
                     {
-                        output.code += instructionsIt->code.to_string();
+                        lineNumber += (getInstructionSize(*instructionIt)-1);
+                    }
+                    else if (pass == 1)
+                    {
+                        lineOutput.insert(0, instructionIt->code.to_string());
                         //Pad with zeros if no operands are expected
-                        if (instructionsIt->operandCount == 0) output.code += "0000";
+                        if (instructionIt->operandCount == 0) lineOutput.insert(0, std::string(App::instance->config.ramDataBitsize-OPCODE_BITSIZE, '0'));
                     }
                 }
                 if (pass == 0) continue; //We skip operand parsing on declarative pass
@@ -61,14 +66,26 @@ Cc::Output Cc::compile(const std::string &input)
                 int operandsFound = 0;
                 while (lss >> buffer)
                 {
-                    output.code += parseOperand(buffer);
+                    const Config &config = App::instance->config;
+                    std::string operand = parseOperand(buffer);
+                    //Write remaining data on opcode block
+                    lineOutput.insert(0, operand.substr(operand.length() - OPCODE_BITSIZE, operand.length()));
+                    //Write all additional blocks if any
+                    for (int blockIterator = operand.length() - OPCODE_BITSIZE; blockIterator > 0; blockIterator -= config.ramDataBitsize)
+                    {
+                        if (blockIterator == (operand.length() - OPCODE_BITSIZE)) output.code += lineOutput + '\n'; //Flush existing buffer into output
+                        lineNumber++;
+                        int blockStart = blockIterator - config.ramDataBitsize;
+                        lineOutput = operand.substr((blockStart < 0 ? 0 : blockStart), blockIterator);
+                        if (lineOutput.length() < config.ramDataBitsize) lineOutput += std::string(config.ramDataBitsize - lineOutput.length(), '0'); //Pad block if needed
+                    }
                     operandsFound += 1;
                 }
-                if (instructionsIt->operandCount != operandsFound)
+                if (instructionIt->operandCount != operandsFound)
                 {
-                    throw (std::runtime_error("instruction "+instructionsIt->keyword+" expects "+std::to_string(instructionsIt->operandCount)+" operands, "+std::to_string(operandsFound)+" found."));
+                    throw (std::runtime_error("instruction "+instructionIt->keyword+" expects "+std::to_string(instructionIt->operandCount)+" operands, "+std::to_string(operandsFound)+" found."));
                 }
-                output.code += '\n';
+                output.code += lineOutput + '\n';
             } catch (std::runtime_error e) {
                 output.log += "Line "+std::to_string(lineNumber)+":"+e.what()+"\n";
                 output.success = false; //Invalidate machine program immediately

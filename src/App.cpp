@@ -8,6 +8,11 @@ std::unique_ptr<App> App::instance = nullptr;
 App::App()
 {
     App::instance = std::unique_ptr<App>(this);
+    setComputer();
+}
+
+void App::setComputer()
+{
     computer = std::make_unique<Computer>();
 }
 
@@ -15,7 +20,7 @@ int App::run(int argc, char** argv)
 {
     sf::RenderWindow window(sf::VideoMode(1280, 768), "Mini8BVM");
     window.setFramerateLimit(120);
-    ImGui::SFML::Init(window);
+    if (!ImGui::SFML::Init(window)) return (-1);
 
     ui.init();
 
@@ -27,7 +32,7 @@ int App::run(int argc, char** argv)
     static const ImWchar icon_ranges[] = { ICON_MIN_IONIC, ICON_MAX_IONIC, 0 };
     io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f, NULL, icon_ranges);
 
-    ImGui::SFML::UpdateFontTexture(); // important call: updates font texture
+    if (!ImGui::SFML::UpdateFontTexture()) return (-1); // important call: updates font texture
     ui.fontAtlas = ImGui::GetIO().Fonts;
 
 

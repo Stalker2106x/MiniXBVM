@@ -22,13 +22,15 @@ bitset bitsetPad(const bitset &a)
 
 bitset bitsetConcat(const bitset &a, const bitset &b)
 {
-  bitset result = bitset(a.size(), 0);
-  for (size_t i = 1; i <= 2; i++)
+  bitset result = bitset(a.size()+b.size(), 0);
+  size_t resIt = 0;
+  for (size_t i = 0; i < a.size(); i++)
   {
-    for (size_t j = 0; j < a.size(); j++)
-    {
-      result[i * j] = a[j];
-    }
+    result[resIt++] = a[i];
+  }
+  for (size_t i = 0; i < b.size(); i++)
+  {
+    result[resIt++] = b[i];
   }
   return (result);
 }
@@ -49,6 +51,12 @@ bitset bitsetErase(bitset a, unsigned int rangeStart, unsigned int rangeEnd)
 bitset operator+(bitset lhs, const bitset &rhs)
 {
   bitsetAdd(lhs, rhs);
+  return (lhs);
+}
+
+bitset operator+(bitset lhs, const size_t &rhs)
+{
+  lhs = lhs + bitset(lhs.size(), rhs);
   return (lhs);
 }
 
@@ -75,8 +83,14 @@ bitset operator+=(bitset lhs, const bitset& rhs)
   return (lhs);
 }
 
-bitset operator++(bitset& rhs)
+bitset operator+=(bitset lhs, const size_t& rhs)
 {
-  rhs = rhs + bitset(rhs.size(), 1);
-  return (rhs);
+  lhs = lhs + rhs;
+  return (lhs);
+}
+
+bitset operator++(bitset& lhs)
+{
+  lhs = lhs + 1;
+  return (lhs);
 }
