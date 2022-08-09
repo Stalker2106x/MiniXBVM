@@ -1,5 +1,4 @@
 #include "bitset_utils.hh"
-#include <iostream>
 
 bitset bitsetRange(const bitset &a, unsigned int rangeStart, unsigned int rangeEnd)
 {
@@ -7,7 +6,6 @@ bitset bitsetRange(const bitset &a, unsigned int rangeStart, unsigned int rangeE
   for (size_t i = rangeStart, resIt = 0; i < rangeEnd; i++, resIt++)
   {
     result[resIt] = a[i];
-    std::cout << result.to_string() << "b" << a[i] << std::endl;
   }
   return (result);
 }

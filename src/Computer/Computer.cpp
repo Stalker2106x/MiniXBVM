@@ -3,7 +3,6 @@
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
 #include "App.hh"
-#include <iostream>
 
 Computer::Computer()
   : _RAM(), _PC(App::instance->config.ramAddrBitsize), _MAR(App::instance->config.ramAddrBitsize), _IR(OPCODE_BITSIZE),
@@ -168,7 +167,6 @@ bitset Computer::getOperandBitset() const
     //One instruction + operands exceed one memory block, so we need to grab multiple
     operand = bitsetConcat(operand, _RAM[_MAR.read()+currentBlock].read());
   }
-  std::cout << operand.to_string() << std::endl;
   return (operand);
 }
 
