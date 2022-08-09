@@ -1,4 +1,4 @@
-![Logo](/MiniXBVM.png?raw=true)
+![Logo](/bin/data/img/logo.png?raw=true)
 
 [![Build Status](https://travis-ci.org/Stalker2106x/MiniXBVM.svg?branch=master)](https://travis-ci.org/Stalker2106x/MiniXBVM)
 
