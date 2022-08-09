@@ -18,8 +18,6 @@ struct Config {
     size_t ramDataBitsize; //Size of ram value
 };
 
-typedef size_t wordSizeType; //Has to match bitset type... <size_t>
-
 typedef sul::dynamic_bitset<> bitset;
 
 #endif /* !CONFIG_H_ */
