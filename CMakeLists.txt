@@ -8,11 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #CORE FILES
 file(GLOB source_files
      ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/UI/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Cc/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Computer/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Editor/*.cpp
      ${CMAKE_SOURCE_DIR}/src/Electronic/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.cpp
+     ${CMAKE_SOURCE_DIR}/thirdparty/imgui/misc/cpp/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/ImGuiColorTextEdit/TextEditor.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui-sfml/*.cpp
 )
