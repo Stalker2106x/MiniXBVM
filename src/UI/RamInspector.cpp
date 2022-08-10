@@ -12,8 +12,9 @@ RamInspector::RamInspector() : _addrBase(Base::Bin), _valueBase(Base::Bin), _mem
 void RamInspector::update()
 {
     Computer &computer = *(App::instance->computer);
-    _memorySize = computer.getMemorySize(MemoryType::RAM);
-    _memoryUsedSize = computer.getMemoryUsedSize(MemoryType::RAM);
+    const Memory &ram = computer.getMemory(MemoryType::RAM);
+    _memorySize = ram.getSize();
+    _memoryUsedSize = ram.getUsedSize();
     _ramDump = computer.dumpMemory(MemoryType::RAM, _addrBase, _valueBase);
 }
 
