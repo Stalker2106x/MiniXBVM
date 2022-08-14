@@ -5,9 +5,13 @@
 #include <imgui.h>
 #include <imgui/backends/imgui_impl_glut.h>
 #include <imgui/backends/imgui_impl_opengl2.h>
-#include <ImGuiColorTextEdit/TextEditor.h>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include "UI/RamInspector.hh"
+#include "UI/ComputerPanel.hh"
+#include "UI/ProgrammerWindow.hh"
+#include "UI/SettingsWindow.hh"
+#include "UI/HelpWindow.hh"
 #include "utils.hh"
 
 #define ICON_MIN_IONIC  0xf100
@@ -33,36 +37,24 @@ public:
     UI();
     void init();
     void draw();
+
     void menuBar();
-    void vmWindow();
-    void ramInspector();
-    void programmerWindow();
-    void helpWindow();
-    void settingsWindow();
-    
+
     void sfmlDraw(sf::RenderWindow &window);
 
     ImFontAtlas* fontAtlas;
+    static std::unique_ptr<UI> instance;
 
+    ComputerPanel computerPanel;
+    RamInspector ramInspector;
+    ProgrammerWindow programmerWindow;
+    HelpWindow helpWindow;
+    SettingsWindow settingsWindow;
+private:
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
-    sf::Texture logoTexture;
-    sf::Sprite logoSprite;
 
-    TextEditor asmEditor;
-
-    char *ramDataSize;
-    char *ramAddrSize;
-    char *compilationOutput;
-    char *compilationLogs;
     char *infoModalText;
-
-    static std::unique_ptr<UI> instance;
-private:
-    bool _showHelp;
-    bool _showSettings;
-    Base _addrBase;
-    Base _valueBase;
 };
 
 #endif /* !UI_HH_ */

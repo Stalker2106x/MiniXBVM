@@ -2,6 +2,7 @@
 #define COMPUTER_HH_
 
 #include <map>
+#include <unordered_map>
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
 #include "config.h"
@@ -13,9 +14,9 @@ enum RegisterType {
   MemoryAdressRegistry,
   InstructionRegister,
   Accumulator,
-  Bregister,
+  BRegister,
   Output,
-  Status
+  StatusRegister
 };
 
 enum MemoryType {
@@ -38,10 +39,11 @@ public:
   void reset();
   State getState() const;
 
-  void writeMemory(MemoryType memType, bitset address, bitset value);
   std::string dumpRegister(RegisterType regType, Base base) const;
-  size_t getMemorySize(MemoryType memType) const;
-  size_t getMemoryUsedSize(MemoryType memType) const;
+  Memory &getMemory(MemoryType memType);
+  Register &getRegister(RegisterType regType);
+  const Memory &getMemory(MemoryType memType) const;
+  const Register &getRegister(RegisterType regType) const;
   std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType, Base addrBase, Base valueBase) const;
   std::string getOutput() const;
   std::string getInstruction() const;
@@ -63,15 +65,8 @@ public:
   Clock clock;
 private:
   State _state;
-  Memory _RAM;
-
-  Register _PC;
-  Register _MAR;
-  Register _IR;
-  Register _accumulator;
-  Register _Breg;
-  Register _SR;
-  Register _output;
+  std::unordered_map<MemoryType, Memory> _memories;
+  std::unordered_map<RegisterType, Register> _registers;
 };
 
 #endif /* !COMPUTER_HH_ */

@@ -25,16 +25,19 @@ int App::run(int argc, char** argv)
     ui.init();
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    float fontSize = 2.0;
+
     io.Fonts->Clear();
-    io.Fonts->AddFontDefault();
-    io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 64.0f);
+    io.Fonts->AddFontFromFileTTF("data/font/FiraMono.ttf", 15.0f * fontSize);
+    io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 64.0f * fontSize);
 
     static const ImWchar icon_ranges[] = { ICON_MIN_IONIC, ICON_MAX_IONIC, 0 };
-    io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f, NULL, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f * fontSize, NULL, icon_ranges);
 
     if (!ImGui::SFML::UpdateFontTexture()) return (-1); // important call: updates font texture
     ui.fontAtlas = ImGui::GetIO().Fonts;
 
+    ImGui::GetStyle().ScaleAllSizes(2.0);
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
