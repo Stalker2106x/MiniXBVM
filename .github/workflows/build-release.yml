@@ -10,7 +10,7 @@ jobs:
       - run: echo "🖥️ Building dependencies..."
       - run: sudo apt-get install libx11-dev xorg-dev freeglut3-dev libudev-dev libopenal-dev libvorbis-dev libflac-dev
       - run: cd $GITHUB_WORKSPACE/thirdparty/SFML && cmake . -DBUILD_SHARED_LIBS=ON && make
-      - run: cd $GITHUB_WORKSPACE/thirdparty/imgui-sfml && cmake . -DBUILD_SHARED_LIBS=ON -DSFML_DIR=../SFML/build/ -DIMGUI_DIR=../imgui/ && make && cd ../../
+      - run: cd $GITHUB_WORKSPACE/thirdparty/imgui-sfml && cmake . -DBUILD_SHARED_LIBS=ON -DSFML_DIR=../SFML/ -DIMGUI_DIR=../imgui/ && make
       - run: echo "🖥️ Building App..."
       - run: cd $GITHUB_WORKSPACE && cmake . && make
       - run: echo "🍏 This job's status is ${{ job.status }}."
