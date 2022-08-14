@@ -9,8 +9,8 @@ jobs:
       - run: git submodule update --init
       - run: echo "🖥️ Building dependencies..."
       - run: sudo apt-get install libx11-dev xorg-dev freeglut3-dev libudev-dev libopenal-dev libvorbis-dev libflac-dev
-      - run: cd thirdparty/SFML && cmake . -DBUILD_SHARED_LIBS=ON && make
-      - run: cd thirdparty/imgui-SFML && cmake . -DBUILD_SHARED_LIBS=ON -DSFML_DIR=../SFML/build/ -DIMGUI_DIR=../imgui/ && make
+      - run: cd thirdparty/SFML && cmake . -DBUILD_SHARED_LIBS=ON && make && cd ../../
+      - run: cd thirdparty/imgui-SFML && cmake . -DBUILD_SHARED_LIBS=ON -DSFML_DIR=../SFML/build/ -DIMGUI_DIR=../imgui/ && make && cd ../../
       - run: echo "🖥️ Building App..."
       - run: cmake . && make
       - run: echo "🍏 This job's status is ${{ job.status }}."
