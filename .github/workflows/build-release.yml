@@ -1,0 +1,13 @@
+name: Build release
+on: [push]
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: git submodule update --init
+      - run: echo "🖥️ Building dependencies..."
+      - run: cd thirdparty/SFML && cmake . -DBUILD_SHARED_LIBS=ON && make
+      - run: cd thirdparty/imgui-SFML && cmake . -DBUILD_SHARED_LIBS=ON -DSFML_DIR=../SFML/build/ -DIMGUI_DIR=../imgui/ && make
+      - run: echo "🖥️ Building App..."
+      - run: cmake . && make
+      - run: echo "🍏 This job's status is ${{ job.status }}."
