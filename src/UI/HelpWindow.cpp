@@ -11,6 +11,12 @@ HelpWindow::HelpWindow()
     _showHelp = false;
 }
 
+void HelpWindow::setVisible(bool show)
+{
+    _showHelp = show;
+    if (show) update();
+}
+
 void HelpWindow::update()
 {
 

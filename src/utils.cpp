@@ -40,6 +40,15 @@ long long int intFromString(Base stringBase, std::string str)
   }
 }
 
+long long int bitsetToLong(bitset set)
+{
+  long long int res = 0;
+  for (size_t b = 0; b < set.size(); b++)
+  {
+    if (set[b]) res += pow(2, b);
+  }
+  return (res);
+}
 
 std::string bitsetToString(Base base, bitset set, bool addSpaces)
 {

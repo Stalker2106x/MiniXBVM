@@ -8,6 +8,7 @@ class SettingsWindow
 public:
     SettingsWindow();
 
+    void setVisible(bool show);
     void update();
     void draw();
 

@@ -8,6 +8,12 @@ SettingsWindow::SettingsWindow()
     _showSettings = false;
 }
 
+void SettingsWindow::setVisible(bool show)
+{
+    _showSettings = show;
+    if (show) update();
+}
+
 void SettingsWindow::update()
 {
     ramAddrSize = std::to_string(App::instance->config.ramAddrBitsize);

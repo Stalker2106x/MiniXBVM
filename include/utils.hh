@@ -60,6 +60,8 @@ long long int intFromString(Base stringBase, std::string str);
 
 std::string formatBinaryString(const std::string &str);
 
+long long int bitsetToLong(bitset set);
+
 std::string bitsetToString(Base base, bitset set, bool addSpaces = false);
 
 std::string baseToLabel(Base base);

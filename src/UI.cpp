@@ -19,6 +19,7 @@ void UI::init()
 {
     backgroundTexture.loadFromFile("Data/img/background.jpg");
     backgroundSprite.setTexture(backgroundTexture);
+    ramInspector.update();
 }
 
 void UI::menuBar()
@@ -27,14 +28,14 @@ void UI::menuBar()
         if (ImGui::BeginMenu("File")) {
             if(ImGui::MenuItem("Settings"))
             {
-                settingsWindow._showSettings = true;
+                settingsWindow.setVisible(true);
             }
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Help")) {
             if(ImGui::MenuItem("About"))
             {
-                helpWindow._showHelp = true;
+                helpWindow.setVisible(true);
             }
             ImGui::EndMenu();
         }

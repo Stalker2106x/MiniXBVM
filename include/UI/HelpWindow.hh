@@ -9,6 +9,7 @@ class HelpWindow
 public:
     HelpWindow();
 
+    void setVisible(bool show);
     void update();
     void draw();
     bool _showHelp;

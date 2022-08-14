@@ -77,9 +77,12 @@ void ComputerPanel::draw()
             ImGui::SetTooltip("Restart Computer (Resets all registers)");
         ImGui::Text("Program Counter: %s", bitsetToString(Base::Bin, computer.getRegister(RegisterType::ProgramCounter).read(), true).c_str());
         ImGui::Text("Memory Adress Registry: %s", bitsetToString(Base::Bin, computer.getRegister(RegisterType::MemoryAdressRegistry).read(), true).c_str());
-        ImGui::Text("Instruction Register: %s -> %s", bitsetToString(Base::Bin, computer.getRegister(RegisterType::InstructionRegister).read(), true).c_str());
-        ImGui::Text("Accumulator: %s -> %s", bitsetToString(Base::Bin, computer.getRegister(RegisterType::Accumulator).read(), true).c_str());
-        ImGui::Text("B Register: %s -> %s", bitsetToString(Base::Bin, computer.getRegister(RegisterType::BRegister).read(), true).c_str());
+        auto IR = computer.getRegister(RegisterType::InstructionRegister).read();
+        ImGui::Text("Instruction Register: %s -> %d", bitsetToString(Base::Bin, IR, true).c_str(), bitsetToLong(IR));
+        auto Acc = computer.getRegister(RegisterType::Accumulator).read();
+        ImGui::Text("Accumulator: %s -> %d", bitsetToString(Base::Bin, Acc, true).c_str(),  bitsetToLong(Acc));
+        auto BReg = computer.getRegister(RegisterType::BRegister).read();
+        ImGui::Text("B Register: %s -> %d", bitsetToString(Base::Bin, BReg, true).c_str(),  bitsetToLong(BReg));
         ImGui::Text("Status Register: %s", computer.getFlags().c_str());
         ImGui::Text("Output Register: %s", bitsetToString(Base::Bin, computer.getRegister(RegisterType::Output).read(), true).c_str());
     }
