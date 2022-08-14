@@ -4,6 +4,8 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
+      - name: Build release
+        uses: actions/checkout@v3
       - run: git submodule update --init
       - run: echo "🖥️ Building dependencies..."
       - run: cd thirdparty/SFML && cmake . -DBUILD_SHARED_LIBS=ON && make
