@@ -12,7 +12,8 @@ class App
 {
 public:
   App();
-  
+  ~App();
+
   void setComputer();
   int run(int argc, char** argv);
   void update(int deltaTime);

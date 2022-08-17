@@ -10,6 +10,7 @@
 #include "UI/RamInspector.hh"
 #include "UI/ComputerPanel.hh"
 #include "UI/ProgrammerWindow.hh"
+#include "UI/NodeEditor.hh"
 #include "UI/SettingsWindow.hh"
 #include "UI/HelpWindow.hh"
 #include "utils.hh"
@@ -50,6 +51,7 @@ public:
     ProgrammerWindow programmerWindow;
     HelpWindow helpWindow;
     SettingsWindow settingsWindow;
+    NodeEditor nodeEditor;
 private:
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;

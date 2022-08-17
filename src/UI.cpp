@@ -50,6 +50,7 @@ void UI::draw()
     computerPanel.draw();
     programmerWindow.draw();
     ramInspector.draw();
+    nodeEditor.draw();
     helpWindow.draw();
 
     // Rendering

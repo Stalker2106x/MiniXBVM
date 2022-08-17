@@ -82,7 +82,7 @@ void ProgrammerWindow::draw()
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer->getMemory(MemoryType::RAM).write(address, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Bin, buffer)));
+            App::instance->computer->getMemory("RAM").write(address, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Bin, buffer)));
             ++address;
         }
         UI::instance->ramInspector.update();

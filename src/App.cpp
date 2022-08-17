@@ -11,6 +11,11 @@ App::App()
     setComputer();
 }
 
+App::~App()
+{
+    ImGui::DestroyContext();
+}
+
 void App::setComputer()
 {
     computer = std::make_unique<Computer>();
