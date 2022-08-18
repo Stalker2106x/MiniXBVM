@@ -1,6 +1,4 @@
 #include <UI/RamInspector.hh>
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
 #include "App.hh"
 #include "UI.hh"
 #include "Computer/Computer.hh"

@@ -2,15 +2,10 @@
 #define UI_HH_
 
 #include <string>
-#include <imgui.h>
-#include <imgui/backends/imgui_impl_glut.h>
-#include <imgui/backends/imgui_impl_opengl2.h>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
 #include "UI/RamInspector.hh"
 #include "UI/ComputerPanel.hh"
 #include "UI/ProgrammerWindow.hh"
-#include "UI/NodeEditor.hh"
+#include "UI/Schematic.hh"
 #include "UI/SettingsWindow.hh"
 #include "UI/HelpWindow.hh"
 #include "utils.hh"
@@ -51,7 +46,7 @@ public:
     ProgrammerWindow programmerWindow;
     HelpWindow helpWindow;
     SettingsWindow settingsWindow;
-    NodeEditor nodeEditor;
+    Schematic schematic;
 private:
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;

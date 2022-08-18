@@ -24,31 +24,31 @@ size_t getInstructionSize(const InstructionDef &instr)
 void LDAExecutor(Computer &computer)
 {
     Memory &ram = computer.getMemory("RAM");
-    computer.getRegister("MemoryAdressRegistry").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
-    computer.getRegister("Accumulator").write(ram[computer.getRegister("MemoryAdressRegistry").read()].read());
+    computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
+    computer.getRegister("Accumulator").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
 }
 
 void ADDExecutor(Computer &computer)
 {
     Memory &ram = computer.getMemory("RAM");
-    computer.getRegister("MemoryAdressRegistry").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
-    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegistry").read()].read());
+    computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
+    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
     computer.getRegister("Accumulator") += computer.getRegister("BRegister");
 }
 
 void SUBExecutor(Computer &computer)
 {
     Memory &ram = computer.getMemory("RAM");
-    computer.getRegister("MemoryAdressRegistry").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
-    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegistry").read()].read());
+    computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
+    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
     computer.getRegister("Accumulator") -= computer.getRegister("BRegister");
 }
 
 void MULExecutor(Computer &computer)
 {
     Memory &ram = computer.getMemory("RAM");
-    computer.getRegister("MemoryAdressRegistry").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
-    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegistry").read()].read());
+    computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
+    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
     computer.getRegister("Accumulator") *= computer.getRegister("BRegister");
 }
 

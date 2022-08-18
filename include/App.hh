@@ -1,9 +1,7 @@
 #ifndef APP_HH_
 #define APP_HH_
 
-#include <imgui.h>
-#include <imgui-SFML.h>
-
+#include "graphics.hh"
 #include "UI.hh"
 #include "Cc/Cc.hh"
 #include "Computer/Computer.hh"

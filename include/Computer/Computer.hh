@@ -8,7 +8,8 @@
 #include "config.h"
 #include "Clock.hh"
 #include "utils.hh"
-#include "UI/NodeEditor.hh"
+
+class Schematic;
 
 class Computer
 {
@@ -49,7 +50,7 @@ public:
   friend void OUTExecutor(Computer &computer);
   friend void HLTExecutor(Computer &computer);
 
-  friend NodeEditor;
+  friend Schematic;
 
   Clock clock;
 private:

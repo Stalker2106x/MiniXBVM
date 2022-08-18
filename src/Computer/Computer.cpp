@@ -8,7 +8,7 @@ Computer::Computer()
 {
   _memories.emplace("RAM", Memory());
   _registers.emplace("ProgramCounter", Register(App::instance->config.ramAddrBitsize));
-  _registers.emplace("MemoryAdressRegistry", Register(App::instance->config.ramAddrBitsize));
+  _registers.emplace("MemoryAdressRegister", Register(App::instance->config.ramAddrBitsize));
   _registers.emplace("InstructionRegister", Register(OPCODE_BITSIZE));
   _registers.emplace("Accumulator", Register(App::instance->config.ramDataBitsize));
   _registers.emplace("BRegister", Register(App::instance->config.ramDataBitsize));
@@ -32,7 +32,7 @@ void Computer::halt()
 void Computer::restart()
 {
   getRegister("ProgramCounter").write(bitset(App::instance->config.ramAddrBitsize, getMemory("RAM").getSize()-1));
-  getRegister("MemoryAdressRegistry").clear();
+  getRegister("MemoryAdressRegister").clear();
   getRegister("InstructionRegister").clear();
   getRegister("Accumulator").clear();
   getRegister("BRegister").clear();
@@ -139,13 +139,13 @@ std::string Computer::getFlags() const
 
 bitset Computer::getOperandBitset() const
 {
-  bitset operand = bitsetRange(getMemory("RAM")[getRegister("MemoryAdressRegistry").read()].read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
+  bitset operand = bitsetRange(getMemory("RAM")[getRegister("MemoryAdressRegister").read()].read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
   size_t remainingBits = (App::instance->config.ramAddrBitsize - OPCODE_BITSIZE);
   size_t remainingBlocks = (remainingBits / App::instance->config.ramDataBitsize) + ((remainingBits % App::instance->config.ramDataBitsize) == 0 ? 0 : 1);
   for (size_t currentBlock = 1; currentBlock <= remainingBlocks; currentBlock++)
   {
     //One instruction + operands exceed one memory block, so we need to grab multiple
-    operand = bitsetConcat(operand, getMemory("RAM")[getRegister("MemoryAdressRegistry").read()+currentBlock].read());
+    operand = bitsetConcat(operand, getMemory("RAM")[getRegister("MemoryAdressRegister").read()+currentBlock].read());
   }
   return (operand);
 }
@@ -156,8 +156,8 @@ void Computer::cycle(int deltaTime)
   if (clock.cycle(deltaTime))
   {
     getRegister("ProgramCounter") += getInstructionSize(getRegister("InstructionRegister").read());
-    getRegister("MemoryAdressRegistry") = getRegister("ProgramCounter");
-    const bitset opCode = bitsetRange(getMemory("RAM")[getRegister("MemoryAdressRegistry").read()].read(), 0, OPCODE_BITSIZE);
+    getRegister("MemoryAdressRegister") = getRegister("ProgramCounter");
+    const bitset opCode = bitsetRange(getMemory("RAM")[getRegister("MemoryAdressRegister").read()].read(), 0, OPCODE_BITSIZE);
     getRegister("InstructionRegister").write(opCode); //Read the current instruction and store it in instruction registr
     auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
     if (defIt != instructionsSet.end())

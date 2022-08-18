@@ -1,6 +1,3 @@
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
-#include <imgui_internal.h>
 #include "UI/ComputerPanel.hh"
 #include "App.hh"
 #include "UI.hh"
@@ -76,7 +73,7 @@ void ComputerPanel::draw()
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Restart Computer (Resets all registers)");
         ImGui::Text("Program Counter: %s", bitsetToString(Base::Bin, computer.getRegister("ProgramCounter").read(), true).c_str());
-        ImGui::Text("Memory Adress Registry: %s", bitsetToString(Base::Bin, computer.getRegister("MemoryAdressRegistry").read(), true).c_str());
+        ImGui::Text("Memory Adress Registry: %s", bitsetToString(Base::Bin, computer.getRegister("MemoryAdressRegister").read(), true).c_str());
         auto IR = computer.getRegister("InstructionRegister").read();
         ImGui::Text("Instruction Register: %s -> %d", bitsetToString(Base::Bin, IR, true).c_str(), bitsetToLong(IR));
         auto Acc = computer.getRegister("Accumulator").read();

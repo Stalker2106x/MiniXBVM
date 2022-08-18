@@ -14,6 +14,7 @@ App::App()
 App::~App()
 {
     ImGui::DestroyContext();
+    ImGui::SFML::Shutdown();
 }
 
 void App::setComputer()
