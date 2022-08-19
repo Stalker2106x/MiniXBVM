@@ -9,18 +9,20 @@ class Computer;
 struct ControlWordDef
 {
 public:
-    ControlWordDef(std::string keyword_, unsigned long long code_, std::function<void(Computer&)> executor_);
+    ControlWordDef(std::string mnemonic_, unsigned long long code_, std::function<void(Computer&)> executor_);
 
-    std::string keyword;
+    std::string mnemonic;
     bitset code;
     std::function<void(Computer&)> executor;
-    size_t operandCount;
 };
 
 class Sequencer
 {
 public:
   Sequencer();
+
+  void drive(const std::string &mnemonic);
+  void fetch();
 
   static const std::vector<ControlWordDef> controlWords;
 };

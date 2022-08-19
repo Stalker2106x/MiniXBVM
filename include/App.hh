@@ -6,6 +6,8 @@
 #include "Cc/Cc.hh"
 #include "Computer/Computer.hh"
 
+#define DEFAULT_FONT_SIZE 15.0
+
 class App
 {
 public:

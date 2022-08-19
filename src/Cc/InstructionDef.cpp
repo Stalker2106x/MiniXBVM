@@ -21,6 +21,11 @@ size_t getInstructionSize(const InstructionDef &instr)
   return ((instructionSize / App::instance->config.ramDataBitsize) + ((instructionSize % App::instance->config.ramDataBitsize) == 0 ? 0 : 1));
 }
 
+void NOPExecutor(Computer &computer)
+{
+    return; //Do nothing
+}
+
 void LDAExecutor(Computer &computer)
 {
     Memory &ram = computer.getMemory("RAM");

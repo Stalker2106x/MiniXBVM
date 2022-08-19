@@ -25,6 +25,7 @@ size_t getInstructionSize(bitset opCode);
 size_t getInstructionSize(const InstructionDef &keyword);
 
 //EXECUTORS
+void NOPExecutor(Computer &computer);
 void LDAExecutor(Computer &computer);
 void ADDExecutor(Computer &computer);
 void SUBExecutor(Computer &computer);
@@ -33,6 +34,7 @@ void OUTExecutor(Computer &computer);
 void HLTExecutor(Computer &computer);
 
 const std::vector<InstructionDef> instructionsSet = {
+    {"NOP", 0, NOPExecutor},
     {"LDA", 1, LDAExecutor, 1},
     {"ADD", 2, ADDExecutor, 1},
     {"SUB", 3, SUBExecutor, 1},

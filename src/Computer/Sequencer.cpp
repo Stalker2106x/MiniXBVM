@@ -1,9 +1,10 @@
 #include "Computer/Sequencer.hh"
 #include "Computer/Computer.hh"
+#include "App.hh"
 
 
-ControlWordDef::ControlWordDef(std::string keyword_, unsigned long long code_, std::function<void(Computer&)> executor_)
-: keyword(keyword_), code(OPCODE_BITSIZE, code_), executor(executor_)
+ControlWordDef::ControlWordDef(std::string mnemonic_, unsigned long long code_, std::function<void(Computer&)> executor_)
+: mnemonic(mnemonic_), code(OPCODE_BITSIZE, code_), executor(executor_)
 {
 }
 
@@ -28,14 +29,29 @@ const std::vector<ControlWordDef> Sequencer::controlWords = {
 
 Sequencer::Sequencer()
 {
+}
 
+void Sequencer::drive(const std::string &mnemonic)
+{
+  auto line = std::find_if(controlWords.begin(), controlWords.end(), [&mnemonic] (ControlWordDef def) { return (def.mnemonic == mnemonic); } );
+  line->executor(*App::instance->computer);
+}
+
+void Sequencer::fetch()
+{
+  drive("CO");
+  drive("MI");
+  
+  drive("RO");
+  drive("II");
+  drive("CE");
 }
 
 namespace Control {
 
   void HLTExecutor(Computer &computer)
   {
-
+    computer.clock.setState(Clock::State::Paused);
   }
 
   void MIExecutor(Computer &computer)
@@ -55,12 +71,11 @@ namespace Control {
 
   void IOExecutor(Computer &computer)
   {
-
   }
 
   void IIExecutor(Computer &computer)
   {
-
+    computer.bus = computer.getRegister("InstructionRegister").read();
   }
 
   void AOExecutor(Computer &computer)

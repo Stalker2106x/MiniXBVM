@@ -19,6 +19,7 @@ void UI::init()
 {
     backgroundTexture.loadFromFile("Data/img/background.jpg");
     backgroundSprite.setTexture(backgroundTexture);
+    schematic.init();
     ramInspector.update();
 }
 
