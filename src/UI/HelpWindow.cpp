@@ -1,6 +1,4 @@
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
-#include <imgui-SFML.h>
+#include "graphics.hh"
 #include "UI/HelpWindow.hh"
 
 HelpWindow::HelpWindow()

@@ -10,6 +10,11 @@ Register::Register(const bitset data)
 {
 }
 
+size_t Register::getSize() const
+{
+    return (_data.size());
+}
+
 void Register::write(const bitset value)
 {
     _data = value;

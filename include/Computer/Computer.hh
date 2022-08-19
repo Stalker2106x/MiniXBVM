@@ -3,25 +3,14 @@
 
 #include <map>
 #include <unordered_map>
+#include "Computer/Sequencer.hh"
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
 #include "config.h"
 #include "Clock.hh"
 #include "utils.hh"
 
-enum RegisterType {
-  ProgramCounter,
-  MemoryAdressRegistry,
-  InstructionRegister,
-  Accumulator,
-  BRegister,
-  Output,
-  StatusRegister
-};
-
-enum MemoryType {
-  RAM
-};
+class Schematic;
 
 class Computer
 {
@@ -39,12 +28,14 @@ public:
   void reset();
   State getState() const;
 
-  std::string dumpRegister(RegisterType regType, Base base) const;
-  Memory &getMemory(MemoryType memType);
-  Register &getRegister(RegisterType regType);
-  const Memory &getMemory(MemoryType memType) const;
-  const Register &getRegister(RegisterType regType) const;
-  std::vector<std::pair<std::string, std::string>> dumpMemory(MemoryType memType, Base addrBase, Base valueBase) const;
+  Memory &getMemory(const std::string &memType);
+  Register &getRegister(const std::string &regType);
+  const Memory &getMemory(const std::string &memType) const;
+  const Register &getRegister(const std::string &regType) const;
+
+  std::string dumpRegister(const std::string &regType, Base base) const;
+  std::vector<std::pair<std::string, std::string>> dumpMemory(const std::string &memType, Base addrBase, Base valueBase) const;
+
   std::string getOutput() const;
   std::string getInstruction() const;
   std::string getFlags() const;
@@ -62,11 +53,17 @@ public:
   friend void OUTExecutor(Computer &computer);
   friend void HLTExecutor(Computer &computer);
 
+  friend Schematic;
+
   Clock clock;
+  bitset bus;
 private:
   State _state;
-  std::unordered_map<MemoryType, Memory> _memories;
-  std::unordered_map<RegisterType, Register> _registers;
+
+  Sequencer _sequencer;
+
+  std::unordered_map<std::string, Memory> _memories;
+  std::unordered_map<std::string, Register> _registers;
 };
 
 #endif /* !COMPUTER_HH_ */

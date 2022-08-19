@@ -1,6 +1,3 @@
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
-#include <imgui_internal.h>
 #include "UI/ProgrammerWindow.hh"
 #include "Editor/LanguageDef.hh"
 #include "Cc/examples.h"
@@ -82,7 +79,7 @@ void ProgrammerWindow::draw()
 
         while(std::getline(ss, buffer, '\n'))
         {
-            App::instance->computer->getMemory(MemoryType::RAM).write(address, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Bin, buffer)));
+            App::instance->computer->getMemory("RAM").write(address, bitset(App::instance->config.ramDataBitsize, intFromString(Base::Bin, buffer)));
             ++address;
         }
         UI::instance->ramInspector.update();

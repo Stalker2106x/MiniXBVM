@@ -11,6 +11,8 @@ public:
   Register(const size_t regSize);
   Register(const bitset data);
 
+  size_t getSize() const;
+
   void write(const bitset value);
 
   const bitset read() const;

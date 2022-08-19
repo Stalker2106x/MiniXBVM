@@ -1,6 +1,4 @@
 #include "UI/SettingsWindow.hh"
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
 #include "App.hh"
 
 SettingsWindow::SettingsWindow()

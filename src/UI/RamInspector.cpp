@@ -1,6 +1,4 @@
 #include <UI/RamInspector.hh>
-#include <imgui.h>
-#include <misc/cpp/imgui_stdlib.h>
 #include "App.hh"
 #include "UI.hh"
 #include "Computer/Computer.hh"
@@ -12,10 +10,10 @@ RamInspector::RamInspector() : _addrBase(Base::Bin), _valueBase(Base::Bin), _mem
 void RamInspector::update()
 {
     Computer &computer = *(App::instance->computer);
-    const Memory &ram = computer.getMemory(MemoryType::RAM);
+    const Memory &ram = computer.getMemory("RAM");
     _memorySize = ram.getSize();
     _memoryUsedSize = ram.getUsedSize();
-    _ramDump = computer.dumpMemory(MemoryType::RAM, _addrBase, _valueBase);
+    _ramDump = computer.dumpMemory("RAM", _addrBase, _valueBase);
 }
 
 void RamInspector::draw()
@@ -71,7 +69,7 @@ void RamInspector::draw()
             }
             ImGui::PopID();
         }
-        auto pcValue = computer.dumpRegister(ProgramCounter, _addrBase);
+        auto pcValue = computer.dumpRegister("ProgramCounter", _addrBase);
         for (int i = 0; i < _ramDump.size(); i++)
         {
             bool active = (_ramDump[i].first == pcValue);

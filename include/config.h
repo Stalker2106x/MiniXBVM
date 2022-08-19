@@ -7,7 +7,7 @@
 
 struct Config {
     Config() : byteSize(8), wordSize(16), dwordSize(32),
-        ramAddrBitsize(4), ramDataBitsize(8)
+        ramAddrBitsize(4), ramDataBitsize(8), UIScale(1.0)
     {};
 
     size_t byteSize;
@@ -16,6 +16,8 @@ struct Config {
 
     size_t ramAddrBitsize; //Size of ram address
     size_t ramDataBitsize; //Size of ram value
+
+    float UIScale;
 };
 
 typedef sul::dynamic_bitset<> bitset;

@@ -5,10 +5,14 @@
 
 std::unique_ptr<App> App::instance = nullptr;
 
-App::App()
+App::App() : config()
 {
     App::instance = std::unique_ptr<App>(this);
     setComputer();
+}
+
+App::~App()
+{
 }
 
 void App::setComputer()
@@ -25,19 +29,18 @@ int App::run(int argc, char** argv)
     ui.init();
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    float fontSize = 2.0;
 
     io.Fonts->Clear();
-    io.Fonts->AddFontFromFileTTF("data/font/FiraMono.ttf", 15.0f * fontSize);
-    io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 64.0f * fontSize);
+    io.Fonts->AddFontFromFileTTF("data/font/FiraMono.ttf", DEFAULT_FONT_SIZE * config.UIScale);
+    io.Fonts->AddFontFromFileTTF("data/font/Segment.ttf", 64.0f * config.UIScale);
 
     static const ImWchar icon_ranges[] = { ICON_MIN_IONIC, ICON_MAX_IONIC, 0 };
-    io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f * fontSize, NULL, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("data/font/Ionicons.ttf", 25.0f * config.UIScale, NULL, icon_ranges);
 
     if (!ImGui::SFML::UpdateFontTexture()) return (-1); // important call: updates font texture
     ui.fontAtlas = ImGui::GetIO().Fonts;
 
-    ImGui::GetStyle().ScaleAllSizes(2.0);
+    ImGui::GetStyle().ScaleAllSizes(config.UIScale);
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
