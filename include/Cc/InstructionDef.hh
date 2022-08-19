@@ -8,21 +8,23 @@
 #include "config.h"
 
 class Computer;
+class Sequencer;
+
+typedef void (Sequencer::*Executor)(Computer&);
 
 struct InstructionDef
 {
 public:
-    InstructionDef(std::string keyword_, size_t opCode_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0);
+    InstructionDef(std::string keyword_, size_t opCode_, Executor executor_, size_t operandCount_ = 0);
 
-    static void init();
+    static const std::vector<InstructionDef> set;
 
     std::string keyword;
     bitset opCode;
-    std::function<void(Computer&)> executor;
+    Executor executor;
     size_t operandCount;
 };
 
-static std::vector<InstructionDef> instructionsSet;
 
 //Util
 //size_t getInstructionSize(bitset opCode);

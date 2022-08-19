@@ -32,8 +32,8 @@ Cc::Output Cc::compile(const std::string &input)
                 lss >> buffer;
                 std::string keyword(buffer);
                 std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::toupper);
-                auto instructionIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
-                if (instructionIt == instructionsSet.end())
+                auto instructionIt = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
+                if (instructionIt == InstructionDef::set.end())
                 {
                     if (pass == 0) //Instruction was not found, pass 0, we consider that it is a variable
                     {
@@ -52,6 +52,7 @@ Cc::Output Cc::compile(const std::string &input)
                 {
                     if (pass == 0)
                     {
+                        lineNumber++;
                         //lineNumber += (getInstructionSize(*instructionIt)-1);
                     }
                     else if (pass == 1)

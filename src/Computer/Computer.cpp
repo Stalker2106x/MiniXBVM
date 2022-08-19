@@ -31,7 +31,7 @@ void Computer::halt()
 
 void Computer::restart()
 {
-  getRegister("ProgramCounter").write(bitset(App::instance->config.ramAddrBitsize, getMemory("RAM").getSize()-1));
+  getRegister("ProgramCounter").write(bitset(App::instance->config.ramAddrBitsize, 0));
   getRegister("MemoryAdressRegister").clear();
   getRegister("InstructionRegister").clear();
   getRegister("Accumulator").clear();
@@ -114,8 +114,8 @@ std::string Computer::getOutput() const
 std::string Computer::getInstruction() const
 {
   const bitset opCode = getRegister("InstructionRegister").read();
-  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
-  if (defIt != instructionsSet.end())
+  auto defIt = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
+  if (defIt != InstructionDef::set.end())
   {
     return (defIt->keyword);
   }

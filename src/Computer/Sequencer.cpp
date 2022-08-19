@@ -51,8 +51,9 @@ void Sequencer::fetch()
 void Sequencer::execute(Computer &computer)
 {
   bitset opCode = computer.getRegister("InstructionRegister").read();
-  auto instr = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
-  instr->executor(computer);
+  auto instr = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
+  Executor ex = instr->executor;
+  (this->*ex)(computer);
 }
 
 
