@@ -9,6 +9,16 @@ ControlWordDef::ControlWordDef(std::string mnemonic_, unsigned long long code_, 
 {
 }
 
+const std::vector<InstructionDef> InstructionDef::set = {
+  {"NOP", 0, &Sequencer::NOPExecutor},
+  {"LDA", 1, &Sequencer::LDAExecutor, 1},
+  {"ADD", 2, &Sequencer::ADDExecutor, 1},
+  {"SUB", 3, &Sequencer::SUBExecutor, 1},
+  {"MUL", 4, &Sequencer::MULExecutor, 1},
+  {"OUT", 5, &Sequencer::OUTExecutor},
+  {"HLT", 6, &Sequencer::HLTExecutor}
+};
+
 const std::vector<ControlWordDef> Sequencer::controlWords = {
   {"HLT", 1, Control::HLTExecutor},
   {"MI", 2, Control::MIExecutor},
@@ -52,8 +62,7 @@ void Sequencer::execute(Computer &computer)
 {
   bitset opCode = computer.getRegister("InstructionRegister").read();
   auto instr = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
-  Executor ex = instr->executor;
-  (this->*ex)(computer);
+  instr->executor(this, computer);
 }
 
 
