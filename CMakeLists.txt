@@ -17,7 +17,6 @@ file(GLOB source_files
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui/misc/cpp/*.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/ImGuiColorTextEdit/TextEditor.cpp
      ${CMAKE_SOURCE_DIR}/thirdparty/imgui-sfml/*.cpp
-     ${CMAKE_SOURCE_DIR}/thirdparty/imnodes/*.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/include
@@ -25,7 +24,6 @@ include_directories(${CMAKE_SOURCE_DIR}/include
                     ${CMAKE_SOURCE_DIR}/thirdparty/dynamic_bitset/include
                     ${CMAKE_SOURCE_DIR}/thirdparty/imgui
                     ${CMAKE_SOURCE_DIR}/thirdparty/imgui-sfml/
-                    ${CMAKE_SOURCE_DIR}/thirdparty/imnodes/
                     ${CMAKE_SOURCE_DIR}/thirdparty/SFML/include
                     )
 
