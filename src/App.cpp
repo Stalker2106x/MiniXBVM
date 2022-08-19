@@ -2,6 +2,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 #include "App.hh"
+#include "Cc/InstructionDef.hh"
 
 std::unique_ptr<App> App::instance = nullptr;
 
@@ -9,6 +10,7 @@ App::App() : config()
 {
     App::instance = std::unique_ptr<App>(this);
     setComputer();
+    InstructionDef::init();
 }
 
 App::~App()

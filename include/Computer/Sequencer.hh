@@ -22,12 +22,23 @@ public:
   Sequencer();
 
   void drive(const std::string &mnemonic);
+
   void fetch();
+  void execute(Computer &computer);
+
+  //Executors
+  void NOPExecutor(Computer &computer);
+  void LDAExecutor(Computer &computer);
+  void ADDExecutor(Computer &computer);
+  void SUBExecutor(Computer &computer);
+  void MULExecutor(Computer &computer);
+  void OUTExecutor(Computer &computer);
+  void HLTExecutor(Computer &computer);
 
   static const std::vector<ControlWordDef> controlWords;
 };
 
-//Executors
+//Control Executors
 namespace Control {
   void HLTExecutor(Computer &computer);
   void MIExecutor(Computer &computer);

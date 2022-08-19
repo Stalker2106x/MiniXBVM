@@ -1,6 +1,7 @@
 #include "Computer/Sequencer.hh"
 #include "Computer/Computer.hh"
 #include "App.hh"
+#include "Cc/InstructionDef.hh"
 
 
 ControlWordDef::ControlWordDef(std::string mnemonic_, unsigned long long code_, std::function<void(Computer&)> executor_)
@@ -47,6 +48,61 @@ void Sequencer::fetch()
   drive("CE");
 }
 
+void Sequencer::execute(Computer &computer)
+{
+  bitset opCode = computer.getRegister("InstructionRegister").read();
+  auto instr = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
+  instr->executor(computer);
+}
+
+
+void Sequencer::NOPExecutor(Computer &computer)
+{
+    return; //Do nothing
+}
+
+void Sequencer::LDAExecutor(Computer &computer)
+{
+  drive("IO");
+  drive("MI");
+  drive("RO");
+  drive("AI");
+}
+
+void Sequencer::ADDExecutor(Computer &computer)
+{
+  drive("IO");
+  drive("MI");
+  drive("RO");
+  drive("AI");
+}
+
+void Sequencer::SUBExecutor(Computer &computer)
+{
+  Memory &ram = computer.getMemory("RAM");
+  computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
+  computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
+  computer.getRegister("Accumulator") -= computer.getRegister("BRegister");
+}
+
+void Sequencer::MULExecutor(Computer &computer)
+{
+  Memory &ram = computer.getMemory("RAM");
+  computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
+  computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
+  computer.getRegister("Accumulator") *= computer.getRegister("BRegister");
+}
+
+void Sequencer::OUTExecutor(Computer &computer)
+{
+  computer.getRegister("Output").write(computer.getRegister("Accumulator").read()); //Extract acc to output
+}
+
+void Sequencer::HLTExecutor(Computer &computer)
+{
+  computer.halt();
+}
+
 namespace Control {
 
   void HLTExecutor(Computer &computer)
@@ -71,6 +127,7 @@ namespace Control {
 
   void IOExecutor(Computer &computer)
   {
+    computer.bus = bitsetRange(computer.getRegister("InstructionRegister").read(), OPCODE_BITSIZE, App::instance->config.ramDataBitsize);
   }
 
   void IIExecutor(Computer &computer)
@@ -90,11 +147,12 @@ namespace Control {
 
   void EOExecutor(Computer &computer)
   {
+    computer.bus = computer.getRegister("Accumulator").read() + computer.getRegister("BRegister").read();
   }
 
   void SUExecutor(Computer &computer)
   {
-
+    computer.bus = computer.getRegister("Accumulator").read() - computer.getRegister("BRegister").read();
   }
 
   void BIExecutor(Computer &computer)
@@ -125,7 +183,7 @@ namespace Control {
 
   void FIExecutor(Computer &computer)
   {
-
+    return; //?? Latch the current state of the flags (ZF and CF) into the flags register (FR) 
   }
 
 }

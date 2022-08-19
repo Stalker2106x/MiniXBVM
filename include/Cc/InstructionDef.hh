@@ -12,35 +12,20 @@ class Computer;
 struct InstructionDef
 {
 public:
-    InstructionDef(std::string keyword_, unsigned long long code_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0);
+    InstructionDef(std::string keyword_, size_t opCode_, std::function<void(Computer&)> executor_, size_t operandCount_ = 0);
+
+    static void init();
 
     std::string keyword;
-    bitset code;
+    bitset opCode;
     std::function<void(Computer&)> executor;
     size_t operandCount;
 };
 
+static std::vector<InstructionDef> instructionsSet;
+
 //Util
-size_t getInstructionSize(bitset opCode);
-size_t getInstructionSize(const InstructionDef &keyword);
-
-//EXECUTORS
-void NOPExecutor(Computer &computer);
-void LDAExecutor(Computer &computer);
-void ADDExecutor(Computer &computer);
-void SUBExecutor(Computer &computer);
-void MULExecutor(Computer &computer);
-void OUTExecutor(Computer &computer);
-void HLTExecutor(Computer &computer);
-
-const std::vector<InstructionDef> instructionsSet = {
-    {"NOP", 0, NOPExecutor},
-    {"LDA", 1, LDAExecutor, 1},
-    {"ADD", 2, ADDExecutor, 1},
-    {"SUB", 3, SUBExecutor, 1},
-    {"MUL", 4, MULExecutor, 1},
-    {"OUT", 5, OUTExecutor},
-    {"HLT", 6, HLTExecutor}
-};
+//size_t getInstructionSize(bitset opCode);
+//size_t getInstructionSize(const InstructionDef &keyword);
 
 #endif /* INSTRUCTION_HH_ */

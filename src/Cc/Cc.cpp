@@ -52,11 +52,11 @@ Cc::Output Cc::compile(const std::string &input)
                 {
                     if (pass == 0)
                     {
-                        lineNumber += (getInstructionSize(*instructionIt)-1);
+                        //lineNumber += (getInstructionSize(*instructionIt)-1);
                     }
                     else if (pass == 1)
                     {
-                        lineOutput.insert(0, instructionIt->code.to_string());
+                        lineOutput.insert(0, instructionIt->opCode.to_string());
                         //Pad with zeros if no operands are expected
                         if (instructionIt->operandCount == 0) lineOutput.insert(0, std::string(App::instance->config.ramDataBitsize-OPCODE_BITSIZE, '0'));
                     }
