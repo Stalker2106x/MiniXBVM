@@ -72,16 +72,6 @@ void ComputerPanel::draw()
         ImGui::PopFont();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Restart Computer (Resets all registers)");
-        ImGui::Text("Program Counter: %s", bitsetToString(Base::Bin, computer.getRegister("ProgramCounter").read(), true).c_str());
-        ImGui::Text("Memory Adress Registry: %s", bitsetToString(Base::Bin, computer.getRegister("MemoryAdressRegister").read(), true).c_str());
-        auto IR = computer.getRegister("InstructionRegister").read();
-        ImGui::Text("Instruction Register: %s -> %d", bitsetToString(Base::Bin, IR, true).c_str(), bitsetToLong(IR));
-        auto Acc = computer.getRegister("Accumulator").read();
-        ImGui::Text("Accumulator: %s -> %d", bitsetToString(Base::Bin, Acc, true).c_str(),  bitsetToLong(Acc));
-        auto BReg = computer.getRegister("BRegister").read();
-        ImGui::Text("B Register: %s -> %d", bitsetToString(Base::Bin, BReg, true).c_str(),  bitsetToLong(BReg));
-        ImGui::Text("Status Register: %s", computer.getFlags().c_str());
-        ImGui::Text("Output Register: %s", bitsetToString(Base::Bin, computer.getRegister("Output").read(), true).c_str());
     }
 
     ImGui::End();

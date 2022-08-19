@@ -4,7 +4,7 @@
 #include "bitset_utils.hh"
 #include "App.hh"
 
-Computer::Computer()
+Computer::Computer() : bus(App::instance->config.ramDataBitsize, 0)
 {
   _memories.emplace("RAM", Memory());
   _registers.emplace("ProgramCounter", Register(App::instance->config.ramAddrBitsize));

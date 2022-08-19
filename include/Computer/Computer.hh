@@ -3,6 +3,7 @@
 
 #include <map>
 #include <unordered_map>
+#include "Computer/Sequencer.hh"
 #include "Computer/Memory.hh"
 #include "Computer/Register.hh"
 #include "config.h"
@@ -27,12 +28,14 @@ public:
   void reset();
   State getState() const;
 
-  std::string dumpRegister(const std::string &regType, Base base) const;
   Memory &getMemory(const std::string &memType);
   Register &getRegister(const std::string &regType);
   const Memory &getMemory(const std::string &memType) const;
   const Register &getRegister(const std::string &regType) const;
+
+  std::string dumpRegister(const std::string &regType, Base base) const;
   std::vector<std::pair<std::string, std::string>> dumpMemory(const std::string &memType, Base addrBase, Base valueBase) const;
+
   std::string getOutput() const;
   std::string getInstruction() const;
   std::string getFlags() const;
@@ -53,8 +56,12 @@ public:
   friend Schematic;
 
   Clock clock;
+  bitset bus;
 private:
   State _state;
+
+  Sequencer _sequencer;
+
   std::unordered_map<std::string, Memory> _memories;
   std::unordered_map<std::string, Register> _registers;
 };
