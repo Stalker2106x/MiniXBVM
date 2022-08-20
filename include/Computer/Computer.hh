@@ -57,7 +57,6 @@ public:
 
   Clock clock;
   bitset bus;
-  Sequencer sequencer;
 
 private:
   State _state;

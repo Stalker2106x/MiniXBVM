@@ -155,7 +155,7 @@ void Computer::cycle(int deltaTime)
   if (_state != Running) return;
   if (clock.cycle(deltaTime))
   {
-    sequencer.fetch();
-    sequencer.execute(*this);
+    Sequencer::fetch();
+    Sequencer::execute(*this);
   }
 }
