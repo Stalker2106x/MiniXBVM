@@ -4,7 +4,7 @@
 #include "Cc/InstructionDef.hh"
 
 
-ControlWordDef::ControlWordDef(std::string mnemonic_, unsigned long long code_, std::function<void(Computer&)> executor_)
+ControlWordDef::ControlWordDef(std::string mnemonic_, size_t code_, std::function<void(Computer&)> executor_)
 : mnemonic(mnemonic_), code(OPCODE_BITSIZE, code_), executor(executor_)
 {
 }
@@ -62,7 +62,7 @@ void Sequencer::execute(Computer &computer)
 {
   bitset opCode = computer.getRegister("InstructionRegister").read();
   auto instr = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
-  instr->executor(this, computer);
+  instr->executor(*this, computer);
 }
 
 
