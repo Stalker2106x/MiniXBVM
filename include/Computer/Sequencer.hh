@@ -9,7 +9,7 @@ class Computer;
 struct ControlWordDef
 {
 public:
-    ControlWordDef(std::string mnemonic_, unsigned long long code_, std::function<void(Computer&)> executor_);
+    ControlWordDef(std::string mnemonic_, size_t code_, std::function<void(Computer&)> executor_);
 
     std::string mnemonic;
     bitset code;
