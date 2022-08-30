@@ -3,13 +3,14 @@
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
 #include "App.hh"
+#include <iostream>
 
 Computer::Computer() : bus(App::instance->config.ramDataBitsize, 0)
 {
   _memories.emplace("RAM", Memory());
   _registers.emplace("ProgramCounter", Register(App::instance->config.ramAddrBitsize));
   _registers.emplace("MemoryAdressRegister", Register(App::instance->config.ramAddrBitsize));
-  _registers.emplace("InstructionRegister", Register(OPCODE_BITSIZE));
+  _registers.emplace("InstructionRegister", Register(App::instance->config.ramDataBitsize));
   _registers.emplace("Accumulator", Register(App::instance->config.ramDataBitsize));
   _registers.emplace("BRegister", Register(App::instance->config.ramDataBitsize));
   _registers.emplace("StatusRegister", Register(2));
@@ -31,7 +32,7 @@ void Computer::halt()
 
 void Computer::restart()
 {
-  getRegister("ProgramCounter").write(bitset(App::instance->config.ramAddrBitsize, getMemory("RAM").getSize()-1));
+  getRegister("ProgramCounter").write(bitset(App::instance->config.ramAddrBitsize, 0));
   getRegister("MemoryAdressRegister").clear();
   getRegister("InstructionRegister").clear();
   getRegister("Accumulator").clear();
@@ -114,8 +115,8 @@ std::string Computer::getOutput() const
 std::string Computer::getInstruction() const
 {
   const bitset opCode = getRegister("InstructionRegister").read();
-  auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
-  if (defIt != instructionsSet.end())
+  auto defIt = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { std::cout << def.opCode.to_string(); return (def.opCode == opCode); } );
+  if (defIt != InstructionDef::set.end())
   {
     return (defIt->keyword);
   }
@@ -155,14 +156,7 @@ void Computer::cycle(int deltaTime)
   if (_state != Running) return;
   if (clock.cycle(deltaTime))
   {
-    getRegister("ProgramCounter") += getInstructionSize(getRegister("InstructionRegister").read());
-    getRegister("MemoryAdressRegister") = getRegister("ProgramCounter");
-    const bitset opCode = bitsetRange(getMemory("RAM")[getRegister("MemoryAdressRegister").read()].read(), 0, OPCODE_BITSIZE);
-    getRegister("InstructionRegister").write(opCode); //Read the current instruction and store it in instruction registr
-    auto defIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&opCode] (InstructionDef def) { return (def.code == opCode); } );
-    if (defIt != instructionsSet.end())
-    {
-      defIt->executor(*this);
-    }
+    Sequencer::fetch();
+    Sequencer::execute(*this);
   }
 }

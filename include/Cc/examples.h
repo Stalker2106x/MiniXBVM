@@ -15,11 +15,4 @@
                       "vara db 10\n" \
                       "varb db 5\n"
 
-#define EXAMPLE_MUL   "LDA vara\n"     \
-                      "MUL varb\n"     \
-                      "OUT\n"       \
-                      "HLT\n"       \
-                      "vara db 2\n" \
-                      "varb db 5\n"
-
 #endif /* !EXAMPLES_H_ */

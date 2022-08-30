@@ -32,8 +32,8 @@ Cc::Output Cc::compile(const std::string &input)
                 lss >> buffer;
                 std::string keyword(buffer);
                 std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::toupper);
-                auto instructionIt = std::find_if(instructionsSet.begin(), instructionsSet.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
-                if (instructionIt == instructionsSet.end())
+                auto instructionIt = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&keyword] (InstructionDef def) { return (def.keyword == keyword); } );
+                if (instructionIt == InstructionDef::set.end())
                 {
                     if (pass == 0) //Instruction was not found, pass 0, we consider that it is a variable
                     {
@@ -52,11 +52,12 @@ Cc::Output Cc::compile(const std::string &input)
                 {
                     if (pass == 0)
                     {
-                        lineNumber += (getInstructionSize(*instructionIt)-1);
+                        //lineNumber++;
+                        //lineNumber += (getInstructionSize(*instructionIt)-1);
                     }
                     else if (pass == 1)
                     {
-                        lineOutput.insert(0, instructionIt->code.to_string());
+                        lineOutput.insert(0, instructionIt->opCode.to_string());
                         //Pad with zeros if no operands are expected
                         if (instructionIt->operandCount == 0) lineOutput.insert(0, std::string(App::instance->config.ramDataBitsize-OPCODE_BITSIZE, '0'));
                     }

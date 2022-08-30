@@ -57,10 +57,9 @@ public:
 
   Clock clock;
   bitset bus;
+
 private:
   State _state;
-
-  Sequencer _sequencer;
 
   std::unordered_map<std::string, Memory> _memories;
   std::unordered_map<std::string, Register> _registers;

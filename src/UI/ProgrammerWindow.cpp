@@ -30,10 +30,6 @@ void ProgrammerWindow::draw()
             {
                 asmEditor.SetText(EXAMPLE_SUB);
             }
-            if (ImGui::MenuItem("Multiplication"))
-            {
-                asmEditor.SetText(EXAMPLE_MUL);
-            }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
