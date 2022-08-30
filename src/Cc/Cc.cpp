@@ -52,7 +52,7 @@ Cc::Output Cc::compile(const std::string &input)
                 {
                     if (pass == 0)
                     {
-                        lineNumber++;
+                        //lineNumber++;
                         //lineNumber += (getInstructionSize(*instructionIt)-1);
                     }
                     else if (pass == 1)

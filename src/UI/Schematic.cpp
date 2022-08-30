@@ -144,11 +144,19 @@ void Schematic::draw()
     ImGui::BeginGroup();
     {
         ImGui::Text("W BUS");
+        ImVec2 basePos = ImGui::GetCursorScreenPos();
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
         ImVec2 pos = ImGui::GetCursorScreenPos();
         ImVec2 rectSize = ImVec2(100, 300);
         draw_list->AddRectFilled(pos, pos + rectSize, ImColor(0, 100, 100));
         ImGui::Dummy(rectSize);
+
+        ImVec2 endPos = ImGui::GetCursorScreenPos();
+        ImVec2 offset = ImVec2(5 , (rectSize.y/2) - (DEFAULT_FONT_SIZE/2));
+        ImGui::SetCursorScreenPos(basePos + offset);
+        ImGui::Text(App::instance->computer->bus.to_string().c_str());
+        ImGui::SetCursorScreenPos(endPos);
+
         ImGui::EndGroup();
     }
     ImGui::SameLine();

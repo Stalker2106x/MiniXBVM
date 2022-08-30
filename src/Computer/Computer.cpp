@@ -3,6 +3,7 @@
 #include "Cc/InstructionDef.hh"
 #include "bitset_utils.hh"
 #include "App.hh"
+#include <iostream>
 
 Computer::Computer() : bus(App::instance->config.ramDataBitsize, 0)
 {
@@ -114,7 +115,7 @@ std::string Computer::getOutput() const
 std::string Computer::getInstruction() const
 {
   const bitset opCode = getRegister("InstructionRegister").read();
-  auto defIt = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
+  auto defIt = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { std::cout << def.opCode.to_string(); return (def.opCode == opCode); } );
   if (defIt != InstructionDef::set.end())
   {
     return (defIt->keyword);

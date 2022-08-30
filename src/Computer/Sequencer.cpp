@@ -2,6 +2,7 @@
 #include "Computer/Computer.hh"
 #include "App.hh"
 #include "Cc/InstructionDef.hh"
+#include <iostream>
 
 
 ControlWordDef::ControlWordDef(std::string mnemonic_, size_t code_, std::function<void(Computer&)> executor_)
@@ -10,13 +11,12 @@ ControlWordDef::ControlWordDef(std::string mnemonic_, size_t code_, std::functio
 }
 
 const std::vector<InstructionDef> InstructionDef::set = {
-  {"NOP", 0, &Sequencer::NOPExecutor},
-  {"LDA", 1, &Sequencer::LDAExecutor, 1},
-  {"ADD", 2, &Sequencer::ADDExecutor, 1},
-  {"SUB", 3, &Sequencer::SUBExecutor, 1},
-  {"MUL", 4, &Sequencer::MULExecutor, 1},
-  {"OUT", 5, &Sequencer::OUTExecutor},
-  {"HLT", 6, &Sequencer::HLTExecutor}
+  {"NOP", 0, Sequencer::NOPExecutor},
+  {"LDA", 1, Sequencer::LDAExecutor, 1},
+  {"ADD", 2, Sequencer::ADDExecutor, 1},
+  {"SUB", 3, Sequencer::SUBExecutor, 1},
+  {"OUT", 5, Sequencer::OUTExecutor},
+  {"HLT", 6, Sequencer::HLTExecutor}
 };
 
 namespace Sequencer {
@@ -39,8 +39,10 @@ namespace Sequencer {
 
   void execute(Computer &computer)
   {
-    bitset opCode = computer.getRegister("InstructionRegister").read();
+    bitset opCode = bitsetRange(computer.getRegister("InstructionRegister").read(), 0, OPCODE_BITSIZE);
+    std::cout << opCode.to_string();
     auto instr = std::find_if(InstructionDef::set.begin(), InstructionDef::set.end(), [&opCode] (InstructionDef def) { return (def.opCode == opCode); } );
+    if (instr == InstructionDef::set.end()) throw std::runtime_error("Unknown instruction");
     instr->executor(computer);
   }
 
@@ -63,28 +65,25 @@ namespace Sequencer {
     drive("IO");
     drive("MI");
     drive("RO");
+    drive("BI");
+    drive("EO");
     drive("AI");
   }
 
   void SUBExecutor(Computer &computer)
   {
-    Memory &ram = computer.getMemory("RAM");
-    computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
-    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
-    computer.getRegister("Accumulator") -= computer.getRegister("BRegister");
-  }
-
-  void MULExecutor(Computer &computer)
-  {
-    Memory &ram = computer.getMemory("RAM");
-    computer.getRegister("MemoryAdressRegister").write(bitsetRange(computer.getOperandBitset(), 0, App::instance->config.ramAddrBitsize)); //Extract adress from Current RAM Block
-    computer.getRegister("BRegister").write(ram[computer.getRegister("MemoryAdressRegister").read()].read());
-    computer.getRegister("Accumulator") *= computer.getRegister("BRegister");
+    drive("IO");
+    drive("MI");
+    drive("RO");
+    drive("BI");
+    drive("SU");
+    drive("AI");
   }
 
   void OUTExecutor(Computer &computer)
   {
-    computer.getRegister("Output").write(computer.getRegister("Accumulator").read()); //Extract acc to output
+    drive("AO");
+    drive("OI");
   }
 
   void HLTExecutor(Computer &computer)
@@ -122,7 +121,7 @@ namespace Control {
 
   void IIExecutor(Computer &computer)
   {
-    computer.bus = computer.getRegister("InstructionRegister").read();
+    computer.getRegister("InstructionRegister").write(computer.bus);
   }
 
   void AOExecutor(Computer &computer)

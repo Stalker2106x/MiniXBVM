@@ -1,5 +1,7 @@
-#include <bitset>
 #include "utils.hh"
+#include <sstream>
+#include <bitset>
+#include <ios>
 
 long long int intFromString(Base stringBase, std::string str)
 {

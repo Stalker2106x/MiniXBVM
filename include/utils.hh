@@ -1,10 +1,8 @@
 #ifndef UTILS_HH_
 #define UTILS_HH_
 
-#include <sstream>
+#include <sul/dynamic_bitset.hpp>
 #include <string>
-#include <ios>
-#include <map>
 #include "config.h"
 
 #define HEX_DELIM 'x'
